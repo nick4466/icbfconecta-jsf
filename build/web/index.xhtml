@@ -1,24 +1,76 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-       xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Nicolas</title>
+    <title>Login</title>
+    <!-- Estilos personalizados -->
+    <h:outputStylesheet name="login.css"/>
+    <style>
+        /* Colores personalizados */
+        body {
+            background-color: #f3e5f5; /* Fondo rosado pastel */
+            font-family: 'Arial', sans-serif;
+        }
+
+        .login-form {
+            background-color: #fff0f6; /* Fondo blanco con toque rosado */
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .ui-panelgrid {
+            border: none;
+        }
+
+        .ui-inputtext, .ui-inputsecret {
+            background-color: #f8d6f4; /* Fondo de los campos rosado pastel */
+            border: 1px solid #9c27b0; /* Borde morado pastel */
+            color: #6a1b9a; /* Texto morado oscuro */
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .ui-commandbutton {
+            background-color: #9c27b0; /* Fondo morado pastel */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .ui-commandbutton:hover {
+            background-color: #7b1fa2; /* Hover morado más oscuro */
+        }
+
+        h:messages {
+            color: red;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
 </h:head>
 <h:body>
     <h:form>
-        <h:panelGrid columns="2" cellpadding="5">
+        <div class="login-form">
+            <h:panelGrid columns="2" cellpadding="5">
+                <h:outputLabel for="doc" value="Documento:" />
+                <h:inputText id="doc" value="#{loginBean.documento}" required="true" />
 
-            <h:outputLabel for="doc" value="Documento:" />
-            <h:inputText id="doc" value="#{loginBean.documento}" required="true"/>
+                <h:outputLabel for="pass" value="Contraseña:" />
+                <h:inputSecret id="pass" value="#{loginBean.password}" required="true" />
 
-            <h:outputLabel for="pass" value="Contraseña:" />
-            <h:inputSecret id="pass" value="#{loginBean.password}" required="true"/>
+                <p:commandButton value="Ingresar" action="#{loginBean.login}" />
+            </h:panelGrid>
 
-            <p:commandButton value="Ingresar" action="#{loginBean.login}" />
-
-        </h:panelGrid>
-
-        <h:messages globalOnly="true" style="color:red;"/>
+            <h:messages globalOnly="true" />
+        </div>
     </h:form>
 </h:body>
 </html>
