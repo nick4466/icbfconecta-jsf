@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Detalle del Reporte</title>
+</h:head>
+
+<h:body>
+    <h:form id="formDetalle">
+
+        <h2>Ficha del Niño</h2>
+
+        <h:panelGrid columns="2" columnClasses="label,value" cellpadding="5">
+
+            <!-- Datos del niño -->
+            <h:outputLabel value="Nombres:" />
+            <h:outputText value="#{reporteBean.seleccionado.ninoNombres} #{reporteBean.seleccionado.ninoApellidos}" />
+
+            <h:outputLabel value="Documento:" />
+            <h:outputText value="#{reporteBean.seleccionado.ninoDocumento}" />
+
+            <h:outputLabel value="Fecha Nacimiento:" />
+            <h:outputText value="#{reporteBean.seleccionado.fechaNacimiento}" />
+
+            <h:outputLabel value="Género:" />
+            <h:outputText value="#{reporteBean.seleccionado.genero}" />
+
+            <h:outputLabel value="Nacionalidad:" />
+            <h:outputText value="#{reporteBean.seleccionado.nacionalidad}" />
+
+            <h:outputLabel value="Fecha Ingreso:" />
+            <h:outputText value="#{reporteBean.seleccionado.fechaIngreso}" />
+
+            <h:outputLabel value="Foto:" />
+            <h:graphicImage value="/icbf_uploads/#{reporteBean.seleccionado.foto}" width="120" height="120" />
+
+            <h:outputLabel value="Carnet Vacunación:" />
+            <h:graphicImage value="/icbf_uploads/#{reporteBean.seleccionado.carnetVacunacion}" width="120" height="120" />
+
+            <h:outputLabel value="Certificado EPS:" />
+            <h:graphicImage value="/icbf_uploads/#{reporteBean.seleccionado.certificadoEps}" width="120" height="120" />
+
+            <!-- Datos del padre -->
+            <h:outputLabel value="Padre:" />
+            <h:outputText value="#{reporteBean.seleccionado.padreNombres} #{reporteBean.seleccionado.padreApellidos}" />
+
+            <h:outputLabel value="Documento Padre:" />
+            <h:outputText value="#{reporteBean.seleccionado.padreDocumento}" />
+
+            <h:outputLabel value="Correo:" />
+            <h:outputText value="#{reporteBean.seleccionado.padreCorreo}" />
+
+            <h:outputLabel value="Teléfono:" />
+            <h:outputText value="#{reporteBean.seleccionado.padreTelefono}" />
+
+            <h:outputLabel value="Dirección:" />
+            <h:outputText value="#{reporteBean.seleccionado.padreDireccion}" />
+
+            <h:outputLabel value="Ocupación:" />
+            <h:outputText value="#{reporteBean.seleccionado.ocupacion}" />
+
+            <h:outputLabel value="Estrato:" />
+            <h:outputText value="#{reporteBean.seleccionado.estrato}" />
+
+            <h:outputLabel value="Teléfono Emergencia:" />
+            <h:outputText value="#{reporteBean.seleccionado.telEmerg}" />
+
+            <h:outputLabel value="Nombre Contacto Emergencia:" />
+            <h:outputText value="#{reporteBean.seleccionado.nomEmerg}" />
+
+            <h:outputLabel value="Situación Económica:" />
+            <h:outputText value="#{reporteBean.seleccionado.situacionEcon}" />
+
+            <!-- Datos del hogar -->
+            <h:outputLabel value="Hogar Comunitario:" />
+            <h:outputText value="#{reporteBean.seleccionado.nombreHogar}" />
+
+            <h:outputLabel value="Dirección Hogar:" />
+            <h:outputText value="#{reporteBean.seleccionado.hogarDireccion}" />
+
+            <h:outputLabel value="Localidad:" />
+            <h:outputText value="#{reporteBean.seleccionado.localidad}" />
+
+        </h:panelGrid>
+
+        <br/>
+
+        <!-- Botones -->
+        <p:commandButton value="Descargar PDF"
+                         ajax="false"
+                         onclick="window.open('#{request.contextPath}/ReporteNinoPdfServlet?id=#{reporteBean.seleccionado.idNino}', '_blank'); return false;"
+                         icon="pi pi-file-pdf"
+                         styleClass="ui-button-danger"/>
+
+        <p:commandButton value="Volver"
+                         action="ReporteListado?faces-redirect=true"
+                         ajax="false"
+                         icon="pi pi-arrow-left"/>
+    </h:form>
+</h:body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Lista de Madres Comunitarias</title>
+</h:head>
+<h:body>
+    <h1>Lista de Madres Comunitarias</h1>
+
+    <h:form>
+        <h:dataTable value="#{madreBean.madres}" var="m" border="1">
+            <h:column>
+                <f:facet name="header">Documento</f:facet>
+                #{m.documento}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Nombre</f:facet>
+                #{m.nombres} #{m.apellidos}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Correo</f:facet>
+                #{m.correo}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Teléfono</f:facet>
+                #{m.telefono}
+            </h:column>
+            <h:column>
+                <h:commandLink value="Editar" action="#{madreBean.editarMadre(m)}"/>
+                |
+                <h:commandLink value="Eliminar" action="#{madreBean.eliminarMadre(m.idUsuario)}"
+                               onclick="return confirm('¿Eliminar esta madre?');"/>
+            </h:column>
+        </h:dataTable>
+
+        <br/>
+        <h:link value="Registrar Nueva Madre" outcome="crearMadre"/>
+        <br/><br/>
+        <h:link value="Volver al Dashboard" outcome="adminDashboard"/>
+    </h:form>
+</h:body>
+</html>

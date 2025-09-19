@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Editar Hogar Comunitario</title>
+</h:head>
+<h:body>
+    <h1>Editar Hogar Comunitario</h1>
+
+    <h:form>
+        <h:inputHidden value="#{hogarBean.hogar.idHogar}" />
+
+        <h:outputLabel value="Nombre:" for="nombre"/>
+        <h:inputText id="nombre" value="#{hogarBean.hogar.nombreHogar}" required="true"/>
+        <br/><br/>
+
+        <h:outputLabel value="Dirección:" for="direccion"/>
+        <h:inputText id="direccion" value="#{hogarBean.hogar.direccion}" required="true"/>
+        <br/><br/>
+
+        <h:outputLabel value="Localidad:" for="localidad"/>
+        <h:inputText id="localidad" value="#{hogarBean.hogar.localidad}" />
+        <br/><br/>
+
+        <h:outputLabel value="Capacidad:" for="capacidad"/>
+        <h:inputText id="capacidad" value="#{hogarBean.hogar.capacidadMaxima}" required="true"/>
+        <br/><br/>
+
+        <h:outputLabel value="Estado:" for="estado"/>
+        <h:selectOneMenu id="estado" value="#{hogarBean.hogar.estado}">
+            <f:selectItem itemValue="activo" itemLabel="Activo"/>
+            <f:selectItem itemValue="inactivo" itemLabel="Inactivo"/>
+            <f:selectItem itemValue="en_mantenimiento" itemLabel="En mantenimiento"/>
+        </h:selectOneMenu>
+        <br/><br/>
+
+        <h:outputLabel value="Madre Comunitaria:" for="madre"/>
+        <h:selectOneMenu id="madre" value="#{hogarBean.hogar.madreId}">
+            <f:selectItems value="#{hogarBean.madresComunitarias}" var="m"
+                           itemValue="#{m.idUsuario}" itemLabel="#{m.nombres} #{m.apellidos}"/>
+        </h:selectOneMenu>
+        <br/><br/>
+
+        <h:commandButton value="Actualizar" action="#{hogarBean.actualizarHogar}"/>
+        <br/><br/>
+        <h:link value="Volver a la Lista" outcome="listarHogares"/>
+    </h:form>
+</h:body>
+</html>
