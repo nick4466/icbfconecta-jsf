@@ -9,11 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Lobster&amp;family=Playwrite+HR+Lijeva:wght@100..400&amp;family=Sour+Gummy:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 
-
-    
 </h:head>
 
-<h:body>
+<h:body style="background-image: url('#{request.contextPath}/resources/img/fondo3.png'); 
+               background-size: cover; 
+               background-position: center; 
+               background-repeat: no-repeat; 
+               background-attachment: fixed; 
+               margin: 0; 
+               height: 100vh; 
+               font-family: 'Sour Gummy', sans-serif;">
     <header>
      <img src="#{resource['img/logoSinFondo.png']}" alt="Logo ICBF" />
 
@@ -38,9 +43,9 @@
                     required="true" 
                     styleClass="controls" />
 
-        <p:commandLink value="¿Todavía no tienes cuenta?" action="registroSesion.xhtml" styleClass="dc" />
+        <p:commandLink value="¿Todavía no tienes cuenta?" action="registroSesion.xhtml"  />
 
-        <p:commandButton value="Iniciar Sesión" action="#{loginBean.login}" styleClass="botones" />
+        <p:commandButton  value="Iniciar Sesión" action="#{loginBean.login}" styleClass="botones"/>
     </h:form>
 </h:body>
     </html>

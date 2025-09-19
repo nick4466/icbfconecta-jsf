@@ -1,13 +1,4 @@
-body {
-    background-image: url(../img/fondo2.jpg);
-    margin: 0;
-    height: 100vh;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    font-family: 'Sour Gummy', sans-serif;
-}
+
 
 header {
     display: flex;
@@ -102,3 +93,4 @@ a {
 .botones:hover {
     background-color: hsl(0, 100%, 64%);
 }
+
