@@ -298,5 +298,29 @@ private String sha256(String input) {
     return null;
 }
 
+public List<String> obtenerCorreosPadresPorHogar(int hogarId) {
+    List<String> correos = new ArrayList<>();
+    String sql = "SELECT u.correo " +
+                 "FROM usuarios u " +
+                 "JOIN padres p ON p.usuario_id = u.id_usuario " +
+                 "JOIN hogares h ON h.id_hogar = p.hogar_id " +
+                 "WHERE u.rol_id = ? AND h.id_hogar = ?";
+
+    try (Connection con = ConDB.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, obtenerRolId("padre")); // rol 3
+        ps.setInt(2, hogarId);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                correos.add(rs.getString("correo"));
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return correos;
+}
 
 }

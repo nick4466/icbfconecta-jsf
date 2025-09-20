@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Gestión de Correos Masivos</title>
+</h:head>
+<h:body>
+
+<h:form id="correoForm">
+
+    <h2>Enviar correos a los padres de tu hogar</h2>
+
+    <!-- Mensajes de información y error -->
+    <p:messages id="msgs" showDetail="true" closable="true" />
+
+
+    <!-- Selección múltiple de padres -->
+    <h:panelGrid columns="2" columnClasses="label,value" style="margin-bottom:20px">
+
+        <h:outputLabel value="Selecciona padres:" for="padresSelect" />
+        <p:selectManyMenu id="padresSelect" value="#{correoBean.correosDestino}" style="width:300px">
+            <f:selectItems value="#{correoBean.padres}" var="padre"
+                           itemLabel="#{padre.nombres} #{padre.apellidos}" 
+                           itemValue="#{padre.correo}" />
+        </p:selectManyMenu>
+
+        <h:outputLabel value="Asunto:" for="asunto" />
+        <p:inputText id="asunto" value="#{correoBean.asunto}" style="width:300px" />
+
+        <h:outputLabel value="Mensaje:" for="mensaje" style="vertical-align:top" />
+        <p:inputTextarea id="mensaje" value="#{correoBean.mensaje}" rows="6" cols="50" autoResize="true" />
+
+    </h:panelGrid>
+
+    <!-- Botón para enviar correos -->
+  <p:commandButton value="Enviar correos" action="#{correoBean.enviarCorreo}" update="msgs" icon="pi pi-envelope" />
+
+
+</h:form>
+
+</h:body>
+</html>
