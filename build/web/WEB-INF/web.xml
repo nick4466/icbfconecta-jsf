@@ -45,32 +45,43 @@
         <param-name>primefaces.THEME</param-name>
         <param-value>bootstrap</param-value>
     </context-param>
-<mime-mapping>
-    <extension>eot</extension>
-    <mime-type>application/vnd.ms-fontobject</mime-type>
-</mime-mapping>
-<mime-mapping>
-    <extension>ttf</extension>
-    <mime-type>font/ttf</mime-type>
-</mime-mapping>
-<mime-mapping>
-    <extension>woff</extension>
-    <mime-type>font/woff</mime-type>
-</mime-mapping>
-<mime-mapping>
-    <extension>woff2</extension>
-    <mime-type>font/woff2</mime-type>
-</mime-mapping>
 
-<servlet>
-    <servlet-name>ReporteNinoPdfServlet</servlet-name>
-    <servlet-class>control.ReporteNinoPdfServlet</servlet-class>
-</servlet>
+    <!-- =========================
+         Mapas de MIME para fuentes
+    ========================== -->
+    <mime-mapping>
+        <extension>eot</extension>
+        <mime-type>application/vnd.ms-fontobject</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ttf</extension>
+        <mime-type>font/ttf</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>woff</extension>
+        <mime-type>font/woff</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>woff2</extension>
+        <mime-type>font/woff2</mime-type>
+    </mime-mapping>
 
-<servlet-mapping>
-    <servlet-name>ReporteNinoPdfServlet</servlet-name>
-    <url-pattern>/ReporteNinoPdfServlet</url-pattern>
-</servlet-mapping>
+    <!-- =========================
+         Servlet para reporte PDF
+    ========================== -->
+    <servlet>
+        <servlet-name>ReporteNinoPdfServlet</servlet-name>
+        <servlet-class>control.ReporteNinoPdfServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>ReporteNinoPdfServlet</servlet-name>
+        <url-pattern>/ReporteNinoPdfServlet</url-pattern>
+    </servlet-mapping>
 
+    <!-- ⚠️ IMPORTANTE:
+         Para exponer C:/icbf_uploads/ en GlassFish
+         debes usar glassfish-web.xml, no aquí en web.xml.
+         Te lo paso en un archivo aparte.
+    -->
 </web-app>

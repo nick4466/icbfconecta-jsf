@@ -10,12 +10,11 @@
 </h:head>
 <h:body>
 
-    <!-- ID explícito al form -->
     <h:form id="formNinos">
         <h2>Niños Matriculados en Mi Hogar</h2>
 
         <!-- Mensajes globales -->
-        <p:messages id="mensajes" showDetail="true" showSummary="true" />
+        <p:messages id="mensajes" showDetail="true" showSummary="true" closable="true" />
 
         <!-- Tabla con PrimeFaces -->
         <p:dataTable id="tablaNinos"
@@ -25,7 +24,7 @@
                      scrollable="true" scrollHeight="400">
 
             <!-- Columnas -->
-            <p:column headerText="ID">
+            <p:column headerText="ID" style="width:60px;">
                 <h:outputText value="#{n.idNino}" />
             </p:column>
 
@@ -42,7 +41,9 @@
             </p:column>
 
             <p:column headerText="Fecha Nacimiento">
-                <h:outputText value="#{n.fechaNacimiento}" />
+                <h:outputText value="#{n.fechaNacimiento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
             </p:column>
 
             <p:column headerText="Género">
@@ -53,30 +54,24 @@
                 <h:outputText value="#{n.nacionalidad}" />
             </p:column>
 
-            <!-- Archivos subidos -->
+            <!-- Mostrar foto directamente -->
             <p:column headerText="Foto">
-                <h:outputLink value="#{n.foto}" target="_blank">Ver Foto</h:outputLink>
-            </p:column>
-
-            <p:column headerText="Carnet Vacunación">
-                <h:outputLink value="#{n.carnetVacunacion}" target="_blank">Ver Carnet</h:outputLink>
-            </p:column>
-
-            <p:column headerText="Certificado EPS">
-                <h:outputLink value="#{n.certificadoEps}" target="_blank">Ver Certificado</h:outputLink>
+                <h:graphicImage value="http://localhost:8080/icbfconecta-jsf/uploads/#{n.foto}"
+                                width="60" height="60" alt="Foto Niño"/>
             </p:column>
 
             <!-- Acciones -->
-            <p:column headerText="Acciones">
+            <p:column headerText="Acciones" style="width:120px; text-align:center;">
                 <!-- Editar -->
-                <p:commandButton value="Editar"
-                                 action="editarNino?faces-redirect=true"
-                                 update="formNinos:mensajes">
-                    <f:setPropertyActionListener value="#{n}" target="#{ninoBean.nino}" />
+                <p:commandButton icon="pi pi-pencil" title="Editar"
+                                 action="editarNino.xhtml"
+                                 ajax="false">
+                    <f:param name="idNino" value="#{n.idNino}" />
                 </p:commandButton>
 
                 <!-- Eliminar -->
-                <p:commandButton value="Eliminar"
+                <p:commandButton icon="pi pi-trash" title="Eliminar"
+                                 styleClass="ui-button-danger"
                                  actionListener="#{ninoBean.eliminar(n.idNino)}"
                                  update="formNinos:mensajes formNinos:tablaNinos"
                                  process="@this"
@@ -90,10 +85,12 @@
         <!-- Botones de navegación -->
         <p:commandButton value="Registrar Nuevo Niño"
                          action="crearNino?faces-redirect=true"
+                         icon="pi pi-plus"
                          ajax="false" />
 
         <p:commandButton value="Volver al Dashboard"
                          action="madreDashboard?faces-redirect=true"
+                         icon="pi pi-home"
                          ajax="false" />
 
         <p:commandButton value="Ver Reporte de Niños"

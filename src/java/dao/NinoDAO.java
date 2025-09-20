@@ -13,9 +13,7 @@ public class NinoDAO {
 
     private static final Logger LOGGER = Logger.getLogger(NinoDAO.class.getName());
 
-    // =========================
     // Insertar niño y devolver id
-    // =========================
     public int insert(Nino n) throws SQLException {
         String sql = "INSERT INTO ninos (nombres, apellidos, fecha_nacimiento, documento, genero, nacionalidad, fecha_ingreso, hogar_id, padre_id) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -61,22 +59,18 @@ public class NinoDAO {
         throw new SQLException("No se pudo insertar niño");
     }
 
-    // =========================
-    // Actualizar foto del niño
-    // =========================
+    // Actualizar foto
     public void updateFoto(int idNino, String rutaFoto) throws SQLException {
         String sql = "UPDATE ninos SET foto = ? WHERE id_nino = ?";
         try (Connection con = ConDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, rutaFoto);
+            ps.setString(1, rutaFoto); // ruta relativa
             ps.setInt(2, idNino);
             ps.executeUpdate();
         }
     }
 
-    // =========================
     // Listar niños por hogar
-    // =========================
     public List<Nino> listarNinosPorHogar(int idHogar) {
         List<Nino> lista = new ArrayList<>();
         String sql = "SELECT * FROM ninos WHERE hogar_id = ?";
@@ -85,22 +79,18 @@ public class NinoDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, idHogar);
-
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     lista.add(mapearNino(rs));
                 }
             }
-
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error al listar niños por hogar", e);
         }
         return lista;
     }
 
-    // =========================
     // Buscar niño por ID
-    // =========================
     public Nino buscarNinoPorId(int idNino) {
         String sql = "SELECT * FROM ninos WHERE id_nino = ?";
 
@@ -108,26 +98,20 @@ public class NinoDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, idNino);
-
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapearNino(rs);
                 }
             }
-
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error al buscar niño por ID", e);
         }
         return null;
     }
 
-    // =========================
     // Actualizar niño completo
-    // =========================
     public boolean actualizarNino(Nino n) {
-        String sql = "UPDATE ninos SET nombres=?, apellidos=?, fecha_nacimiento=?, documento=?, genero=?, " +
-                     "nacionalidad=?, hogar_id=?, padre_id=?, foto=?, carnet_vacunacion=?, certificado_eps=? " +
-                     "WHERE id_nino=?";
+        String sql = "UPDATE ninos SET nombres=?, apellidos=?, fecha_nacimiento=?, genero=?, nacionalidad=?, foto=? WHERE id_nino=?";
 
         try (Connection con = ConDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -141,20 +125,10 @@ public class NinoDAO {
                 ps.setNull(3, Types.DATE);
             }
 
-            if (n.getDocumento() != null) {
-                ps.setLong(4, n.getDocumento());
-            } else {
-                ps.setNull(4, Types.BIGINT);
-            }
-
-            ps.setString(5, n.getGenero());
-            ps.setString(6, n.getNacionalidad());
-            ps.setInt(7, n.getHogarId());
-            ps.setInt(8, n.getPadreId());
-            ps.setString(9, n.getFoto());
-            ps.setString(10, n.getCarnetVacunacion());
-            ps.setString(11, n.getCertificadoEps());
-            ps.setInt(12, n.getIdNino());
+            ps.setString(4, n.getGenero());
+            ps.setString(5, n.getNacionalidad());
+            ps.setString(6, n.getFoto()); // si no se sube nueva foto, queda la existente
+            ps.setInt(7, n.getIdNino());
 
             return ps.executeUpdate() > 0;
 
@@ -164,12 +138,9 @@ public class NinoDAO {
         }
     }
 
-    // =========================
     // Eliminar niño
-    // =========================
     public boolean eliminarNino(int idNino) {
         String sql = "DELETE FROM ninos WHERE id_nino = ?";
-
         try (Connection con = ConDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -182,9 +153,7 @@ public class NinoDAO {
         }
     }
 
-    // =========================
     // Mapear ResultSet -> Nino
-    // =========================
     private Nino mapearNino(ResultSet rs) throws SQLException {
         Nino n = new Nino();
         n.setIdNino(rs.getInt("id_nino"));

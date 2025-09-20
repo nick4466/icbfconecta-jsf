@@ -1,4 +1,3 @@
-
 package dao;
 
 import modelo.HogarComunitario;
@@ -12,9 +11,11 @@ import java.util.List;
 
 public class HogarComunitarioDAO {
 
+    // Crear hogar
     public boolean crearHogar(HogarComunitario hogar) {
-        String sql = "INSERT INTO hogares_comunitarios (nombre_hogar, direccion, localidad, capacidad_maxima, estado, madre_id) "
-                   + "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO hogares_comunitarios " +
+                     "(nombre_hogar, direccion, localidad, capacidad_maxima, estado, madre_id) " +
+                     "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = ConDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -32,39 +33,50 @@ public class HogarComunitarioDAO {
             return false;
         }
     }
-         // Listar todos los hogares
-   public List<HogarComunitario>listarHogares(){
-    List<HogarComunitario> lista = new ArrayList<>();
-    String sql = "SELECT * FROM hogares_comunitarios";
 
-    try (Connection con = ConDB.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
+    // Listar todos los hogares
+    public List<HogarComunitario> listarHogares() {
+        List<HogarComunitario> lista = new ArrayList<>();
+        String sql = "SELECT * FROM hogares_comunitarios";
 
-        while (rs.next()) {
-            HogarComunitario h = new HogarComunitario();
-            h.setIdHogar(rs.getInt("id_hogar"));
-            h.setNombreHogar(rs.getString("nombre_hogar"));
-            h.setDireccion(rs.getString("direccion"));
-            h.setLocalidad(rs.getString("localidad"));
-            h.setCapacidadMaxima(rs.getInt("capacidad_maxima"));
-            h.setEstado(rs.getString("estado"));
-            h.setMadreId(rs.getInt("madre_id"));
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-            lista.add(h);
+            while (rs.next()) {
+                lista.add(mapearHogar(rs));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        return lista;
     }
 
-    return lista;
-}
+    // 🔹 Listar hogares activos (para combo dinámico en matrícula)
+    public List<HogarComunitario> listarActivos() {
+        List<HogarComunitario> lista = new ArrayList<>();
+        String sql = "SELECT * FROM hogares_comunitarios WHERE estado = 'activo'";
 
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(mapearHogar(rs));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
 
     // Actualizar hogar
     public boolean actualizarHogar(HogarComunitario hogar) {
-        String sql = "UPDATE hogares_comunitarios SET nombre_hogar=?, direccion=?, localidad=?, capacidad_maxima=?, estado=?, madre_id=? WHERE id_hogar=?";
+        String sql = "UPDATE hogares_comunitarios " +
+                     "SET nombre_hogar=?, direccion=?, localidad=?, capacidad_maxima=?, estado=?, madre_id=? " +
+                     "WHERE id_hogar=?";
         try (Connection con = ConDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -98,7 +110,17 @@ public class HogarComunitarioDAO {
             return false;
         }
     }
+
+    // Método privado para mapear resultset
+    private HogarComunitario mapearHogar(ResultSet rs) throws Exception {
+        HogarComunitario h = new HogarComunitario();
+        h.setIdHogar(rs.getInt("id_hogar"));
+        h.setNombreHogar(rs.getString("nombre_hogar"));
+        h.setDireccion(rs.getString("direccion"));
+        h.setLocalidad(rs.getString("localidad"));
+        h.setCapacidadMaxima(rs.getInt("capacidad_maxima"));
+        h.setEstado(rs.getString("estado"));
+        h.setMadreId(rs.getInt("madre_id"));
+        return h;
     }
-
-    
-
+}
