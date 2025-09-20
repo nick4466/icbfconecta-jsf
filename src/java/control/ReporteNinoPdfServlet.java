@@ -4,8 +4,6 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 
 import dao.ReporteDAO;
-import modelo.ReporteNinoDTO;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -157,6 +155,37 @@ public class ReporteNinoPdfServlet extends HttpServlet {
             doc.add(tPadre);
             doc.add(espacio(12f));
 
+            // ===== Sección: Credenciales =====
+            doc.add(new Paragraph("Credenciales de Acceso", fSeccion));
+            doc.add(espacio(6f));
+
+            PdfPTable tCred = new PdfPTable(new float[]{30, 70});
+            tCred.setWidthPercentage(100);
+
+            tCred.addCell(cellLabel("Usuario (documento):", fLabel));
+            tCred.addCell(cellValor(nullSafe(dto.getPadreDocumento()), fValor));
+
+            tCred.addCell(cellLabel("ID interno de usuario:", fLabel));
+            String usuarioIdTexto = (dto.getPadreUsuarioId() > 0)
+                    ? String.valueOf(dto.getPadreUsuarioId())
+                    : "-";
+            tCred.addCell(cellValor(usuarioIdTexto, fValor));
+
+            tCred.addCell(cellLabel("Contraseña registrada:", fLabel));
+            tCred.addCell(cellValor(formatearPassword(dto.getPadrePasswordHash()), fValor));
+
+            doc.add(tCred);
+
+            if (!isBlank(dto.getPadrePasswordHash())) {
+                Paragraph nota = new Paragraph(
+                        "Nota: la contraseña se almacena cifrada en el sistema. " +
+                        "Comparta con el acudiente la clave original definida durante la matrícula.",
+                        FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, "Cp1252", true, 9));
+                nota.setSpacingBefore(4f);
+                nota.setSpacingAfter(10f);
+                doc.add(nota);
+            }
+
             // ===== Sección: Hogar =====
             doc.add(new Paragraph("Hogar Comunitario", fSeccion));
             doc.add(espacio(6f));
@@ -214,6 +243,26 @@ public class ReporteNinoPdfServlet extends HttpServlet {
         c.setBorder(Rectangle.NO_BORDER);
         c.setPaddingBottom(4f);
         return c;
+    }
+
+    private static String formatearPassword(String passwordHash) {
+        if (isBlank(passwordHash)) {
+            return "-";
+        }
+
+        String trimmed = passwordHash.trim();
+        if (trimmed.length() == 64 && trimmed.matches("(?i)[0-9a-f]{64}")) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < trimmed.length(); i++) {
+                if (i > 0 && i % 4 == 0) {
+                    sb.append(' ');
+                }
+                sb.append(trimmed.charAt(i));
+            }
+            return sb.toString();
+        }
+
+        return trimmed;
     }
 
     private static String nullSafe(String s) {

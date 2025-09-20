@@ -75,6 +75,12 @@
             <h:outputLabel value="Situación Económica:" />
             <h:outputText value="#{reporteBean.seleccionado.situacionEcon}" />
 
+            <h:outputLabel value="ID interno usuario:" />
+            <h:outputText value="#{reporteBean.seleccionado.padreUsuarioId eq 0 ? '-' : reporteBean.seleccionado.padreUsuarioId}" />
+
+            <h:outputLabel value="Contraseña registrada:" />
+            <h:outputText value="#{empty reporteBean.seleccionado.padrePasswordHash ? '-' : reporteBean.seleccionado.padrePasswordHash}" />
+
             <!-- Datos del hogar -->
             <h:outputLabel value="Hogar Comunitario:" />
             <h:outputText value="#{reporteBean.seleccionado.nombreHogar}" />
@@ -87,12 +93,16 @@
 
         </h:panelGrid>
 
+        <h:panelGroup layout="block" style="margin-top:10px;font-style:italic;font-size:0.9em;">
+            <h:outputText value="Nota: la contraseña se almacena cifrada. Entregue manualmente al acudiente la clave en texto plano definida durante la matrícula." />
+        </h:panelGroup>
+
         <br/>
 
         <!-- Botones -->
         <p:commandButton value="Descargar PDF"
-                         ajax="false"
-                         onclick="window.open('#{request.contextPath}/ReporteNinoPdfServlet?id=#{reporteBean.seleccionado.idNino}', '_blank'); return false;"
+                         type="button"
+                         onclick="window.open('#{facesContext.externalContext.requestContextPath}/ReporteNinoPdfServlet?id=#{reporteBean.seleccionado.idNino}', '_blank');"
                          icon="pi pi-file-pdf"
                          styleClass="ui-button-danger"/>
 
