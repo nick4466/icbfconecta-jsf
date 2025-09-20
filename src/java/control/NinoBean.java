@@ -218,24 +218,28 @@ public class NinoBean implements Serializable {
     return "listarNinos?faces-redirect=true";
 }
     public void cargarNinoPorId() {
-    try {
-        if (nino != null && nino.getIdNino() > 0) {
-            Nino cargado = ninoDAO.buscarNinoPorId(nino.getIdNino());
-            if (cargado != null) {
-                this.nino = cargado; // reemplazamos el niño con los datos de BD
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_WARN,
-                    "No se encontró el niño con ID: " + nino.getIdNino(), null));
+        try {
+            if (FacesContext.getCurrentInstance().isPostback()) {
+                return; // evitar sobreescribir los datos enviados por el usuario en POST
             }
+
+            if (nino != null && nino.getIdNino() > 0) {
+                Nino cargado = ninoDAO.buscarNinoPorId(nino.getIdNino());
+                if (cargado != null) {
+                    this.nino = cargado; // reemplazamos el niño con los datos de BD
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                        "No se encontró el niño con ID: " + nino.getIdNino(), null));
+                }
+            }
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Error al cargar el niño: " + e.getMessage(), null));
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-            "Error al cargar el niño: " + e.getMessage(), null));
-        e.printStackTrace();
     }
-}
 
 
   public String actualizarNino() {
