@@ -36,6 +36,13 @@
                                  ajax="false"/>
             </p:column>
 
+            <p:column headerText="Reporte PDF" styleClass="acciones-columna">
+                <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ReporteNinoPdfServlet?id=#{r.idNino}" target="_blank">
+                    <i class="pi pi-file-pdf" style="margin-right:4px"></i>
+                    <h:outputText value="Descargar" />
+                </h:outputLink>
+            </p:column>
+
         </p:dataTable>
 
     </h:form>

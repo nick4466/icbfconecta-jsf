@@ -31,6 +31,7 @@ public class ReporteNinoDTO {
     private String telEmerg;
     private String nomEmerg;
     private String situacionEcon;
+    private String padrePasswordHash;
 
     // Hogar
     private int idHogar;
@@ -110,6 +111,9 @@ public class ReporteNinoDTO {
 
     public String getSituacionEcon() { return situacionEcon; }
     public void setSituacionEcon(String situacionEcon) { this.situacionEcon = situacionEcon; }
+
+    public String getPadrePasswordHash() { return padrePasswordHash; }
+    public void setPadrePasswordHash(String padrePasswordHash) { this.padrePasswordHash = padrePasswordHash; }
 
     public int getIdHogar() { return idHogar; }
     public void setIdHogar(int idHogar) { this.idHogar = idHogar; }
