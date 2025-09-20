@@ -5,24 +5,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ICBF Conecta - Iniciar Sesión</title>
-  <link href="#{resource['css/estilos.css']}" rel="stylesheet" type="text/css" />
+
+    <!-- Estilos -->
+    <link href="#{resource['css/estilos.css']}" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Lobster&amp;family=Playwrite+HR+Lijeva:wght@100..400&amp;family=Sour+Gummy:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-
 </h:head>
 
-<h:body style="background-image: url('#{request.contextPath}/resources/img/fondo3.png'); 
-               background-size: cover; 
-               background-position: center; 
-               background-repeat: no-repeat; 
-               background-attachment: fixed; 
-               margin: 0; 
-               height: 100vh; 
-               font-family: 'Sour Gummy', sans-serif;">
+<h:body>
     <header>
-     <img src="#{resource['img/logoSinFondo.png']}" alt="Logo ICBF" />
-
-            
+        <img src="#{resource['img/logoSinFondo.png']}" alt="Logo ICBF" />
         <nav>
             <ul>
                 <li><a href="InterfazInicio.xhtml"><i class="fas fa-home"></i> <b>Página Principal</b></a></li>
@@ -30,22 +22,33 @@
         </nav>
     </header>
 
-    <h:form styleClass="inicio">
-        <h4 style="text-align: center;">Iniciar Sesión</h4>
+    <main>
+        <h:form styleClass="login-container">
+            <h2>Iniciar Sesión</h2>
 
-        <p:inputText id="documento" value="#{loginBean.documento}" 
-                     placeholder="Ingrese su Número de Documento" 
-                     required="true" 
-                     styleClass="controls" />
+            <div class="form-group">
+                <p:inputText id="documento" value="#{loginBean.documento}"
+                             placeholder="Ingrese su Número de Documento"
+                             required="true"
+                             styleClass="controls" />
+            </div>
 
-        <p:password id="password" value="#{loginBean.password}" 
-                    placeholder="Ingrese su Contraseña" 
-                    required="true" 
-                    styleClass="controls" />
+            <div class="form-group">
+                <p:password id="password" value="#{loginBean.password}"
+                            placeholder="Ingrese su Contraseña"
+                            required="true"
+                            styleClass="controls" />
+            </div>
 
-        <p:commandLink value="¿Todavía no tienes cuenta?" action="registroSesion.xhtml"  />
+            <p:commandButton value="Iniciar Sesión"
+                             action="#{loginBean.login}"
+                             styleClass="btn-submit" />
 
-        <p:commandButton  value="Iniciar Sesión" action="#{loginBean.login}" styleClass="botones"/>
-    </h:form>
+            <div class="form-footer">
+                <p><a href="recuperar-contrasena.xhtml">¿Olvidaste tu contraseña?</a></p>
+                <p><a href="registroSesion.xhtml">¿No tienes una cuenta? Regístrate</a></p>
+            </div>
+        </h:form>
+    </main>
 </h:body>
-    </html>
+</html>
