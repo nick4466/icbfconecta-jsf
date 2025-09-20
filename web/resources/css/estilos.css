@@ -1,104 +1,290 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
-    background-image: url(../img/fondo2.jpg);
-    margin: 0;
-    height: 100vh;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    font-family: 'Sour Gummy', sans-serif;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f6fb;
+  background-image: url("#{resource['img/fondo2.png']}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: rgba(249, 248, 255, 0.363);
-    padding: 10px 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  padding: 15px 30px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 header img {
-    height: 95px;
+  height: 70px;
 }
 
 header nav ul {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
 }
 
 header nav ul li {
-    margin: 0 15px;
+  margin-left: 20px;
 }
 
 header nav ul li a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 20px;
-    background-color: #e92fe9;
-    border: 0;
-    padding: 10px;
-    color: white;
-    text-decoration: none;
-    display: inline-block;
-    margin-right: 10px;
+  text-decoration: none;
+  color: #9B59B6;
+  font-weight: bold;
+  font-size: 16px;
 }
 
-header nav ul li a:hover {
-    background-color: hsl(0, 100%, 64%);
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 100px);
+  padding: 20px;
 }
 
-.inicio {
-    width: 400px;
-    background: #637df0bd;
-    padding: 30px 80px 30px 30px;
-    margin: auto;
-    margin-top: 100px;
-    border-radius: 4px;
-    font-family: 'Sour Gummy', sans-serif;
-    color: white;
-    box-shadow: 0 4px 8px rgba(225, 0, 255, 0.658);
+.login-container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
 }
 
-h4 {
-    font-size: 30px;
-    margin-bottom: 15px;
-    font-family: 'Sour Gummy', sans-serif;
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #9B59B6;
 }
 
-.controls, .dc {
-    width: 100%;
-    background: hsl(210, 33%, 99%);
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 16px;
-    border: 1px solid hsl(0, 0%, 0%);
-    font-size: 18px;
+.form-group {
+  margin-bottom: 20px;
 }
 
-.dc {
-    color: rgb(133, 127, 127);
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-size: 14px;
 }
 
-a {
-    color: white;
-    text-decoration: underline;
+input[type="text"],
+input[type="password"],
+.ui-inputfield {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.botones {
-    width: 100%;
-    background: #e92fe9;
-    border: none;
-    padding: 12px;
-    color: white;
-    margin: 16px 0;
-    font-size: 16px;
-    cursor: pointer;
-    font-family: 'Sour Gummy', sans-serif;
+input[type="text"]:focus,
+input[type="password"]:focus,
+.ui-inputfield:focus {
+  border-color: #9B59B6;
+  outline: none;
 }
 
-.botones:hover {
-    background-color: hsl(0, 100%, 64%);
+.btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, #9B59B6, #8e44ad); /* degradado morado */
+  color: #fff !important;
+  border: none !important;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 8px; /* bordes más redondeados */
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3); /* sombra sutil */
+}
+
+.btn-submit:hover {
+  background: linear-gradient(135deg, #8e44ad, #732d91); /* degradado más oscuro */
+  transform: translateY(-2px); /* efecto "levantar" */
+  box-shadow: 0 6px 14px rgba(142, 68, 173, 0.5);
+}
+
+.btn-submit:active {
+  transform: scale(0.97); /* efecto al hacer clic */
+  box-shadow: 0 3px 8px rgba(142, 68, 173, 0.4);
+}
+
+
+.form-footer {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.form-footer a {
+  color: #9B59B6;
+  text-decoration: none;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
+/* =======================
+   ESTILOS DEL DASHBOARD
+   ======================= */
+
+body.dashboard {
+  background-image: url("#{resource['img/fondito.jpg']}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Header y navegación */
+header {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 15px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #e5d5f5;
+  backdrop-filter: blur(4px);
+}
+
+header img {
+  height: 60px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #9B59B6;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+  background-color: #f3c1e5;
+}
+
+/* Título principal */
+.main-title {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #7a3eb1;
+  background-color: rgba(255, 255, 255, 0.7);
+  margin: 20px auto;
+  width: 80%;
+  border-radius: 10px;
+}
+
+/* Tarjetas del panel */
+.contenedor {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  padding: 20px;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.card h2 {
+  color: #9B59B6;
+  margin-bottom: 12px;
+}
+
+.card ul {
+  text-align: left;
+  padding-left: 20px;
+  font-size: 14px;
+  color: #444;
+}
+
+.card img {
+  margin-top: 10px;
+  max-width: 100%;
+}
+
+/* Botones específicos del dashboard */
+/* --- Botón Asistencia --- */
+.btn-asistencia {
+  background: linear-gradient(135deg, #9B59B6, #8e44ad);
+  color: #fff !important;
+  border: none !important;
+  padding: 20px 25px; /* igual que tu ejemplo */
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(155, 89, 182, 0.3);
+}
+
+.btn-asistencia:hover {
+  background: linear-gradient(135deg, #8e44ad, #732d91);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(142, 68, 173, 0.5);
+}
+
+.btn-asistencia:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 6px rgba(142, 68, 173, 0.4);
+}
+
+/* --- Botón Enviar --- */
+.btn-enviar {
+  background: linear-gradient(135deg, #f3c1e5, #e8a9d6);
+  color: #5e3370 !important;
+  border: none !important;
+  padding: 20px 25px; /* igual que tu ejemplo */
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(243, 193, 229, 0.3);
+}
+
+.btn-enviar:hover {
+  background: linear-gradient(135deg, #e8a9d6, #d988bc);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(233, 169, 214, 0.5);
+}
+
+.btn-enviar:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 6px rgba(233, 169, 214, 0.4);
 }

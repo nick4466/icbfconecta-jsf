@@ -1,0 +1,20 @@
+# Archivos compilados
+*.class
+
+# Archivos empaquetados
+*.war
+*.ear
+
+# Carpetas generadas por NetBeans
+/build/
+/dist/
+/nbproject/private/
+
+# Configuración del IDE
+*.iml
+.idea/
+.vscode/
+/nbproject/private/
+
+# No ignorar los JAR porque los consideras importantes
+# (por ejemplo los de WEB-INF/lib los quieres versionar)
