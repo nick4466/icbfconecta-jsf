@@ -121,7 +121,7 @@ public class NinoBean implements Serializable {
             // =============================
             // 5. Crear NIÑO
             // =============================
-            nino.setPadreId(usuarioId); // FK al usuario del padre
+            nino.setPadreId(idPadre); // FK al registro de la tabla padres
             int idNino = ninoDAO.insert(nino);
 
             String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + idNino);
@@ -203,6 +203,10 @@ public class NinoBean implements Serializable {
         }
     }
 
+    public String irEditar(int idNino) {
+        return "editarNino?faces-redirect=true&includeViewParams=true&idNino=" + idNino;
+    }
+
     private void limpiarFormulario() {
         nino = new Nino();
         padre = new Padre();
@@ -214,56 +218,137 @@ public class NinoBean implements Serializable {
     }
     
     public String cancelar() {
-    // Redirige a la página de listado de niños
-    return "listarNinos?faces-redirect=true";
-}
+        // Redirige a la página de listado de niños
+        return "listarNinos?faces-redirect=true";
+    }
     public void cargarNinoPorId() {
-    try {
-        if (nino != null && nino.getIdNino() > 0) {
-            Nino cargado = ninoDAO.buscarNinoPorId(nino.getIdNino());
-            if (cargado != null) {
-                this.nino = cargado; // reemplazamos el niño con los datos de BD
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_WARN,
-                    "No se encontró el niño con ID: " + nino.getIdNino(), null));
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            boolean esPostback = context.isPostback();
+            boolean traeParametroId = context.getExternalContext()
+                    .getRequestParameterMap()
+                    .containsKey("idNino");
+
+            if (esPostback && !traeParametroId) {
+                return; // evitar sobreescribir cuando se trata de un POST del mismo formulario
             }
+
+            if (nino != null && nino.getIdNino() > 0) {
+                Nino cargado = ninoDAO.buscarNinoPorId(nino.getIdNino());
+                if (cargado != null) {
+                    this.nino = cargado; // reemplazamos el niño con los datos de BD
+                } else {
+                    context.addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                        "No se encontró el niño con ID: " + nino.getIdNino(), null));
+                }
+            }
+        } catch (Exception e) {
+            context.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Error al cargar el niño: " + e.getMessage(), null));
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-            "Error al cargar el niño: " + e.getMessage(), null));
-        e.printStackTrace();
     }
-}
 
 
-  public String actualizarNino() {
-    try {
-        if (fotoNinoPart != null && fotoNinoPart.getSize() > 0) {
-            String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + nino.getIdNino());
-            nino.setFoto(rutaFoto);
+    public String actualizarNino() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        try {
+
+            if (nino.getIdNino() <= 0) {
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Identificador del niño inválido", null));
+                return null;
+            }
+
+            // Traer versión actual para conservar campos que no se editan en el formulario
+            Nino original = ninoDAO.buscarNinoPorId(nino.getIdNino());
+            if (original == null) {
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "No se encontró la información original del niño", null));
+                return null;
+            }
+
+            String nombres = (nino.getNombres() != null) ? nino.getNombres().trim() : "";
+            if (nombres.isEmpty()) {
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Los nombres son obligatorios", null));
+                return null;
+            }
+            nino.setNombres(nombres);
+
+            String apellidos = (nino.getApellidos() != null) ? nino.getApellidos().trim() : "";
+            if (apellidos.isEmpty()) {
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Los apellidos son obligatorios", null));
+                return null;
+            }
+            nino.setApellidos(apellidos);
+
+            if (nino.getHogarId() == 0) {
+                nino.setHogarId(original.getHogarId());
+            }
+            if (nino.getPadreId() == 0) {
+                nino.setPadreId(original.getPadreId());
+            }
+            if (nino.getFechaIngreso() == null) {
+                nino.setFechaIngreso(original.getFechaIngreso());
+            }
+            if (nino.getFoto() == null) {
+                nino.setFoto(original.getFoto());
+            }
+            if (nino.getCarnetVacunacion() == null) {
+                nino.setCarnetVacunacion(original.getCarnetVacunacion());
+            }
+            if (nino.getCertificadoEps() == null) {
+                nino.setCertificadoEps(original.getCertificadoEps());
+            }
+            if (nino.getDocumento() == null) {
+                nino.setDocumento(original.getDocumento());
+            }
+
+            if (nino.getGenero() == null || nino.getGenero().trim().isEmpty()) {
+                nino.setGenero(original.getGenero());
+            } else {
+                nino.setGenero(nino.getGenero().trim());
+            }
+
+            if (nino.getNacionalidad() != null) {
+                String nacionalidad = nino.getNacionalidad().trim();
+                nino.setNacionalidad(nacionalidad.isEmpty() ? null : nacionalidad);
+            }
+
+            if (fotoNinoPart != null && fotoNinoPart.getSize() > 0) {
+                String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + nino.getIdNino());
+                nino.setFoto(rutaFoto);
+            }
+
+            boolean actualizado = ninoDAO.actualizarNino(nino);
+            if (actualizado) {
+                facesContext.getExternalContext().getFlash().setKeepMessages(true);
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Niño actualizado correctamente", null));
+                fotoNinoPart = null;
+                return "listarNinos?faces-redirect=true"; // ✅ vuelve al listado
+            } else {
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    "No se pudo actualizar el niño", null));
+                return null; // ❌ se queda en la misma página
+            }
+        } catch (Exception e) {
+            facesContext.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Error al actualizar niño: " + e.getMessage(), null));
+            return null;
         }
-
-        boolean actualizado = ninoDAO.actualizarNino(nino);
-        if (actualizado) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Niño actualizado correctamente", null));
-            return "listarNinos?faces-redirect=true"; // ✅ vuelve al listado
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_WARN,
-                "No se pudo actualizar el niño", null));
-            return null; // ❌ se queda en la misma página
-        }
-    } catch (Exception e) {
-        FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-            "Error al actualizar niño: " + e.getMessage(), null));
-        return null;
     }
-}
 
 
 

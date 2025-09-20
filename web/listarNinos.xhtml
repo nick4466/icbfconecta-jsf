@@ -64,10 +64,8 @@
             <p:column headerText="Acciones" style="width:120px; text-align:center;">
                 <!-- Editar -->
                 <p:commandButton icon="pi pi-pencil" title="Editar"
-                                 action="editarNino.xhtml"
-                                 ajax="false">
-                    <f:param name="idNino" value="#{n.idNino}" />
-                </p:commandButton>
+                                 action="#{ninoBean.irEditar(n.idNino)}"
+                                 ajax="false" />
 
                 <!-- Eliminar -->
                 <p:commandButton icon="pi pi-trash" title="Eliminar"

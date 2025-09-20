@@ -111,7 +111,9 @@ public class NinoDAO {
 
     // Actualizar niño completo
     public boolean actualizarNino(Nino n) {
-        String sql = "UPDATE ninos SET nombres=?, apellidos=?, fecha_nacimiento=?, genero=?, nacionalidad=?, foto=? WHERE id_nino=?";
+        String sql = "UPDATE ninos SET nombres=?, apellidos=?, fecha_nacimiento=?, documento=?, genero=?, " +
+                     "nacionalidad=?, fecha_ingreso=?, hogar_id=?, padre_id=?, foto=?, carnet_vacunacion=?, certificado_eps=? " +
+                     "WHERE id_nino=?";
 
         try (Connection con = ConDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -125,10 +127,43 @@ public class NinoDAO {
                 ps.setNull(3, Types.DATE);
             }
 
-            ps.setString(4, n.getGenero());
-            ps.setString(5, n.getNacionalidad());
-            ps.setString(6, n.getFoto()); // si no se sube nueva foto, queda la existente
-            ps.setInt(7, n.getIdNino());
+            if (n.getDocumento() != null) {
+                ps.setLong(4, n.getDocumento());
+            } else {
+                ps.setNull(4, Types.BIGINT);
+            }
+
+            ps.setString(5, n.getGenero());
+            ps.setString(6, n.getNacionalidad());
+
+            if (n.getFechaIngreso() != null) {
+                ps.setDate(7, new java.sql.Date(n.getFechaIngreso().getTime()));
+            } else {
+                ps.setNull(7, Types.DATE);
+            }
+
+            ps.setInt(8, n.getHogarId());
+            ps.setInt(9, n.getPadreId());
+
+            if (n.getFoto() != null) {
+                ps.setString(10, n.getFoto());
+            } else {
+                ps.setNull(10, Types.VARCHAR);
+            }
+
+            if (n.getCarnetVacunacion() != null) {
+                ps.setString(11, n.getCarnetVacunacion());
+            } else {
+                ps.setNull(11, Types.VARCHAR);
+            }
+
+            if (n.getCertificadoEps() != null) {
+                ps.setString(12, n.getCertificadoEps());
+            } else {
+                ps.setNull(12, Types.VARCHAR);
+            }
+
+            ps.setInt(13, n.getIdNino());
 
             return ps.executeUpdate() > 0;
 
