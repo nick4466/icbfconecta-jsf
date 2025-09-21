@@ -79,9 +79,5 @@
         <url-pattern>/ReporteNinoPdfServlet</url-pattern>
     </servlet-mapping>
 
-    <!-- ⚠️ IMPORTANTE:
-         Para exponer C:/icbf_uploads/ en GlassFish
-         debes usar glassfish-web.xml, no aquí en web.xml.
-         Te lo paso en un archivo aparte.
-    -->
+  
 </web-app>

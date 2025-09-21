@@ -14,7 +14,5 @@
 *.iml
 .idea/
 .vscode/
-/nbproject/private/
 
-# No ignorar los JAR porque los consideras importantes
-# (por ejemplo los de WEB-INF/lib los quieres versionar)
+# Mantener los JAR importantes (no ignorar WEB-INF/lib)
