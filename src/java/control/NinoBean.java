@@ -1,11 +1,13 @@
 package control;
 
+import dao.HogarComunitarioDAO;
 import dao.NinoDAO;
 import dao.PadreDAO;
 import dao.UsuarioDAO;
 import modelo.Nino;
 import modelo.Padre;
 import modelo.Usuario;
+import modelo.HogarComunitario;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -19,7 +21,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,23 +36,23 @@ public class NinoBean implements Serializable {
 
     private Nino nino;
     private Padre padre;
-    private Usuario usuarioPadre = new Usuario();
+    private Usuario usuarioPadre;
 
-    // Campos de contraseña
     private String password1;
     private String password2;
 
-    // Archivos
     private Part fotoNinoPart;
     private Part docPadrePart;
 
-    // DAOs
     private NinoDAO ninoDAO;
     private PadreDAO padreDAO;
     private UsuarioDAO usuarioDAO;
-    
-    // Ruta base de uploads
+    private HogarComunitarioDAO hogarDAO;
+
     private static final String BASE_DIR = "C:/icbf_uploads";
+
+    private List<Nino> listaNinos;
+    private List<HogarComunitario> listaHogares;
 
     @PostConstruct
     public void init() {
@@ -57,84 +62,86 @@ public class NinoBean implements Serializable {
         ninoDAO = new NinoDAO();
         padreDAO = new PadreDAO();
         usuarioDAO = new UsuarioDAO();
+        hogarDAO = new HogarComunitarioDAO();
+
+        // cargar hogares activos para combo dinámico
+        listaHogares = hogarDAO.listarActivos();
     }
 
-   public void guardarMatricula() {
-    FacesContext ctx = FacesContext.getCurrentInstance();
-    try {
-        // =============================
-        // 1. Validar archivos
-        // =============================
-        if (fotoNinoPart == null || fotoNinoPart.getSize() == 0) {
-            throw new RuntimeException("Debe adjuntar la foto del niño.");
+    public String guardarMatricula() {
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        try {
+            // =============================
+            // 1. Validar archivos obligatorios
+            // =============================
+            if (fotoNinoPart == null || fotoNinoPart.getSize() == 0) {
+                throw new RuntimeException("Debe adjuntar la foto del niño.");
+            }
+            if (docPadrePart == null || docPadrePart.getSize() == 0) {
+                throw new RuntimeException("Debe adjuntar el documento del padre.");
+            }
+
+            // =============================
+            // 2. Validar contraseñas
+            // =============================
+            if (password1 == null || password2 == null || !password1.equals(password2)) {
+                throw new RuntimeException("Contraseñas inválidas o no coinciden.");
+            }
+
+            // =============================
+            // 3. Crear o reutilizar USUARIO del padre
+            // =============================
+            Usuario usuarioExistente = usuarioDAO.findByDocumento(Long.parseLong(usuarioPadre.getDocumento()));
+            int usuarioId;
+            if (usuarioExistente != null) {
+                usuarioId = usuarioExistente.getIdUsuario();
+            } else {
+                int rolPadreId = usuarioDAO.obtenerRolId("padre");
+                usuarioPadre.setRolId(rolPadreId);
+                usuarioPadre.setPasswordHash(sha256(password1));
+                usuarioId = usuarioDAO.insertPadre(usuarioPadre);
+            }
+
+            // =============================
+            // 4. Crear o reutilizar PADRE
+            // =============================
+            Padre padreExistente = padreDAO.findByUsuarioId(usuarioId);
+            int idPadre;
+            if (padreExistente != null) {
+                idPadre = padreExistente.getIdPadre();
+                String rutaDoc = guardarArchivo(docPadrePart, "padres/" + usuarioId);
+                padreDAO.updateDocumento(idPadre, rutaDoc);
+            } else {
+                padre.setUsuarioId(usuarioId);
+                String rutaDoc = guardarArchivo(docPadrePart, "padres/" + usuarioId);
+                padre.setDocumentoIdentidadImg(rutaDoc);
+                idPadre = padreDAO.insert(padre);
+            }
+
+            // =============================
+            // 5. Crear NIÑO
+            // =============================
+            nino.setPadreId(usuarioId); // FK al usuario del padre
+            int idNino = ninoDAO.insert(nino);
+
+            String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + idNino);
+            ninoDAO.updateFoto(idNino, rutaFoto);
+
+            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Matrícula guardada correctamente", null));
+
+            limpiarFormulario();
+            cargarNinos();
+
+        } catch (Exception e) {
+            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Error al guardar: " + e.getMessage(), null));
+            e.printStackTrace();
         }
-        if (docPadrePart == null || docPadrePart.getSize() == 0) {
-            throw new RuntimeException("Debe adjuntar el documento del padre.");
-        }
+        return "listarNinos?faces-redirect=true";
 
-        // =============================
-        // 2. Validar contraseñas
-        // =============================
-        if (password1 == null || password1.isEmpty() || password2 == null || password2.isEmpty()) {
-            throw new RuntimeException("Debe ingresar y confirmar la contraseña del padre.");
-        }
-        if (!password1.equals(password2)) {
-            throw new RuntimeException("Las contraseñas no coinciden.");
-        }
-
-        // =============================
-        // 3. Crear o reutilizar USUARIO del padre
-        // =============================
-        Usuario usuarioExistente = usuarioDAO.findByDocumento(Long.parseLong(usuarioPadre.getDocumento()));
-
-        int usuarioId;
-        if (usuarioExistente != null) {
-            usuarioId = usuarioExistente.getIdUsuario();
-        } else {
-            int rolPadreId = usuarioDAO.obtenerRolId("padre");
-            usuarioPadre.setRolId(rolPadreId);
-            usuarioPadre.setPasswordHash(sha256(password1)); // encriptamos en Java
-
-            usuarioId = usuarioDAO.insertPadre(usuarioPadre);
-        }
-
-        // =============================
-        // 4. Crear registro en PADRES
-        // =============================
-        padre.setUsuarioId(usuarioId);
-
-        // guardamos archivo del documento de identidad
-        String rutaDoc = guardarArchivo(docPadrePart, "padres/" + usuarioId);
-        padre.setDocumentoIdentidadImg(rutaDoc);
-
-        int idPadre = padreDAO.insert(padre);
-        nino.setPadreId(idPadre);
-
-        // =============================
-        // 5. Crear NIÑO
-        // =============================
-        int idNino = ninoDAO.insert(nino);
-
-        // guardamos foto y actualizamos
-        String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + idNino);
-        ninoDAO.updateFoto(idNino, rutaFoto);
-
-        ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Matrícula guardada correctamente", null));
-
-        limpiarFormulario();
-
-    } catch (Exception e) {
-        ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Error al guardar: " + e.getMessage(), null));
-        e.printStackTrace();
     }
-}
 
-
-    // =============================
-    // Guardar archivo en carpeta
-    // =============================
     private String guardarArchivo(Part part, String carpetaRelativa) throws Exception {
         String nombreOriginal = Paths.get(part.getSubmittedFileName()).getFileName().toString();
         String ext = nombreOriginal.contains(".") ? nombreOriginal.substring(nombreOriginal.lastIndexOf('.') + 1) : "";
@@ -153,9 +160,6 @@ public class NinoBean implements Serializable {
         return carpetaRelativa + "/" + nuevoNombre; // ruta relativa para BD
     }
 
-    // =============================
-    // SHA-256 para password
-    // =============================
     private String sha256(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -168,8 +172,35 @@ public class NinoBean implements Serializable {
         }
     }
 
-    public void cancelar() {
-        limpiarFormulario();
+    public void cargarNinos() {
+        try {
+            int idHogar = 1; // ⚠️ reemplazar luego por el hogar real de la madre logueada
+            listaNinos = ninoDAO.listarNinosPorHogar(idHogar);
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Error al cargar los niños: " + e.getMessage(), null));
+        }
+    }
+
+    public void eliminar(int idNino) {
+        try {
+            boolean eliminado = ninoDAO.eliminarNino(idNino);
+            if (eliminado) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Niño eliminado correctamente", null));
+                cargarNinos();
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    "No se pudo eliminar el niño", null));
+            }
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Error al eliminar niño: " + e.getMessage(), null));
+        }
     }
 
     private void limpiarFormulario() {
@@ -181,62 +212,70 @@ public class NinoBean implements Serializable {
         fotoNinoPart = null;
         docPadrePart = null;
     }
-    // En la clase NinoBean
+    
+    public String cancelar() {
+    // Redirige a la página de listado de niños
+    return "listarNinos?faces-redirect=true";
+}
+    public void cargarNinoPorId() {
+        try {
+            if (FacesContext.getCurrentInstance().isPostback()) {
+                return; // evitar sobreescribir los datos enviados por el usuario en POST
+            }
 
-private List<Nino> listaNinos;
-
-// getter y setter
-public List<Nino> getListaNinos() {
-    if (listaNinos == null) {
-        cargarNinos();
+            if (nino != null && nino.getIdNino() > 0) {
+                Nino cargado = ninoDAO.buscarNinoPorId(nino.getIdNino());
+                if (cargado != null) {
+                    this.nino = cargado; // reemplazamos el niño con los datos de BD
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                        "No se encontró el niño con ID: " + nino.getIdNino(), null));
+                }
+            }
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Error al cargar el niño: " + e.getMessage(), null));
+            e.printStackTrace();
+        }
     }
-    return listaNinos;
-}
 
-public void setListaNinos(List<Nino> listaNinos) {
-    this.listaNinos = listaNinos;
-}
 
-// Cargar niños por hogar
-public void cargarNinos() {
+  public String actualizarNino() {
     try {
-        // Aquí debes pasar el id del hogar de la madre logueada
-        int idHogar = 1; // ⚠️ por ahora fijo, luego lo obtendrás de SessionBean
-        listaNinos = ninoDAO.listarNinosPorHogar(idHogar);
-    } catch (Exception e) {
-        FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-            "Error al cargar los niños: " + e.getMessage(), null));
-        e.printStackTrace();
-    }
-}
+        if (fotoNinoPart != null && fotoNinoPart.getSize() > 0) {
+            String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + nino.getIdNino());
+            nino.setFoto(rutaFoto);
+        }
 
-// Eliminar niño
-public void eliminar(int idNino) {
-    try {
-        boolean eliminado = ninoDAO.eliminarNino(idNino);
-        if (eliminado) {
+        boolean actualizado = ninoDAO.actualizarNino(nino);
+        if (actualizado) {
             FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Niño eliminado correctamente", null));
-            cargarNinos(); // recargar lista
+                "Niño actualizado correctamente", null));
+            return "listarNinos?faces-redirect=true"; // ✅ vuelve al listado
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_WARN,
-                "No se pudo eliminar el niño", null));
+                "No se pudo actualizar el niño", null));
+            return null; // ❌ se queda en la misma página
         }
     } catch (Exception e) {
         FacesContext.getCurrentInstance().addMessage(null,
             new FacesMessage(FacesMessage.SEVERITY_ERROR,
-            "Error al eliminar niño: " + e.getMessage(), null));
-        e.printStackTrace();
+            "Error al actualizar niño: " + e.getMessage(), null));
+        return null;
     }
 }
 
 
-    // =============================
+
+
+
+
+
     // Getters y Setters
-    // =============================
     public Nino getNino() { return nino; }
     public void setNino(Nino nino) { this.nino = nino; }
 
@@ -257,4 +296,14 @@ public void eliminar(int idNino) {
 
     public Part getDocPadrePart() { return docPadrePart; }
     public void setDocPadrePart(Part docPadrePart) { this.docPadrePart = docPadrePart; }
+
+    public List<Nino> getListaNinos() {
+        if (listaNinos == null) {
+            cargarNinos();
+        }
+        return listaNinos;
+    }
+    public void setListaNinos(List<Nino> listaNinos) { this.listaNinos = listaNinos; }
+
+    public List<HogarComunitario> getListaHogares() { return listaHogares; }
 }

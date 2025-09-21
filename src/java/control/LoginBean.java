@@ -59,7 +59,7 @@ public class LoginBean implements Serializable {
                 case "madre_comunitaria":
                     return "madreDashboard?faces-redirect=true";
                 case "padre":
-                    return "padreDashboard?faces-redirect=true";
+                    return "padreDasboard?faces-redirect=true";
                 default:
                     // Si no hay rol válido, vuelve al login
                     FacesContext.getCurrentInstance().addMessage(null,

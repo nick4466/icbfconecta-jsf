@@ -46,7 +46,12 @@
         <h:inputText id="nacionalidad" value="#{ninoBean.nino.nacionalidad}" />
 
         <h:outputLabel for="hogar" value="Hogar comunitario:" />
-        <h:inputText id="hogar" value="#{ninoBean.nino.hogarId}" required="true" />
+        <h:selectOneMenu id="hogar" value="#{ninoBean.nino.hogarId}" required="true">
+            <f:selectItem itemLabel="Seleccione un hogar..." itemValue="" noSelectionOption="true"/>
+            <f:selectItems value="#{ninoBean.listaHogares}" var="h"
+                           itemValue="#{h.idHogar}"
+                           itemLabel="#{h.nombreHogar} - #{h.localidad}" />
+        </h:selectOneMenu>
 
         <h:outputLabel for="fotoNino" value="Foto del niño:" />
         <h:inputFile id="fotoNino" value="#{ninoBean.fotoNinoPart}" required="true" />
@@ -88,7 +93,7 @@
         <h:outputLabel for="docPadre" value="Documento de identidad (archivo):" />
         <h:inputFile id="docPadre" value="#{ninoBean.docPadrePart}" required="true" />
 
-        <h:outputLabel for="correoP" value="Correo (usuario):" />
+        <h:outputLabel for="correoP" value="Correo electrónico:" />
         <h:inputText id="correoP" value="#{ninoBean.usuarioPadre.correo}" required="true" />
 
         <h:outputLabel for="direccionP" value="Dirección:" />
@@ -108,12 +113,16 @@
     <p:separator/>
 
     <!-- BOTONES -->
-    <p:commandButton value="Guardar Matrícula"
-                     actionListener="#{ninoBean.guardarMatricula}"
-                     ajax="false"
-                     styleClass="ui-button-success"/>
-    <p:commandButton value="Cancelar" immediate="true" action="#{ninoBean.cancelar}" styleClass="ui-button-secondary"/>
+<p:commandButton value="Guardar Matrícula"
+                 action="#{ninoBean.guardarMatricula}"
+                 ajax="false"
+                 styleClass="ui-button-success"/>
 
+
+    <p:commandButton value="Cancelar" immediate="true"
+                     action="#{ninoBean.cancelar}"
+                     styleClass="ui-button-secondary"/>
+   
 </h:form>
 
 </h:body>
