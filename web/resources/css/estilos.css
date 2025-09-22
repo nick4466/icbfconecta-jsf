@@ -2,17 +2,6 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family: 'Roboto', sans-serif;
-  background-color: #f8f6fb;
-  background-image: url("#{resource['img/fondo2.png']}");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-}
-
 header {
   display: flex;
   align-items: center;
@@ -140,14 +129,6 @@ input[type="password"]:focus,
 /* =======================
    ESTILOS DEL DASHBOARD
    ======================= */
-
-body.dashboard {
-  background-image: url("#{resource['img/fondito.jpg']}");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-}
 
 /* Header y navegación */
 header {
@@ -287,4 +268,712 @@ nav ul li a:hover {
 .btn-enviar:active {
   transform: scale(0.97);
   box-shadow: 0 2px 6px rgba(233, 169, 214, 0.4);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 15px 30px;
+  border-bottom: 2px solid #e5d5f5;
+  backdrop-filter: blur(4px);
+  flex-wrap: wrap;
+}
+
+header img {
+  height: 60px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #9B59B6;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+  background-color: #f3c1e5;
+}
+
+.tabla-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 14px;
+  padding: 30px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 32px;
+  color: #7a3eb1;
+}
+
+/* Acciones */
+.acciones .ui-button {
+  border: none;
+  padding: 6px 12px;
+  margin: 0 3px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.2s;
+}
+
+.acciones .ui-button:hover {
+  transform: scale(1.1);
+}
+
+/* Botones de colores */
+.btn-verde { background: #28a745 !important; color: white !important; }
+.btn-azul  { background: #007bff !important; color: white !important; }
+.btn-rojo  { background: #dc3545 !important; color: white !important; }
+
+/* Botón agregar */
+.boton-agregar {
+  background: linear-gradient(135deg, #9B59B6, #8e44ad); /* degradado morado */
+  color: #fff !important;
+  border: none !important;
+  padding: 12px 24px !important;
+  font-size: 16px !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3);
+  margin-top: 20px;
+}
+
+.boton-agregar:hover {
+  background: linear-gradient(135deg, #8e44ad, #732d91);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(142, 68, 173, 0.5);
+}
+
+.boton-agregar:active {
+  transform: scale(0.97);
+  box-shadow: 0 3px 8px rgba(142, 68, 173, 0.4);
+}
+
+/* Contenedor de botones */
+.botones-superior {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+}
+/* ===================== */
+/* Estilos Matrícula */
+/* ===================== */
+
+.main-title {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #7a3eb1;
+  background-color: #f3c4ffb3;
+  margin: 20px auto;
+  width: 80%;
+  border-radius: 10px;
+}
+
+.contenedor {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 14px;
+  padding: 30px;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  border-left: 8px solid #9B59B6;
+}
+
+.card h2 {
+  color: #9B59B6;
+  margin-bottom: 25px;
+  font-size: 27px;
+  text-align: center;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #5e3370;
+}
+
+input, select, textarea {
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #9B59B6;
+  outline: none;
+  background-color: #f0f8ff;
+}
+
+.p-command-button, .ui-button-success, .ui-button-secondary {
+  padding: 12px 18px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  margin: 8px 4px;
+}
+
+.ui-button-success {
+  background-color: #9B59B6;
+  color: white;
+}
+
+.ui-button-success:hover {
+  background-color: #8e44ad;
+}
+
+.ui-button-secondary {
+  background-color: #ccc;
+  color: #333;
+}
+
+.ui-button-secondary:hover {
+  background-color: #bbb;
+}
+/* Scroll interno para el formulario de matrícula */
+.card form {
+  max-height: 70vh;   /* Ajusta la altura máxima visible */
+  overflow-y: auto;   /* Activa el scroll vertical */
+  padding-right: 10px; /* Espacio para que no tape la barra */
+}
+/* === Estilos exclusivos para el panel del administrador === */
+.admin-dashboard {
+  font-family: 'Roboto', sans-serif;
+  background-image: url('fondoAdmin.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+.admin-dashboard header {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 15px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #e5d5f5;
+  backdrop-filter: blur(4px);
+  flex-wrap: wrap;
+}
+
+.admin-dashboard header img,
+.admin-dashboard header .ui-image {
+  height: 60px;
+}
+
+/* Botón cerrar sesión */
+.admin-dashboard .btn-cerrar {
+  color: #007BFF;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-dashboard .btn-cerrar:hover {
+  background-color: #0056b3;
+  color: white;
+}
+
+/* Título principal */
+.admin-dashboard .main-title {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+  font-size: 29px;
+  font-weight: bold;
+  color: #004080;
+  background-color: rgba(204, 228, 231, 0.75);
+  width: 80%;
+  margin: 30px auto;
+  border-radius: 10px;
+}
+
+/* Contenedor de tarjetas */
+.admin-dashboard .contenedor {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-dashboard .card {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-left: 6px solid #007BFF;
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.admin-dashboard .card:hover {
+  background-color: #e6f2ff;
+  transform: translateY(-5px);
+}
+
+.admin-dashboard .card i {
+  font-size: 30px;
+  color: #004080;
+  margin-bottom: 10px;
+}
+
+.admin-dashboard .card div {
+  font-size: 16px;
+  font-weight: bold;
+  color: #003366;
+}
+
+.admin-dashboard .card a {
+  display: block;
+  margin-top: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #007BFF;
+  transition: color 0.3s ease;
+}
+
+.admin-dashboard .card a:hover {
+  color: #0056b3;
+}
+
+/* Responsive */
+@media screen and (max-width: 900px) {
+  .admin-dashboard .contenedor {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-dashboard header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .admin-dashboard .contenedor {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-dashboard .main-title {
+    font-size: 22px;
+    width: 90%;
+  }
+}
+
+.borde2 {
+  text-align: center;
+  background-color: rgba(155, 89, 182, 0.9);
+  color: white;
+  padding: 12px 0;
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 15px 30px;
+  border-bottom: 2px solid #e5d5f5;
+  backdrop-filter: blur(4px);
+  flex-wrap: wrap;
+}
+
+.header img {
+  height: 60px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #9B59B6;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+  background-color: #f3c1e5;
+}
+
+.tabla-registros {
+  max-width: 1100px;
+  margin: 40px auto;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 14px;
+  padding: 30px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 32px;
+  color: #7a3eb1;
+}
+
+.contenedor-agregar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.btn-agregar {
+  background-color: #9B59B6 !important;
+  color: white !important;
+  border: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-agregar:hover {
+  background-color: #8e44ad !important;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+thead {
+  background-color: #f3c1e5;
+  color: #5e3370;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+tbody tr:hover {
+  background-color: #f9e6ff;
+}
+
+.acciones button {
+  border: none;
+  padding: 6px 10px;
+  margin: 0 3px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+
+.acciones button:hover {
+  transform: scale(1.1);
+}
+
+.btn-verde { background: #28a745; color: white; }
+.btn-azul  { background: #007bff; color: white; }
+.btn-rojo  { background: #dc3545; color: white; }
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-contenido {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 30px;
+  border: 1px solid #ccc;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.cerrar-modal {
+  float: right;
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: bold;
+  color: #aaa;
+}
+
+.cerrar-modal:hover {
+  color: #000;
+}
+
+.modal-contenido h2 {
+  margin-top: 0;
+  color: #7a3eb1;
+}
+
+.modal-contenido p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  .modal-contenido {
+    width: 90%;
+  }
+}
+/* Estilos generales */
+
+/* Título del borde superior */
+.desarrollo-dashboard .borde2 {
+    text-align: center;
+  background-color: rgba(155, 89, 182, 0.9);
+  color: white;
+  padding: 12px 0;
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Header */
+.desarrollo-dashboard .header {
+    display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 15px 30px;
+  border-bottom: 2px solid #e5d5f5;
+  backdrop-filter: blur(4px);
+  flex-wrap: wrap;
+}
+
+.desarrollo-dashboard .header img {
+    height: 60px;
+}
+
+.desarrollo-dashboard .nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+.desarrollo-dashboard .nav ul li a {
+    text-decoration: none;
+    color: #9B59B6;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.desarrollo-dashboard .nav ul li a:hover {
+    background-color: #f3c1e5;
+}
+
+/* Título principal */
+.desarrollo-dashboard .main-title {
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #7a3eb1;
+    background-color: #f3c4ffb3;
+    margin: 20px auto;
+    width: 80%;
+    border-radius: 10px;
+}
+
+/* Contenedor principal */
+.desarrollo-dashboard .contenedor {
+    max-width: 900px;
+    margin: 30px auto;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    padding: 30px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.desarrollo-dashboard .h1 {
+    text-align: center;
+    font-size: 28px;
+    color: #7a3eb1;
+    margin-bottom: 20px;
+}
+
+.desarrollo-dashboard .h2 {
+    font-size: 22px;
+    color: #9B59B6;
+    margin-bottom: 10px;
+}
+
+.desarrollo-dashboard .h4 {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: #5e3370;
+}
+
+/* Estilo del formulario */
+.desarrollo-dashboard .form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+/* Tarjetas de contenido */
+.desarrollo-dashboard .card {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 14px;
+    padding: 30px;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    border-left: 8px solid #9B59B6;
+}
+
+.desarrollo-dashboard .select, input[type="date"], textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+
+.desarrollo-dashboard .select:focus, input:focus, textarea:focus {
+    border-color: #9B59B6;
+    outline: none;
+    background-color: #f0f8ff;
+}
+
+/* Estilo de las tablas */
+.desarrollo-dashboard .tabla {
+    background-color: #f3c1e5;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.desarrollo-dashboard .card h2 {
+    color: #9B59B6;
+    margin-bottom: 25px;
+    font-size: 27px;
+    text-align: center;
+}
+
+.desarrollo-dashboard .textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Botones */
+.desarrollo-dashboard .botones {
+    width: 100%;
+  background: linear-gradient(135deg, #9B59B6, #8e44ad); /* degradado morado */
+  color: #fff !important;
+  border: none !important;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 8px; /* bordes más redondeados */
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3); /* sombra sutil */
+}
+
+.desarrollo-dashboard .botones:hover {
+    background: linear-gradient(135deg, #8e44ad, #732d91); /* degradado más oscuro */
+  transform: translateY(-2px); /* efecto "levantar" */
+  box-shadow: 0 6px 14px rgba(142, 68, 173, 0.5);
+}
+
+.desarrollo-dashboard .botones:active {
+  transform: scale(0.97); /* efecto al hacer clic */
+  box-shadow: 0 3px 8px rgba(142, 68, 173, 0.4);
+}
+/* Mensaje de éxito */
+.desarrollo-dashboard .mensaje-exito {
+    display: none;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
 }
