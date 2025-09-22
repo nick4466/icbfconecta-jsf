@@ -207,4 +207,39 @@ public class NinoDAO {
     }
     return lista;
 }
+    // Listar niños por madre (usando join)
+public List<Nino> listarNinosPorMadre(int idMadre) {
+    List<Nino> lista = new ArrayList<>();
+    String sql = "SELECT n.id_nino, n.nombres AS nombre_nino, n.apellidos AS apellido_nino, " +
+                 "h.id_hogar, h.nombre_hogar, " +
+                 "u.nombres AS nombre_madre, u.apellidos AS apellido_madre, u.correo AS correo_madre " +
+                 "FROM ninos n " +
+                 "JOIN hogares_comunitarios h ON n.hogar_id = h.id_hogar " +
+                 "JOIN usuarios u ON h.madre_id = u.id_usuario " +
+                 "WHERE u.id_usuario = ? AND u.rol_id = 2";
+
+    try (Connection con = ConDB.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, idMadre);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Nino n = new Nino();
+                n.setIdNino(rs.getInt("id_nino"));
+                n.setNombres(rs.getString("nombre_nino"));
+                n.setApellidos(rs.getString("apellido_nino"));
+                n.setHogarId(rs.getInt("id_hogar"));
+                // si quieres guardar más datos (hogar, madre, correo) 
+                // podrías extender tu modelo Nino o usar un DTO
+                lista.add(n);
+            }
+        }
+
+    } catch (SQLException e) {
+        LOGGER.log(Level.SEVERE, "Error al listar niños por madre", e);
+    }
+    return lista;
+}
+
 }
