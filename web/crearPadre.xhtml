@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Registrar Padre / Acudiente</title>
+</h:head>
+<h:body>
+
+<h:form enctype="multipart/form-data">
+    <p:messages showDetail="true" showSummary="false" closable="true" />
+
+    <h2>Datos del Usuario Padre</h2>
+    <h:panelGrid columns="2" columnClasses="label,value">
+        <h:outputLabel for="nombresP" value="Nombres:" />
+        <h:inputText id="nombresP" value="#{padreMatriculaBean.usuarioPadre.nombres}" required="true" />
+
+        <h:outputLabel for="apellidosP" value="Apellidos:" />
+        <h:inputText id="apellidosP" value="#{padreMatriculaBean.usuarioPadre.apellidos}" required="true" />
+
+        <h:outputLabel for="documentoP" value="Documento:" />
+        <h:inputText id="documentoP" value="#{padreMatriculaBean.usuarioPadre.documento}" required="true" />
+
+        <h:outputLabel for="correoP" value="Correo electrónico:" />
+        <h:inputText id="correoP" value="#{padreMatriculaBean.usuarioPadre.correo}" required="true" />
+
+        <h:outputLabel for="direccionP" value="Dirección:" />
+        <h:inputText id="direccionP" value="#{padreMatriculaBean.usuarioPadre.direccion}" />
+
+        <h:outputLabel for="telefonoP" value="Teléfono:" />
+        <h:inputText id="telefonoP" value="#{padreMatriculaBean.usuarioPadre.telefono}" />
+
+        <h:outputLabel for="pass1" value="Contraseña:" />
+        <h:inputSecret id="pass1" value="#{padreMatriculaBean.password1}" required="true" redisplay="true" />
+
+        <h:outputLabel for="pass2" value="Confirmar contraseña:" />
+        <h:inputSecret id="pass2" value="#{padreMatriculaBean.password2}" required="true" redisplay="true" />
+    </h:panelGrid>
+
+    <p:separator/>
+
+    <h2>Información Complementaria</h2>
+    <h:panelGrid columns="2" columnClasses="label,value">
+        <h:outputLabel for="ocupacion" value="Ocupación:" />
+        <h:inputText id="ocupacion" value="#{padreMatriculaBean.padre.ocupacion}" />
+
+        <h:outputLabel for="estrato" value="Estrato:" />
+        <h:inputText id="estrato" value="#{padreMatriculaBean.padre.estrato}">
+            <f:convertNumber integerOnly="true" />
+        </h:inputText>
+
+        <h:outputLabel for="telEmerg" value="Teléfono emergencia:" />
+        <h:inputText id="telEmerg" value="#{padreMatriculaBean.padre.telefonoContactoEmergencia}" />
+
+        <h:outputLabel for="nomEmerg" value="Nombre contacto emergencia:" />
+        <h:inputText id="nomEmerg" value="#{padreMatriculaBean.padre.nombreContactoEmergencia}" />
+
+        <h:outputLabel for="sitEcon" value="Situación económica hogar:" />
+        <h:inputTextarea id="sitEcon" value="#{padreMatriculaBean.padre.situacionEconomicaHogar}" rows="3" cols="30" />
+
+        <h:outputLabel for="docPadre" value="Documento de identidad (imagen):" />
+        <h:inputFile id="docPadre" value="#{padreMatriculaBean.documentoPart}" required="true" />
+    </h:panelGrid>
+
+    <p:separator/>
+
+    <p:commandButton value="Guardar y continuar"
+                     action="#{padreMatriculaBean.guardarPadre}"
+                     ajax="false"
+                     styleClass="ui-button-success" />
+
+    <p:commandButton value="Cancelar" immediate="true"
+                     action="listarNinos?faces-redirect=true"
+                     styleClass="ui-button-secondary" />
+</h:form>
+
+</h:body>
+</html>
