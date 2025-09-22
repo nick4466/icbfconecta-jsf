@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      lang="es">
 
 <f:view>
     <f:metadata>
@@ -10,188 +11,224 @@
 
     <h:head>
         <title>ICBF Conecta - Administrador</title>
-       <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
 
         <style>
             * {
-                box-sizing: border-box;
+              box-sizing: border-box;
             }
 
             body {
-                margin: 0;
-                font-family: 'Roboto', sans-serif;
-                background-image: url("#{resource['img/fondoAdmin.png']}");
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                background-attachment: fixed;
+              margin: 0;
+              font-family: 'Roboto', sans-serif;
+              background-image: url("#{resource['img/fondoAdmin.png']}");
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+              background-attachment: fixed;
+              color: #003366;
+              min-height: 100vh;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
             }
 
             header {
-                background-color: rgba(255, 255, 255, 0.85);
-                padding: 15px 30px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                border-bottom: 2px solid #e5d5f5;
-                backdrop-filter: blur(4px);
-                flex-wrap: wrap;
+              background-color: rgba(255, 255, 255, 0.9);
+              padding: 20px 40px;
+              width: 100%;
+              max-width: 1200px;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              border-bottom: 3px solid #007BFF;
+              backdrop-filter: blur(6px);
+              box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+              flex-wrap: wrap;
             }
 
             header img {
-                height: 60px;
+              height: 65px;
+              user-select: none;
             }
 
-            .btn-cerrar {
-                color: #007BFF;
-                text-decoration: none;
-                font-weight: bold;
-                font-size: 16px;
-                padding: 8px 12px;
-                border: none;
-                background: none;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
+            .btn-cerrar { color: #007BFF; 
+                         text-decoration: none; 
+                         font-weight: bold; 
+                         font-size: 16px; 
+                         padding: 8px 12px;
+                         border: none; 
+                         background: none; 
+                         cursor: pointer; 
+                         transition: background-color 0.3s ease; }
+            
+            .btn-cerrar:hover { 
+                background-color: #0056b3; 
+                    color: white; }
+            
 
-            .btn-cerrar:hover {
-                background-color: #0056b3;
-                color: white;
-            }
+            
 
             .main-title {
-                text-align: center;
-                margin-top: 20px;
-                padding: 20px;
-                font-size: 29px;
-                font-weight: bold;
-                color: #004080;
-                background-color: rgba(204, 228, 231, 0.75);
-                width: 80%;
-                margin: 30px auto;
-                border-radius: 10px;
+              text-align: center;
+              margin: 40px auto 30px;
+              padding: 25px 30px;
+              font-size: 32px;
+              font-weight: 900;
+              color: #004080;
+              background-color: rgba(204, 228, 231, 0.9);
+              width: 85%;
+              border-radius: 14px;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+              letter-spacing: 1.1px;
+            }
+
+            p {
+              max-width: 850px;
+              margin: 10px auto 40px;
+              font-size: 18px;
+              font-weight: 500;
+              color: #004080cc;
+              text-align: center;
+              user-select: none;
             }
 
             .contenedor {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 20px;
-                max-width: 1100px;
-                margin: 0 auto;
-                padding: 20px;
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 28px;
+              max-width: 1100px;
+              margin-bottom: 60px;
+              padding: 0 20px;
+              width: 100%;
             }
 
             .card {
-                background-color: rgba(255, 255, 255, 0.95);
-                border-left: 6px solid #007BFF;
-                border-radius: 12px;
-                padding: 25px;
-                text-align: center;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-                transition: transform 0.3s ease, background-color 0.3s ease;
+              background-color: rgba(255, 255, 255, 0.98);
+              border-left: 8px solid #007BFF;
+              border-radius: 16px;
+              padding: 30px 25px 35px;
+              text-align: center;
+              box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+              transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+              cursor: pointer;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              user-select: none;
             }
 
             .card:hover {
-                background-color: #e6f2ff;
-                transform: translateY(-5px);
+              background-color: #e6f2ff;
+              box-shadow: 0 12px 24px rgba(0, 123, 255, 0.3);
+              transform: translateY(-7px);
             }
 
             .card i {
-                font-size: 30px;
-                color: #004080;
-                margin-bottom: 10px;
+              font-size: 38px;
+              color: #004080;
+              margin-bottom: 16px;
+              transition: color 0.3s ease;
             }
 
             .card div {
-                font-size: 16px;
-                font-weight: bold;
-                color: #003366;
+              font-size: 18px;
+              font-weight: 700;
+              color: #003366;
+              margin-bottom: 14px;
+              letter-spacing: 0.03em;
+              flex-grow: 1;
             }
 
             .card a {
-                display: block;
-                margin-top: 10px;
-                text-decoration: none;
-                font-weight: bold;
-                color: #007BFF;
-                transition: color 0.3s ease;
+              display: inline-block;
+              text-decoration: none;
+              font-weight: 700;
+              color: #007BFF;
+              font-size: 16px;
+              padding: 10px 24px;
+              border-radius: 8px;
+              border: 2px solid transparent;
+              transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+              user-select: none;
             }
 
             .card a:hover {
-                color: #0056b3;
+              color: white;
+              background-color: #0056b3;
+              border-color: #0056b3;
             }
 
+            /* Responsive */
             @media screen and (max-width: 900px) {
-                .contenedor {
-                    grid-template-columns: repeat(2, 1fr);
-                }
+              .contenedor {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+              }
 
-                header {
-                    flex-direction: column;
-                    align-items: flex-start;
-                }
+              header {
+                padding: 15px 25px;
+                justify-content: center;
+              }
             }
 
             @media screen and (max-width: 600px) {
-                .contenedor {
-                    grid-template-columns: 1fr;
-                }
+              .contenedor {
+                grid-template-columns: 1fr;
+                gap: 20px;
+              }
 
-                .main-title {
-                    font-size: 22px;
-                    width: 90%;
-                }
+              .main-title {
+                font-size: 26px;
+                width: 90%;
+                padding: 20px 20px;
+                margin: 25px auto 25px;
+              }
+
+              p {
+                font-size: 16px;
+                width: 90%;
+              }
             }
         </style>
     </h:head>
 
     <h:body>
-        <header>
-            <h:graphicImage library="img" name="logoSinFondo.png" alt="Logo ICBF" />
 
-            <h:form>
-                <h:commandLink action="#{loginBean.logout}" styleClass="btn-cerrar">
-                    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-                </h:commandLink>
-            </h:form>
-        </header>
+      <header> 
+          <h:graphicImage library="img" name="logoSinFondo.png" alt="Logo ICBF" /> 
+          <h:form> 
+              <h:commandLink action="#{loginBean.logout}" styleClass="btn-cerrar"> <i class="fas fa-sign-out-alt"></i> Cerrar sesión </h:commandLink> 
+          </h:form> 
+      </header>
 
-        <div class="main-title">ICBF - CONECTA | Panel Administrador</div>
+      <div class="main-title">ICBF - CONECTA | Panel Administrador</div>
 
-        <div class="contenedor">
+      <p>Bienvenido administrador, aquí puedes gestionar todas las funcionalidades disponibles.</p>
 
-            <div class="card">
-                <i class="fas fa-home"></i>
-                <div>Crear Hogar Comunitario</div>
-                <h:link outcome="crearHogar">Ir a sección</h:link>
-            </div>
+      <div class="contenedor">
 
-            <div class="card">
-                <i class="fas fa-list"></i>
-                <div>Gestionar Hogares</div>
-                <h:link outcome="listarHogares">Ir a sección</h:link>
-            </div>
-
-            <div class="card">
-                <i class="fas fa-user-plus"></i>
-                <div>Registrar Madre Comunitaria</div>
-                <h:link outcome="crearMadre">Ir a sección</h:link>
-            </div>
-
-            <div class="card">
-                <i class="fas fa-users"></i>
-                <div>Gestionar Madres</div>
-                <h:link outcome="listarMadres">Ir a sección</h:link>
-            </div>
-
-            <div class="card">
-                <i class="fas fa-chart-bar"></i>
-                <div>Ver Reportes</div>
-                <h:link outcome="reportes">Ir a sección</h:link>
-            </div>
-
+        <div class="card" tabindex="0" role="link" aria-label="Gestionar Hogares">
+          <i class="fas fa-list" aria-hidden="true"></i>
+          <div>Gestionar Hogares</div>
+          <h:link outcome="listarHogares" styleClass="card-link">Ir a sección</h:link>
         </div>
+
+        <div class="card" tabindex="0" role="link" aria-label="Gestionar Madres">
+          <i class="fas fa-users" aria-hidden="true"></i>
+          <div>Gestionar Madres</div>
+          <h:link outcome="listarMadres" styleClass="card-link">Ir a sección</h:link>
+        </div>
+
+        <div class="card" tabindex="0" role="link" aria-label="Ver Reportes">
+          <i class="fas fa-chart-bar" aria-hidden="true"></i>
+          <div>Ver Reportes</div>
+          <h:link outcome="reportes" styleClass="card-link">Ir a sección</h:link>
+        </div>
+
+      </div>
+
     </h:body>
 </f:view>
 </html>
