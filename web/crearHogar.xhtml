@@ -2,58 +2,288 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-
 <h:head>
     <title>Crear Hogar Comunitario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-image: url("#{resource['img/fondoAdmin.png']}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #e5d5f5;
+            backdrop-filter: blur(4px);
+            flex-wrap: wrap;
+        }
+
+        header img {
+            height: 60px;
+        }
+
+        nav {
+            flex-grow: 1;
+            margin-left: 40px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #007BFF;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        nav ul li a:hover {
+            color: #0056b3;
+        }
+
+        .btn-cerrar {
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 8px 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-cerrar:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .main-title {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            font-size: 29px;
+            font-weight: bold;
+            color: #004080;
+            background-color: rgba(204, 228, 231, 0.75);
+            width: 80%;
+            margin: 30px auto 10px;
+            border-radius: 10px;
+        }
+
+        .form-wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .form-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            flex: 1;
+            min-width: 300px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid #007BFF;
+        }
+
+        .form-card h3 {
+            font-size: 20px;
+            color: #004080;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #003366;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px auto;
+            flex-wrap: wrap;
+        }
+
+        /* Botón Guardar con min-width para ancho consistente */
+        .btn-guardar,
+        input.btn-guardar {
+            background-color: #007BFF;
+            color: white;
+            font-weight: bold;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            text-decoration: none;
+            min-width: 180px;  /* solo aquí */
+            text-align: center;
+            display: inline-block;
+            width: auto;
+        }
+
+        /* Botón Volver sin min-width para que se ajuste al contenido */
+        .btn-volver,
+        input.btn-volver,
+        a.btn-volver {
+            background-color: #6c757d;
+            color: white;
+            font-weight: bold;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+            width: auto;
+            /* min-width removido */
+        }
+
+        .btn-guardar:hover,
+        input.btn-guardar:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-volver:hover,
+        input.btn-volver:hover,
+        a.btn-volver:hover {
+            background-color: #5a6268;
+        }
+
+        @media screen and (max-width: 800px) {
+            .form-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </h:head>
+
 <h:body>
+
+    <!-- HEADER -->
+    <header>
+        <h:graphicImage library="img" name="logoSinFondo.png" alt="Logo ICBF" />
+        <nav>
+            <ul>
+                <li>
+                    <h:link outcome="adminDashboard">
+                        <i class="fas fa-th-large"></i>
+                        Inicio Admin
+                    </h:link>
+                </li>
+            </ul>
+        </nav>
+        <h:form>
+            <h:commandLink action="#{loginBean.logout}" styleClass="btn-cerrar">
+                <i class="fas fa-sign-out-alt"></i>
+                Cerrar sesión
+            </h:commandLink>
+        </h:form>
+    </header>
+
+    <!-- TITLE -->
+    <div class="main-title">ICBF - CONECTA | Crear Hogar Comunitario</div>
+
+    <!-- FORMULARIO -->
     <h:form>
-        <h1>Crear Hogar Comunitario</h1>
+        <div class="form-wrapper">
 
-        <!-- Nombre -->
-        <h:outputLabel for="nombre" value="Nombre del hogar:"/>
-        <h:inputText id="nombre" value="#{hogarBean.hogar.nombreHogar}" required="true"/>
-        <br/><br/>
+            <!-- CARD IZQUIERDA -->
+            <div class="form-card">
+                <h3>Datos del Hogar</h3>
 
-        <!-- Dirección -->
-        <h:outputLabel for="direccion" value="Dirección:"/>
-        <h:inputText id="direccion" value="#{hogarBean.hogar.direccion}" required="true"/>
-        <br/><br/>
+                <label for="nombre">Nombre del hogar:</label>
+                <h:inputText id="nombre" value="#{hogarBean.hogar.nombreHogar}" required="true" />
 
-        <!-- Localidad -->
-        <h:outputLabel for="localidad" value="Localidad:"/>
-        <h:inputText id="localidad" value="#{hogarBean.hogar.localidad}"/>
-        <br/><br/>
+                <label for="direccion">Dirección:</label>
+                <h:inputText id="direccion" value="#{hogarBean.hogar.direccion}" required="true" />
 
-        <!-- Capacidad máxima -->
-        <h:outputLabel for="capacidad" value="Capacidad máxima:"/>
-        <h:inputText id="capacidad" value="#{hogarBean.hogar.capacidadMaxima}" required="true"/>
-        <br/><br/>
+                <label for="localidad">Localidad:</label>
+                <h:inputText id="localidad" value="#{hogarBean.hogar.localidad}" />
+            </div>
 
-        <!-- Estado -->
-        <h:outputLabel for="estado" value="Estado:"/>
-        <h:selectOneMenu id="estado" value="#{hogarBean.hogar.estado}">
-            <f:selectItem itemValue="activo" itemLabel="Activo"/>
-            <f:selectItem itemValue="inactivo" itemLabel="Inactivo"/>
-            <f:selectItem itemValue="en_mantenimiento" itemLabel="En mantenimiento"/>
-        </h:selectOneMenu>
-        <br/><br/>
+            <!-- CARD DERECHA -->
+            <div class="form-card">
+                <h3>Configuración</h3>
 
-        <!-- Madre comunitaria -->
-        <h:outputLabel for="madre" value="Madre Comunitaria:"/>
-<h:selectOneMenu id="madre" value="#{hogarBean.hogar.madreId}">
-    <f:selectItems value="#{hogarBean.madresComunitarias}"
-                   var="madre"
-                   itemValue="#{madre.idUsuario}"
-                   itemLabel="#{madre.nombres} #{madre.apellidos}"/>
-</h:selectOneMenu>
-<br/><br/>
-        <!-- Botón Guardar -->
-        <h:commandButton value="Guardar" action="#{hogarBean.guardarHogar}"/>
-        <br/><br/>
+                <label for="capacidad">Capacidad máxima:</label>
+                <h:inputText id="capacidad" value="#{hogarBean.hogar.capacidadMaxima}" required="true" />
 
-        <!-- Botón Volver -->
-        <h:link value="Volver al Dashboard" outcome="adminDashboard"/>
+                <label for="estado">Estado:</label>
+                <h:selectOneMenu id="estado" value="#{hogarBean.hogar.estado}">
+                    <f:selectItem itemValue="activo" itemLabel="Activo"/>
+                    <f:selectItem itemValue="inactivo" itemLabel="Inactivo"/>
+                    <f:selectItem itemValue="en_mantenimiento" itemLabel="En mantenimiento"/>
+                </h:selectOneMenu>
+
+                <label for="madre">Madre Comunitaria:</label>
+                <h:selectOneMenu id="madre" value="#{hogarBean.hogar.madreId}">
+                    <f:selectItems value="#{hogarBean.madresComunitarias}"
+                                   var="madre"
+                                   itemValue="#{madre.idUsuario}"
+                                   itemLabel="#{madre.nombres} #{madre.apellidos}"/>
+                </h:selectOneMenu>
+            </div>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="button-group">
+            <h:commandButton value="Guardar" action="#{hogarBean.guardarHogar}" styleClass="btn-guardar" />
+            <h:link outcome="adminDashboard" styleClass="btn-volver">← Volver</h:link>
+        </div>
     </h:form>
+
 </h:body>
 </html>
