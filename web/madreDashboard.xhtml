@@ -77,11 +77,19 @@
                 <h2>Bienvenida, Madre Comunitaria</h2>
                 <p>Gracias por tu valiosa labor.</p>
                 <h:form>
-                    <p:commandButton value="Llamar Asistencia" styleClass="btn-asistencia" action="#{asistenciaBean.llamar}"/>
+                    <!-- Botón que redirige a la vista listarAsistencia -->
+                    <p:commandButton value="Llamar Asistencia" 
+                                     styleClass="btn-asistencia" 
+                                     action="listarAsistencia?faces-redirect=true" />
                 </h:form>
+
                 <h:form>
-                    <p:commandButton value="Enviar Correos" styleClass="btn-enviar" action="correos?faces-redirect=true"/>
+                    <!-- Botón que redirige a la vista correos -->
+                    <p:commandButton value="Enviar Correos" 
+                                     styleClass="btn-enviar" 
+                                     action="correos?faces-redirect=true" />
                 </h:form>
+
             </div>
 
             <!-- Card 3 -->

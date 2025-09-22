@@ -2,42 +2,277 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
+
 <h:head>
     <title>Lista de Madres Comunitarias</title>
-</h:head>
-<h:body>
-    <h1>Lista de Madres Comunitarias</h1>
+    <h:outputStylesheet name="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <h:outputScript name="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" />
+    <style>
+        /* Estilo global para todos los elementos */
+* {
+    box-sizing: border-box;
+}
 
-    <h:form>
-        <h:dataTable value="#{madreBean.madres}" var="m" border="1">
-            <h:column>
-                <f:facet name="header">Documento</f:facet>
-                #{m.documento}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Nombre</f:facet>
-                #{m.nombres} #{m.apellidos}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Correo</f:facet>
-                #{m.correo}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Teléfono</f:facet>
-                #{m.telefono}
-            </h:column>
-            <h:column>
-                <h:commandLink value="Editar" action="#{madreBean.editarMadre(m)}"/>
-                |
-                <h:commandLink value="Eliminar" action="#{madreBean.eliminarMadre(m.idUsuario)}"
-                               onclick="return confirm('¿Eliminar esta madre?');"/>
-            </h:column>
-        </h:dataTable>
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-image: url("#{resource['img/fondoAdmin.png']}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Estilos del encabezado */
+header {
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #e5d5f5;
+    backdrop-filter: blur(4px);
+    flex-wrap: wrap;
+}
+
+header img {
+    height: 60px;
+}
+
+nav {
+    flex-grow: 1;
+    margin-left: 40px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+nav ul li a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #007BFF;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+nav ul li a:hover {
+    color: #0056b3;
+}
+
+.btn-cerrar {
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px 12px;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-cerrar:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+/* Estilo del título principal */
+.main-title {
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    font-size: 29px;
+    font-weight: bold;
+    color: #004080;
+    background-color: rgba(204, 228, 231, 0.75);
+    width: 80%;
+    margin: 30px auto;
+    border-radius: 10px;
+}
+
+/* Estilo de la tabla */
+.content-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    max-width: 1100px;
+    margin: 0 auto 50px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    border-left: 6px solid #007BFF;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #e6f2ff;
+    color: #004080;
+}
+
+td {
+    color: #333;
+}
+
+/* Estilo para los botones */
+.btn-nueva, .btn-editar, .btn-eliminar {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-right: 5px;
+}
+
+.btn-nueva {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-nueva:hover {
+    background-color: #218838;
+}
+
+.btn-editar {
+    background-color: #007BFF;
+    color: white;
+}
+
+.btn-editar:hover {
+    background-color: #0056b3;
+}
+
+.btn-eliminar {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-eliminar:hover {
+    background-color: #c82333;
+}
+
+/* Estilo para el enlace de "Volver al Dashboard" */
+.btn-volver {
+    display: inline-block;
+    margin-top: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #007BFF;
+    transition: color 0.3s ease;
+}
+
+.btn-volver:hover {
+    color: #0056b3;
+}
+
+    </style>
+        
+</h:head>
+
+<h:body>
+
+    <!-- ENCABEZADO -->
+    <header>
+        <img src="#{resource['img/logoSinFondo.png']}" alt="Logo del Software"/>
+        <nav>
+            <ul>
+                <li><a href="listarHogares.xhtml"><i class="fas fa-list"></i> Gestionar Hogares</a></li>
+                <li><a href="listarMadres.xhtml"><i class="fas fa-users"></i> Gestionar Madres</a></li>
+                <li><a href="reportes.xhtml"><i class="fas fa-chart-bar"></i> Ver Reportes</a></li>
+            </ul>
+        </nav>
+         <!-- Cerrar Sesión dentro de un h:form -->
+        <h:form>
+            <h:commandLink action="#{loginBean.logout}" styleClass="btn-cerrar">
+                <i class="fas fa-sign-out-alt"></i>
+                Cerrar sesión
+            </h:commandLink>
+        </h:form>
+    </header>
+
+    <!-- TÍTULO -->
+    <div class="main-title">ICBF - CONECTA | Lista de Madres Comunitarias</div>
+
+    <!-- CONTENIDO -->
+    <div class="content-container">
+
+        <!-- Botón para registrar nueva madre -->
+        <div class="top-actions">
+            <h:link  outcome="crearMadre" styleClass="btn-nueva">
+                <i class="fas fa-user-plus"></i> Registrar Nueva Madre
+            </h:link>
+        </div>
+
+        <h:form>
+
+            <!-- Tabla de Madres -->
+            <h:dataTable value="#{madreBean.madres}" var="m" border="1" styleClass="table">
+                
+                <!-- Columna Documento -->
+                <h:column>
+                    <f:facet name="header">Documento</f:facet>
+                    #{m.documento}
+                </h:column>
+                
+                <!-- Columna Nombre -->
+                <h:column>
+                    <f:facet name="header">Nombre</f:facet>
+                    #{m.nombres} #{m.apellidos}
+                </h:column>
+                
+                <!-- Columna Correo -->
+                <h:column>
+                    <f:facet name="header">Correo</f:facet>
+                    #{m.correo}
+                </h:column>
+                
+                <!-- Columna Teléfono -->
+                <h:column>
+                    <f:facet name="header">Teléfono</f:facet>
+                    #{m.telefono}
+                </h:column>
+
+                <!-- Columna Acciones -->
+                <h:column>
+                    <f:facet name="header">Acciones</f:facet>
+                    <h:commandLink value="Editar" action="#{madreBean.editarMadre(m)}" styleClass="btn-editar" />
+                    |
+                    <h:commandLink value="Eliminar" action="#{madreBean.eliminarMadre(m.idUsuario)}" 
+                                   onclick="return confirm('¿Eliminar esta madre?');" 
+                                   styleClass="btn-eliminar" />
+                </h:column>
+
+            </h:dataTable>
+
+        </h:form>
 
         <br/>
-        <h:link value="Registrar Nueva Madre" outcome="crearMadre"/>
-        <br/><br/>
-        <h:link value="Volver al Dashboard" outcome="adminDashboard"/>
-    </h:form>
+
+        <!-- Enlaces -->
+        <h:link value="Volver al Dashboard" outcome="adminDashboard" styleClass="btn-volver"/>
+
+    </div>
+
 </h:body>
+
 </html>

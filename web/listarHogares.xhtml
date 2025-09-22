@@ -1,58 +1,307 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
 <h:head>
-    <title>Lista de Hogares</title>
+    <title>Lista de Hogares Comunitarios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <h:outputScript name="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" />
+    <style>
+        /* Estilo global para todos los elementos */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-image: url("#{resource['img/fondoAdmin.png']}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Estilos del encabezado */
+        header {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #e5d5f5;
+            backdrop-filter: blur(4px);
+            flex-wrap: wrap;
+        }
+
+        header img {
+            height: 60px;
+        }
+
+        nav {
+            flex-grow: 1;
+            margin-left: 40px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #007BFF;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        nav ul li a:hover {
+            color: #0056b3;
+        }
+
+        .btn-cerrar {
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 8px 12px;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-cerrar:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        /* Estilo del título principal */
+        .main-title {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            font-size: 29px;
+            font-weight: bold;
+            color: #004080;
+            background-color: rgba(204, 228, 231, 0.75);
+            width: 80%;
+            margin: 30px auto;
+            border-radius: 10px;
+        }
+        
+        /* Estilo para el botón "Crear Nuevo Hogar" */
+        .btn-nuevo {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-nuevo:hover {
+            background-color: #218838;
+        }
+
+        .btn-nuevo i {
+            margin-right: 8px; /* Para separar el ícono del texto */
+        }
+
+        /* Estilo de la tabla */
+        .content-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            max-width: 1100px;
+            margin: 0 auto 50px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid #007BFF;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #e6f2ff;
+            color: #004080;
+        }
+
+        td {
+            color: #333;
+        }
+
+        /* Estilos de los botones */
+        .btn-editar, .btn-eliminar {
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+
+        .btn-editar {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .btn-editar:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-eliminar {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-eliminar:hover {
+            background-color: #c82333;
+        }
+
+        /* Estilo para el enlace de "Volver al Dashboard" */
+        .btn-volver {
+            display: inline-block;
+            margin-top: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            color: #007BFF;
+            transition: color 0.3s ease;
+        }
+
+        .btn-volver:hover {
+            color: #0056b3;
+        }
+
+        /* Estilos para dispositivos móviles */
+        @media screen and (max-width: 700px) {
+            .table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            th {
+                position: sticky;
+                top: 0;
+                background-color: #e6f2ff;
+            }
+
+            td {
+                margin-bottom: 10px;
+            }
+        }
+
+    </style>
 </h:head>
+
 <h:body>
-    <h1>Lista de Hogares Comunitarios</h1>
 
-    <h:form>
-        <h:dataTable value="#{hogarBean.hogares}" var="h" border="1">
+    <!-- ENCABEZADO -->
+    <header>
+        <img src="#{resource['img/logoSinFondo.png']}" alt="Logo del Software"/>
+        <nav>
+            <ul>
+                <li><a href="listarHogares.xhtml"><i class="fas fa-list"></i> Gestionar Hogares</a></li>
+                <li><a href="listarMadres.xhtml"><i class="fas fa-users"></i> Gestionar Madres</a></li>
+                <li><a href="reportes.xhtml"><i class="fas fa-chart-bar"></i> Ver Reportes</a></li>
+            </ul>
+        </nav>
 
-            <h:column>
-                <f:facet name="header">ID</f:facet>
-                #{h.idHogar}
-            </h:column>
+        <!-- Cerrar Sesión dentro de un h:form -->
+        <h:form>
+            <h:commandLink action="#{loginBean.logout}" styleClass="btn-cerrar">
+                <i class="fas fa-sign-out-alt"></i>
+                Cerrar sesión
+            </h:commandLink>
+        </h:form>
+    </header>
 
-            <h:column>
-                <f:facet name="header">Nombre</f:facet>
-                #{h.nombreHogar}
-            </h:column>
+    <!-- TÍTULO -->
+    <div class="main-title">ICBF - CONECTA | Lista de Hogares Comunitarios</div>
 
-            <h:column>
-                <f:facet name="header">Dirección</f:facet>
-                #{h.direccion}
-            </h:column>
+    <!-- CONTENIDO -->
+    <div class="content-container">
 
-            <h:column>
-                <f:facet name="header">Localidad</f:facet>
-                #{h.localidad}
-            </h:column>
+        <div class="top-actions">
+            <h:link outcome="crearHogar" styleClass="btn-nuevo">
+                <i class="fas fa-plus"></i> Crear Nuevo Hogar
+            </h:link>
+        </div>
 
-            <h:column>
-                <f:facet name="header">Capacidad</f:facet>
-                #{h.capacidadMaxima}
-            </h:column>
+        <h:form>
 
-            <h:column>
-                <f:facet name="header">Estado</f:facet>
-                #{h.estado}
-            </h:column>
+            <!-- Usando h:dataTable en lugar de p:dataTable para PrimeFaces 8.0 -->
+            <h:dataTable value="#{hogarBean.hogares}" var="h" border="1" styleClass="table">
 
-            <h:column>
-                <h:commandLink value="Editar" action="#{hogarBean.editarHogar(h)}"/>
-                |
-                <h:commandLink value="Eliminar" action="#{hogarBean.eliminarHogar(h.idHogar)}"
-                               onclick="return confirm('¿Seguro que quieres eliminar este hogar?');"/>
-            </h:column>
-        </h:dataTable>
+                <h:column>
+                    <f:facet name="header">ID</f:facet>
+                    #{h.idHogar}
+                </h:column>
 
-        <br/>
-        <h:link value="Crear Nuevo Hogar" outcome="crearHogar"/>
-        <br/><br/>
-        <h:link value="Volver al Dashboard" outcome="adminDashboard"/>
-    </h:form>
+                <h:column>
+                    <f:facet name="header">Nombre</f:facet>
+                    #{h.nombreHogar}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Dirección</f:facet>
+                    #{h.direccion}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Localidad</f:facet>
+                    #{h.localidad}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Capacidad</f:facet>
+                    #{h.capacidadMaxima}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Estado</f:facet>
+                    #{h.estado}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Acciones</f:facet>
+                    <h:commandLink value="Editar" action="#{hogarBean.editarHogar(h)}" styleClass="btn-editar" />
+                    <h:commandLink value="Eliminar" action="#{hogarBean.eliminarHogar(h.idHogar)}" 
+                                   onclick="return confirm('¿Seguro que quieres eliminar este hogar?');" 
+                                   styleClass="btn-eliminar" />
+                </h:column>
+
+            </h:dataTable>
+
+        </h:form>
+
+        <a href="adminDashboard.xhtml" class="btn-volver">Volver al Dashboard</a>
+    </div>
+
 </h:body>
 </html>
