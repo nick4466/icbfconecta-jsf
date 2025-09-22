@@ -7,71 +7,126 @@
 <h:head>
     <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
     <title>Listado de Niños</title>
+
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f5fb; /* fondo suave */
+            margin: 20px;
+        }
+
+        .titulo-panel {
+            background-color: #d9b3ff !important; /* morado pastel */
+            color: #4b0082; /* morado oscuro */
+            font-weight: bold;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .tabla-cabecera {
+            background-color: #f0e6fa !important; /* morado muy claro */
+            color: #4b0082 !important;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .acciones-btn {
+            margin: 2px;
+        }
+
+        .botones-navegacion {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .botones-navegacion .ui-button {
+            margin: 5px;
+            background-color: #d9b3ff !important;
+            border: none !important;
+            color: #4b0082 !important;
+        }
+
+        .botones-navegacion .ui-button:hover {
+            background-color: #cba0f7 !important;
+        }
+
+        .foto-rectangular {
+            width: 80px;
+            height: 100px;
+            object-fit: cover; /* asegura que no se deforme */
+            border: 2px solid #d9b3ff;
+            border-radius: 4px; /* esquinas suavemente redondeadas */
+        }
+    </style>
 </h:head>
+
 <h:body>
-
     <h:form id="formNinos">
-        <h2>Niños Matriculados en Mi Hogar</h2>
 
-        <!-- Mensajes globales -->
-        <p:messages id="mensajes" showDetail="true" showSummary="true" closable="true" />
+        <!-- Encabezado con panel -->
+        <p:panel header="👶 Niños Matriculados en Mi Hogar" styleClass="titulo-panel" style="margin-bottom:20px;">
+            <p:messages id="mensajes" showDetail="true" showSummary="true" closable="true" />
+        </p:panel>
 
-        <!-- Tabla con PrimeFaces -->
+        <!-- Tabla de niños -->
         <p:dataTable id="tablaNinos"
                      value="#{ninoBean.listaNinos}" var="n"
                      paginator="true" rows="10"
-                     emptyMessage="No hay niños matriculados en este hogar"
-                     scrollable="true" scrollHeight="400">
+                     style="width:100%"
+                     emptyMessage="No hay niños matriculados en este hogar">
 
             <!-- Columnas -->
-            <p:column headerText="ID" style="width:60px;">
+            <p:column headerText="ID" styleClass="tabla-cabecera" style="width:60px; text-align:center;">
                 <h:outputText value="#{n.idNino}" />
             </p:column>
 
-            <p:column headerText="Nombres">
+            <p:column headerText="Nombres" styleClass="tabla-cabecera">
                 <h:outputText value="#{n.nombres}" />
             </p:column>
 
-            <p:column headerText="Apellidos">
+            <p:column headerText="Apellidos" styleClass="tabla-cabecera">
                 <h:outputText value="#{n.apellidos}" />
             </p:column>
 
-            <p:column headerText="Documento">
+            <p:column headerText="Documento" styleClass="tabla-cabecera">
                 <h:outputText value="#{n.documento}" />
             </p:column>
 
-            <p:column headerText="Fecha Nacimiento">
+            <p:column headerText="Fecha Nacimiento" styleClass="tabla-cabecera">
                 <h:outputText value="#{n.fechaNacimiento}">
                     <f:convertDateTime pattern="dd/MM/yyyy" />
                 </h:outputText>
             </p:column>
 
-            <p:column headerText="Género">
+            <p:column headerText="Género" styleClass="tabla-cabecera" style="text-align:center;">
                 <h:outputText value="#{n.genero}" />
             </p:column>
 
-            <p:column headerText="Nacionalidad">
+            <p:column headerText="Nacionalidad" styleClass="tabla-cabecera">
                 <h:outputText value="#{n.nacionalidad}" />
             </p:column>
 
-            <!-- Mostrar foto directamente -->
-            <p:column headerText="Foto">
+            <!-- Foto rectangular -->
+            <p:column headerText="Foto" styleClass="tabla-cabecera" style="text-align:center; width:100px;">
                 <h:graphicImage value="http://localhost:8080/icbfconecta-jsf/uploads/#{n.foto}"
-                                width="60" height="60" alt="Foto Niño"/>
+                                styleClass="foto-rectangular"
+                                alt="Foto Niño"/>
             </p:column>
 
             <!-- Acciones -->
-            <p:column headerText="Acciones" style="width:120px; text-align:center;">
+            <p:column headerText="Acciones" styleClass="tabla-cabecera" style="width:140px; text-align:center;">
                 <!-- Editar -->
                 <p:commandButton icon="pi pi-pencil" title="Editar"
                                  action="editarNino.xhtml"
-                                 ajax="false">
+                                 ajax="false"
+                                 styleClass="acciones-btn">
                     <f:param name="idNino" value="#{n.idNino}" />
                 </p:commandButton>
 
                 <!-- Eliminar -->
                 <p:commandButton icon="pi pi-trash" title="Eliminar"
-                                 styleClass="ui-button-danger"
+                                 styleClass="ui-button-danger acciones-btn"
                                  actionListener="#{ninoBean.eliminar(n.idNino)}"
                                  update="formNinos:mensajes formNinos:tablaNinos"
                                  process="@this"
@@ -80,24 +135,24 @@
 
         </p:dataTable>
 
-        <br/>
-
         <!-- Botones de navegación -->
-        <p:commandButton value="Registrar Nuevo Niño"
-                         action="crearNino?faces-redirect=true"
-                         icon="pi pi-plus"
-                         ajax="false" />
+        <div class="botones-navegacion">
+            <p:commandButton value="Registrar Nuevo Niño"
+                             action="crearNino?faces-redirect=true"
+                             icon="pi pi-plus"
+                             ajax="false" />
 
-        <p:commandButton value="Volver al Dashboard"
-                         action="madreDashboard?faces-redirect=true"
-                         icon="pi pi-home"
-                         ajax="false" />
+            <p:commandButton value="Reporte de Niños"
+                             action="ReporteListado?faces-redirect=true"
+                             icon="pi pi-file"
+                             ajax="false" />
 
-        <p:commandButton value="Ver Reporte de Niños"
-                         action="ReporteListado?faces-redirect=true"
-                         icon="pi pi-list"
-                         ajax="false" />
+            <p:commandButton value="Volver al Dashboard"
+                             action="madreDashboard?faces-redirect=true"
+                             icon="pi pi-home"
+                             ajax="false" />
+        </div>
+
     </h:form>
-
 </h:body>
 </html>
