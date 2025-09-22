@@ -121,7 +121,7 @@ public class NinoBean implements Serializable {
             // =============================
             // 5. Crear NIÑO
             // =============================
-            nino.setPadreId(usuarioId); // FK al usuario del padre
+            nino.setPadreId(idPadre); // FK al registro del padre en tabla padres
             int idNino = ninoDAO.insert(nino);
 
             String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + idNino);
