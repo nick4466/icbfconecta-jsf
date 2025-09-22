@@ -1,47 +1,158 @@
-<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
-<h:head>
-    <title>Enviar Correo Masivo</title>
-</h:head>
+<f:view>
+    <f:metadata>
+        <f:viewAction action="#{sessionBean.verificarAcceso('madre_comunitaria')}" />
+    </f:metadata>
 
-<h:body>
-    <h:form id="formCorreo">
+    <h:head>
+        <title>ICBF Conecta - Enviar Correo Masivo</title>
+        <h:outputStylesheet library="css" name="estilos.css"/>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+        <style>
+            body {
+                margin: 0;
+                font-family: 'Roboto', sans-serif;
+                background-image: url("#{resource['img/fondito.png']}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
+            .form-panel {
+                background-color: rgba(255,255,255,0.95);
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+                box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            }
+            .form-panel h3 {
+                color: #9B59B6;
+                margin-bottom: 15px;
+            }
+            .form-field {
+                margin-bottom: 20px;
+            }
+            .form-field label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: #5e3370;
+            }
+            .form-field input, .form-field textarea {
+                width: 100%;
+                padding: 12px;
+                font-size: 16px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+            }
+            .form-field input:focus, .form-field textarea:focus {
+                border-color: #9B59B6;
+                outline: none;
+                background-color: #f0f8ff;
+            }
+            .btn-enviar {
+                background: linear-gradient(135deg, #f3c1e5, #e8a9d6);
+                color: #5e3370 !important;
+                border: none !important;
+                padding: 14px;
+                font-size: 16px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: bold;
+                text-transform: uppercase;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(243,193,229,0.3);
+            }
+            .btn-enviar:hover {
+                background: linear-gradient(135deg, #e8a9d6, #d988bc);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 14px rgba(233,169,214,0.5);
+            }
+            .btn-enviar:active {
+                transform: scale(0.97);
+                box-shadow: 0 3px 8px rgba(233,169,214,0.4);
+            }
+        </style>
+    </h:head>
 
-        <h3>Seleccionar Padres para Enviar Correo</h3>
+    <h:body>
 
-        <!-- Mensajes de notificación -->
-        <p:messages id="msgs" closable="true"/>
+        <!-- HEADER -->
+        <header>
+            <img src="#{resource['img/logoSinFondo.png']}" alt="Logo ICBF Conecta"/>
+            <nav>
+                <ul>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeaciones" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                    <li><h:link outcome="correos" value="Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                    <li>
+                        <h:form>
+                            <h:commandLink action="#{loginBean.logout}">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </h:commandLink>
+                        </h:form>
+                    </li>
+                </ul>
+            </nav>
+        </header>
 
-        <p:panel header="Lista de Padres">
-            <h:outputLabel value="Padres:" for="padresSelect"/>
-            <p:selectCheckboxMenu id="padresSelect"
-                                  value="#{correoBean.correosDestino}"
-                                  label="Seleccionar padres"
-                                  style="width:100%;margin-bottom:15px;"
-                                  multiple="true"
-                                  filter="true">
-                <f:selectItems value="#{correoBean.padres}" var="padre"
-                               itemLabel="#{padre.nombres} #{padre.apellidos} (#{padre.correo})"
-                               itemValue="#{padre.correo}" />
-            </p:selectCheckboxMenu>
-        </p:panel>
+        <!-- TÍTULO -->
+        <div class="main-title">
+            ICBF - CONECTA | Enviar Correos <br/>
+            Bienvenida, <h:outputText value="#{sessionBean.usuarioLogueado.nombres}"/>
+        </div>
 
-        <p:panel header="Redactar Correo" style="margin-top:20px;">
-            <h:outputLabel value="Asunto:" for="asunto"/>
-            <p:inputText id="asunto" value="#{correoBean.asunto}" style="width:100%" required="true"/>
+        <!-- FORMULARIO CORREO -->
+        <div class="contenedor">
 
-            <h:outputLabel value="Mensaje:" for="mensaje" style="margin-top:10px;"/>
-            <p:inputTextarea id="mensaje" value="#{correoBean.mensaje}" rows="6" cols="50" style="width:100%" required="true"/>
-        </p:panel>
+            <h:form id="formCorreo">
 
-        <p:commandButton value="Enviar Correo" action="#{correoBean.enviarCorreo}" 
-                         update="msgs,formCorreo" style="margin-top:20px;" 
-                         icon="pi pi-send"/>
+                <p:messages id="msgs" closable="true"/>
 
-    </h:form>
-</h:body>
+                <!-- SELECCIÓN DE PADRES -->
+                <div class="form-panel">
+                    <h3>Seleccionar Padres</h3>
+                    <p:selectCheckboxMenu id="padresSelect"
+                                          value="#{correoBean.correosDestino}"
+                                          label="Seleccionar padres"
+                                          style="width:100%;"
+                                          multiple="true"
+                                          filter="true">
+                        <f:selectItems value="#{correoBean.padres}" var="padre"
+                                       itemLabel="#{padre.nombres} #{padre.apellidos} (#{padre.correo})"
+                                       itemValue="#{padre.correo}" />
+                    </p:selectCheckboxMenu>
+                </div>
+
+                <!-- ASUNTO -->
+                <div class="form-panel">
+                    <h3>Asunto del Correo</h3>
+                    <div class="form-field">
+                        <p:inputText id="asunto" value="#{correoBean.asunto}" required="true"/>
+                    </div>
+               
+                    <h3>Mensaje del Correo</h3>
+                    <div class="form-field">
+                        <p:inputTextarea id="mensaje" value="#{correoBean.mensaje}" rows="6" required="true"/>
+                    </div>
+                </div>
+
+                <!-- BOTÓN ENVIAR -->
+                <div style="text-align:center;">
+                    <p:commandButton value="Enviar Correo" action="#{correoBean.enviarCorreo}"
+                                     update="msgs,formCorreo" styleClass="btn-enviar"/>
+                </div>
+
+            </h:form>
+
+        </div>
+
+    </h:body>
+</f:view>
 </html>
