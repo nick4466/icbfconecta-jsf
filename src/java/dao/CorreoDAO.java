@@ -8,48 +8,54 @@ import java.util.List;
 
 public class CorreoDAO {
 
+    // Listar correos de los padres asociados a un hogar
     public List<Usuario> listarCorreosPadresPorHogar(int hogarId) {
-    List<Usuario> padres = new ArrayList<>();
-    String sql = "SELECT DISTINCT u.id_usuario, u.nombres, u.apellidos, u.correo " +
-                 "FROM ninos n " +
-                 "INNER JOIN padres p ON n.padre_id = p.id_padre " +
-                 "INNER JOIN usuarios u ON p.usuario_id = u.id_usuario " +
-                 "WHERE n.hogar_id = ? AND u.rol_id = 3";
+        List<Usuario> padres = new ArrayList<>();
+        String sql = "SELECT DISTINCT u.id_usuario, u.nombres, u.apellidos, u.correo " +
+                     "FROM ninos n " +
+                     "INNER JOIN padres p ON n.padre_id = p.id_padre " +
+                     "INNER JOIN usuarios u ON p.usuario_id = u.id_usuario " +
+                     "WHERE n.hogar_id = ? AND u.rol_id = 3";
 
-    try (Connection con = ConDB.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setInt(1, hogarId);
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Usuario u = new Usuario();
-                u.setIdUsuario(rs.getInt("id_usuario"));
-                u.setNombres(rs.getString("nombres"));
-                u.setApellidos(rs.getString("apellidos"));
-                u.setCorreo(rs.getString("correo"));
-                padres.add(u);
+            ps.setInt(1, hogarId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setIdUsuario(rs.getInt("id_usuario"));
+                    u.setNombres(rs.getString("nombres"));
+                    u.setApellidos(rs.getString("apellidos"));
+                    u.setCorreo(rs.getString("correo"));
+                    padres.add(u);
+                }
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        return padres;
     }
-    return padres;
-}
 
-    
-    public Integer obtenerHogarMadre(int idUsuarioMadre) {
-    String sql = "SELECT hogar_id FROM madres WHERE usuario_id = ?";
+   public Integer obtenerHogarMadre(int idUsuarioMadre) {
+    String sql = "SELECT DISTINCT h.id_hogar " +
+                 "FROM hogares_comunitarios h " +
+                 "WHERE h.madre_id = ?";
     try (Connection con = ConDB.getConnection();
          PreparedStatement ps = con.prepareStatement(sql)) {
+
         ps.setInt(1, idUsuarioMadre);
         try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) return rs.getInt("hogar_id");
+            if (rs.next()) {
+                return rs.getInt("id_hogar");
+            }
         }
     } catch (SQLException e) {
         e.printStackTrace();
     }
     return null;
 }
+
 
 }

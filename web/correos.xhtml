@@ -3,42 +3,51 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
 <h:head>
-    <title>Gestión de Correos Masivos</title>
+    <title>Enviar Correo Masivo</title>
 </h:head>
+
 <h:body>
+    <h:form id="formCorreo">
 
-<h:form id="correoForm">
+        <h3>Seleccionar Padres para Enviar Correo</h3>
 
-    <h2>Enviar correos a los padres de tu hogar</h2>
+        <!-- Mensajes de notificación -->
+        <p:messages id="msgs" closable="true"/>
 
-    <!-- Mensajes de información y error -->
-    <p:messages id="msgs" showDetail="true" closable="true" />
+        <p:panel header="Lista de Padres">
+            <p:dataTable var="padre" value="#{correoBean.padres}" 
+                         selection="#{correoBean.correosDestino}" 
+                         selectionMode="multiple" rowKey="#{padre.correo}" 
+                         paginator="true" rows="10">
 
+                <!-- Checkbox para seleccionar individual y seleccionar todo -->
+                <p:column selectionMode="multiple" style="width:5%"/>
+                
+                <p:column headerText="Nombre">
+                    #{padre.nombres} #{padre.apellidos}
+                </p:column>
 
-    <!-- Selección múltiple de padres -->
-    <h:panelGrid columns="2" columnClasses="label,value" style="margin-bottom:20px">
+                <p:column headerText="Correo">
+                    #{padre.correo}
+                </p:column>
 
-        <h:outputLabel value="Selecciona padres:" for="padresSelect" />
-        <p:selectManyMenu id="padresSelect" value="#{correoBean.correosDestino}" converter="javax.faces.String" style="width:300px">
-            <f:selectItems value="#{correoBean.padres}" var="padre"
-                           itemLabel="#{padre.nombres} #{padre.apellidos}" 
-                           itemValue="#{padre.correo}" />
-        </p:selectManyMenu>
+            </p:dataTable>
+        </p:panel>
 
-        <h:outputLabel value="Asunto:" for="asunto" />
-        <p:inputText id="asunto" value="#{correoBean.asunto}" style="width:300px" />
+        <p:panel header="Redactar Correo" style="margin-top:20px;">
+            <h:outputLabel value="Asunto:" for="asunto"/>
+            <p:inputText id="asunto" value="#{correoBean.asunto}" style="width:100%" required="true"/>
 
-        <h:outputLabel value="Mensaje:" for="mensaje" style="vertical-align:top" />
-        <p:inputTextarea id="mensaje" value="#{correoBean.mensaje}" rows="6" cols="50" autoResize="true" />
+            <h:outputLabel value="Mensaje:" for="mensaje" style="margin-top:10px;"/>
+            <p:inputTextarea id="mensaje" value="#{correoBean.mensaje}" rows="6" cols="50" style="width:100%" required="true"/>
+        </p:panel>
 
-    </h:panelGrid>
+        <p:commandButton value="Enviar Correo" action="#{correoBean.enviarCorreo}" 
+                         update="msgs,formCorreo" style="margin-top:20px;" 
+                         icon="pi pi-send"/>
 
-    <!-- Botón para enviar correos -->
-  <p:commandButton value="Enviar correos" action="#{correoBean.enviarCorreo}" update="msgs" icon="pi pi-envelope" />
-
-
-</h:form>
-
+    </h:form>
 </h:body>
 </html>
