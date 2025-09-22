@@ -2,9 +2,11 @@ package control;
 
 import dao.ReporteDAO;
 import modelo.ReporteNinoDTO;
+import modelo.Usuario;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -23,6 +25,9 @@ public class ReporteBean implements Serializable {
 
     private ReporteDAO reporteDAO;
 
+    @ManagedProperty(value = "#{sessionBean}")
+    private SessionBean sessionBean;
+
     // Constructor vacío requerido por JSF
     public ReporteBean() {
     }
@@ -39,11 +44,18 @@ public class ReporteBean implements Serializable {
     // =========================
 
     public void cargarLista() {
+        if (sessionBean != null && sessionBean.getUsuarioLogueado() != null) {
+            Usuario usuario = sessionBean.getUsuarioLogueado();
+            if ("madre_comunitaria".equals(usuario.getRol())) {
+                listaReportes = reporteDAO.findByMadre(usuario.getIdUsuario());
+                return;
+            }
+        }
         listaReportes = reporteDAO.findAll();
     }
 
     public String verDetalle(int idNino) {
-        ReporteNinoDTO dto = reporteDAO.findById(idNino);
+        ReporteNinoDTO dto = buscarReportePorContexto(idNino);
         if (dto != null) {
             FacesContext context = FacesContext.getCurrentInstance();
             if (context != null) {
@@ -82,6 +94,14 @@ public class ReporteBean implements Serializable {
         this.seleccionado = seleccionado;
     }
 
+    public SessionBean getSessionBean() {
+        return sessionBean;
+    }
+
+    public void setSessionBean(SessionBean sessionBean) {
+        this.sessionBean = sessionBean;
+    }
+
     private void cargarSeleccionadoDesdeContexto() {
         FacesContext context = FacesContext.getCurrentInstance();
         if (context == null) {
@@ -111,9 +131,19 @@ public class ReporteBean implements Serializable {
 
         try {
             int id = Integer.parseInt(idParam.trim());
-            seleccionado = reporteDAO.findById(id);
+            seleccionado = buscarReportePorContexto(id);
         } catch (NumberFormatException ignored) {
             // parámetro inválido, se deja seleccionado en null
         }
+    }
+
+    private ReporteNinoDTO buscarReportePorContexto(int idNino) {
+        if (sessionBean != null && sessionBean.getUsuarioLogueado() != null) {
+            Usuario usuario = sessionBean.getUsuarioLogueado();
+            if ("madre_comunitaria".equals(usuario.getRol())) {
+                return reporteDAO.findByIdAndMadre(idNino, usuario.getIdUsuario());
+            }
+        }
+        return reporteDAO.findById(idNino);
     }
 }

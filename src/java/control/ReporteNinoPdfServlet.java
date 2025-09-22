@@ -4,6 +4,9 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 
 import dao.ReporteDAO;
+import modelo.ReporteNinoDTO;
+import modelo.Usuario;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +16,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import modelo.ReporteNinoDTO;
 
 public class ReporteNinoPdfServlet extends HttpServlet {
 
@@ -41,9 +43,17 @@ public class ReporteNinoPdfServlet extends HttpServlet {
             return;
         }
 
-        // Consulta del DTO (usa la VIEW vw_reporte_nino)
+        // Consulta del DTO validando el contexto de la madre logueada
         ReporteDAO dao = new ReporteDAO();
-        ReporteNinoDTO dto = dao.findById(idNino);
+        SessionBean sessionBean = (SessionBean) req.getSession().getAttribute("sessionBean");
+        Usuario usuario = (sessionBean != null) ? sessionBean.getUsuarioLogueado() : null;
+
+        ReporteNinoDTO dto;
+        if (usuario != null && "madre_comunitaria".equals(usuario.getRol())) {
+            dto = dao.findByIdAndMadre(idNino, usuario.getIdUsuario());
+        } else {
+            dto = dao.findById(idNino);
+        }
         if (dto == null) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "No existe el reporte para el id_nino=" + idNino);
             return;
