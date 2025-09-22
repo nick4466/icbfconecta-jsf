@@ -2,43 +2,82 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-
 <f:view>
-    <f:metadata>
-        <f:viewAction action="#{sessionBean.verificarAcceso('administrador')}" />
-    </f:metadata>
+    <f:metadata>
+        <f:viewAction action="#{sessionBean.verificarAcceso('administrador')}" />
+    </f:metadata>
 
-    <h:head>
-        <title>Dashboard Administrador</title>
-    </h:head>
-    <h:body>
-        <h:form>
-            <!-- Saludo -->
-            <h2>Bienvenido, 
-                <h:outputText value="#{sessionBean.usuarioLogueado.nombres}"/>
-                <h:outputText value=" "/>
-                <h:outputText value="#{sessionBean.usuarioLogueado.apellidos}"/>
-            </h2>
+    <h:head>
+        <title>ICBF Conecta - Administrador</title>
+        <h:outputStylesheet library="css" name="estilos.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <style>
+    body {
+        margin: 0;
+        font-family: 'Roboto', sans-serif;
+        background-image: url("#{resource['img/fondoAdmin.png']}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
 
-            <!-- Botón cerrar sesión -->
-            <h:commandButton value="Cerrar sesión" action="#{loginBean.logout}" />
-            <br/><br/>
+    </h:head>
 
-            <!-- Opciones del Admin -->
-            <h3>Opciones del Administrador</h3>
-            <ul>
-                <!-- CRUD de Hogares -->
-                <li><h:link value="Crear Hogar Comunitario" outcome="crearHogar"/></li>
-                <li><h:link value="Gestionar Hogares" outcome="listarHogares"/></li>
+    <h:body>
+        <div class="admin-dashboard">
+            <!-- HEADER -->
+      <header>
+        <h:graphicImage library="img" name="logoSinFondo.png" alt="Logo ICBF" style="height:60px;" />
+        <h:form>
+            <h:commandLink action="#{loginBean.logout}">
+            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+            </h:commandLink>
+        </h:form>
+      </header>
 
-                <!-- CRUD de Madres -->
-                <li><h:link value="Registrar Madre Comunitaria" outcome="crearMadre"/></li>
-                <li><h:link value="Gestionar Madres Comunitarias" outcome="listarMadres"/></li>
+      <!-- TITLE -->
+      <div class="main-title">ICBF - CONECTA | Panel Administrador</div>
 
-                <!-- Otros módulos (placeholder para futuro) -->
-                <li><h:link value="Ver Reportes" outcome="reportes"/></li>
-            </ul>
-        </h:form>
-    </h:body>
+      <!-- CONTENT -->
+      <div class="contenedor">
+
+        <div class="card">
+          <i class="fas fa-home"></i>
+          <div>Crear Hogar Comunitario</div>
+          <h:link outcome="crearHogar" styleClass="link-button">Ir a sección</h:link>
+        </div>
+
+        <div class="card">
+          <i class="fas fa-list"></i>
+          <div>Gestionar Hogares</div>
+          <h:link outcome="listarHogares" styleClass="link-button">Ir a sección</h:link>
+        </div>
+
+        <div class="card">
+          <i class="fas fa-user-plus"></i>
+          <div>Registrar Madre Comunitaria</div>
+          <h:link outcome="crearMadre" styleClass="link-button">Ir a sección</h:link>
+        </div>
+
+        <div class="card">
+          <i class="fas fa-users"></i>
+          <div>Gestionar Madres</div>
+          <h:link outcome="listarMadres" styleClass="link-button">Ir a sección</h:link>
+        </div>
+
+        <div class="card">
+          <i class="fas fa-chart-bar"></i>
+          <div>Ver Reportes</div>
+          <h:link outcome="reportes" styleClass="link-button">Ir a sección</h:link>
+        </div>
+
+      </div>
+        </div>
+      
+
+    </h:body>
 </f:view>
 </html>

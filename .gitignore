@@ -9,10 +9,16 @@
 /build/
 /dist/
 /nbproject/private/
+*.LCK*
+*~
+
 
 # Configuración del IDE
 *.iml
 .idea/
 .vscode/
+
+/icbfconecta-jsf-backup/
+
 
 # Mantener los JAR importantes (no ignorar WEB-INF/lib)
