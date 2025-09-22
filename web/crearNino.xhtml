@@ -27,11 +27,19 @@
         <h:inputText id="documentoN" value="#{ninoBean.nino.documento}" />
 
         <h:outputLabel for="fechaNac" value="Fecha de nacimiento:" />
-        <p:calendar id="fechaNac"
-                    value="#{ninoBean.nino.fechaNacimiento}"
-                    pattern="yyyy-MM-dd"
-                    showOn="button"
-                    required="true" />
+        <div class="form-field">
+                    <h:outputLabel for="fechaNac" value="Fecha de nacimiento" styleClass="field-label"/>
+                    <p:calendar id="fechaNac"
+                                value="#{ninoBean.nino.fechaNacimiento}"
+                                pattern="yyyy-MM-dd"
+                                
+                                navigator="true"
+                                yearRange="1950:2100"
+                                required="true"
+                                requiredMessage="Selecciona la fecha de nacimiento."
+                                inputStyleClass="input-field"/>
+                    <h:message for="fechaNac" styleClass="error-msg"/>
+                </div>
 
         <h:outputLabel for="genero" value="Género:" />
         <h:selectOneMenu id="genero" value="#{ninoBean.nino.genero}">
