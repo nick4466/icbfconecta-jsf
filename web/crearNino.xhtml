@@ -11,9 +11,57 @@
 <h:form enctype="multipart/form-data">
     <h:messages globalOnly="true" style="color:red;" />
 
-    <!-- ====================== -->
-    <!-- DATOS DEL NIÑO -->
-    <!-- ====================== -->
+    <h2>Datos del Padre Registrado</h2>
+    <h:panelGroup rendered="#{ninoBean.padreDisponible}">
+        <h:panelGrid columns="2" columnClasses="label,value" styleClass="resumen-padre">
+            <h:outputLabel value="ID Padre:" />
+            <h:outputText value="#{ninoBean.padreIdSeleccionado}" />
+
+            <h:outputLabel value="Nombres:" />
+            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.nombres} #{ninoBean.usuarioPadreSeleccionado.apellidos}" />
+
+            <h:outputLabel value="Documento:" />
+            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.documento}" />
+
+            <h:outputLabel value="Correo:" />
+            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.correo}" />
+
+            <h:outputLabel value="Teléfono:" />
+            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.telefono}" />
+
+            <h:outputLabel value="Dirección:" />
+            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.direccion}" />
+
+            <h:outputLabel value="Ocupación:" />
+            <h:outputText value="#{ninoBean.padreSeleccionado.ocupacion}" />
+
+            <h:outputLabel value="Estrato:" />
+            <h:outputText value="#{ninoBean.padreSeleccionado.estrato}" />
+
+            <h:outputLabel value="Contacto emergencia:" />
+            <h:outputText value="#{ninoBean.padreSeleccionado.nombreContactoEmergencia} / #{ninoBean.padreSeleccionado.telefonoContactoEmergencia}" />
+
+            <h:outputLabel value="Situación económica:" />
+            <h:outputText value="#{ninoBean.padreSeleccionado.situacionEconomicaHogar}" />
+
+            <h:outputLabel value="Documento identidad:" />
+            <h:panelGroup>
+                <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{ninoBean.padreSeleccionado.documentoIdentidadImg}"
+                                width="120" height="120" rendered="#{not empty ninoBean.padreSeleccionado.documentoIdentidadImg}" />
+                <h:outputText value="No disponible" rendered="#{empty ninoBean.padreSeleccionado.documentoIdentidadImg}" />
+            </h:panelGroup>
+        </h:panelGrid>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{!ninoBean.padreDisponible}" style="color:#c0392b; font-weight:bold;">
+        <h:outputText value="Debes registrar primero los datos del padre antes de matricular al niño." />
+        <br/>
+        <h:link outcome="crearPadre" value="Registrar datos del padre" />
+    </h:panelGroup>
+
+    <h:inputHidden value="#{ninoBean.padreIdSeleccionado}" />
+
+    <p:separator/>
+
     <h2>Datos del Niño</h2>
     <h:panelGrid columns="2" columnClasses="label,value">
 
@@ -28,18 +76,17 @@
 
         <h:outputLabel for="fechaNac" value="Fecha de nacimiento:" />
         <div class="form-field">
-                    <h:outputLabel for="fechaNac" value="Fecha de nacimiento" styleClass="field-label"/>
-                    <p:calendar id="fechaNac"
-                                value="#{ninoBean.nino.fechaNacimiento}"
-                                pattern="yyyy-MM-dd"
-                                
-                                navigator="true"
-                                yearRange="1950:2100"
-                                required="true"
-                                requiredMessage="Selecciona la fecha de nacimiento."
-                                inputStyleClass="input-field"/>
-                    <h:message for="fechaNac" styleClass="error-msg"/>
-                </div>
+            <h:outputLabel for="fechaNac" value="Fecha de nacimiento" styleClass="field-label"/>
+            <p:calendar id="fechaNac"
+                        value="#{ninoBean.nino.fechaNacimiento}"
+                        pattern="yyyy-MM-dd"
+                        navigator="true"
+                        yearRange="1950:2100"
+                        required="true"
+                        requiredMessage="Selecciona la fecha de nacimiento."
+                        inputStyleClass="input-field"/>
+            <h:message for="fechaNac" styleClass="error-msg"/>
+        </div>
 
         <h:outputLabel for="genero" value="Género:" />
         <h:selectOneMenu id="genero" value="#{ninoBean.nino.genero}">
@@ -68,69 +115,16 @@
 
     <p:separator/>
 
-    <!-- ====================== -->
-    <!-- DATOS DEL PADRE -->
-    <!-- ====================== -->
-    <h2>Datos del Padre</h2>
-    <h:panelGrid columns="2" columnClasses="label,value">
-
-        <h:outputLabel for="nombresP" value="Nombres:" />
-        <h:inputText id="nombresP" value="#{ninoBean.usuarioPadre.nombres}" required="true" />
-
-        <h:outputLabel for="apellidosP" value="Apellidos:" />
-        <h:inputText id="apellidosP" value="#{ninoBean.usuarioPadre.apellidos}" required="true" />
-
-        <h:outputLabel for="documentoP" value="Documento:" />
-        <h:inputText id="documentoP" value="#{ninoBean.usuarioPadre.documento}" required="true" />
-
-        <h:outputLabel for="ocupacion" value="Ocupación:" />
-        <h:inputText id="ocupacion" value="#{ninoBean.padre.ocupacion}" />
-
-        <h:outputLabel for="estrato" value="Estrato:" />
-        <h:inputText id="estrato" value="#{ninoBean.padre.estrato}" />
-
-        <h:outputLabel for="telEmerg" value="Teléfono de emergencia:" />
-        <h:inputText id="telEmerg" value="#{ninoBean.padre.telefonoContactoEmergencia}" />
-
-        <h:outputLabel for="nomEmerg" value="Nombre contacto de emergencia:" />
-        <h:inputText id="nomEmerg" value="#{ninoBean.padre.nombreContactoEmergencia}" />
-
-        <h:outputLabel for="sitEcon" value="Situación económica hogar:" />
-        <h:inputTextarea id="sitEcon" value="#{ninoBean.padre.situacionEconomicaHogar}" rows="3" cols="30" />
-
-        <h:outputLabel for="docPadre" value="Documento de identidad (archivo):" />
-        <h:inputFile id="docPadre" value="#{ninoBean.docPadrePart}" required="true" />
-
-        <h:outputLabel for="correoP" value="Correo electrónico:" />
-        <h:inputText id="correoP" value="#{ninoBean.usuarioPadre.correo}" required="true" />
-
-        <h:outputLabel for="direccionP" value="Dirección:" />
-        <h:inputText id="direccionP" value="#{ninoBean.usuarioPadre.direccion}" />
-
-        <h:outputLabel for="telefonoP" value="Teléfono:" />
-        <h:inputText id="telefonoP" value="#{ninoBean.usuarioPadre.telefono}" />
-
-        <h:outputLabel for="pass1" value="Contraseña:" />
-        <h:inputSecret id="pass1" value="#{ninoBean.password1}" required="true" redisplay="true"/>
-
-        <h:outputLabel for="pass2" value="Confirmar contraseña:" />
-        <h:inputSecret id="pass2" value="#{ninoBean.password2}" required="true" redisplay="true"/>
-
-    </h:panelGrid>
-
-    <p:separator/>
-
-    <!-- BOTONES -->
-<p:commandButton value="Guardar Matrícula"
-                 action="#{NinoBean.guardarMatricula}"
-                 ajax="false"
-                 styleClass="ui-button-success"/>
-
+    <p:commandButton value="Guardar Matrícula"
+                     action="#{ninoBean.guardarMatricula}"
+                     ajax="false"
+                     styleClass="ui-button-success"
+                     disabled="#{!ninoBean.padreDisponible}"/>
 
     <p:commandButton value="Cancelar" immediate="true"
-                     action="#{NinoBean.cancelar}"
+                     action="#{ninoBean.cancelar}"
                      styleClass="ui-button-secondary"/>
-   
+
 </h:form>
 
 </h:body>

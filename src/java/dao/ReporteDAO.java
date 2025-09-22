@@ -11,9 +11,11 @@ public class ReporteDAO {
 
     // Buscar un solo reporte por id de niño
     public ReporteNinoDTO findById(int idNino) {
-        String sql = "SELECT vw.*, u.password_hash AS padre_password_hash " +
+        String sql = "SELECT vw.*, u.password_hash AS padre_password_hash, " +
+                     "p.documento_identidad_img AS padre_documento_img " +
                      "FROM vw_reporte_nino vw " +
                      "JOIN usuarios u ON vw.padre_usuario_id = u.id_usuario " +
+                     "JOIN padres p ON p.id_padre = vw.id_padre " +
                      "WHERE vw.id_nino = ?";
         try (Connection con = ConDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -33,9 +35,11 @@ public class ReporteDAO {
     // Listar todos los reportes (o por hogar si quieres)
     public List<ReporteNinoDTO> findAll() {
         List<ReporteNinoDTO> lista = new ArrayList<>();
-        String sql = "SELECT vw.*, u.password_hash AS padre_password_hash " +
+        String sql = "SELECT vw.*, u.password_hash AS padre_password_hash, " +
+                     "p.documento_identidad_img AS padre_documento_img " +
                      "FROM vw_reporte_nino vw " +
-                     "JOIN usuarios u ON vw.padre_usuario_id = u.id_usuario";
+                     "JOIN usuarios u ON vw.padre_usuario_id = u.id_usuario " +
+                     "JOIN padres p ON p.id_padre = vw.id_padre";
         try (Connection con = ConDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -81,6 +85,7 @@ public class ReporteDAO {
         dto.setNomEmerg(rs.getString("nombre_contacto_emergencia"));
         dto.setSituacionEcon(rs.getString("situacion_economica_hogar"));
         dto.setPadrePasswordHash(rs.getString("padre_password_hash"));
+        dto.setDocumentoPadreImg(rs.getString("padre_documento_img"));
 
         // Hogar
         dto.setIdHogar(rs.getInt("id_hogar"));

@@ -155,6 +155,12 @@ public class ReporteNinoPdfServlet extends HttpServlet {
             doc.add(tPadre);
             doc.add(espacio(12f));
 
+            PdfPTable tDocPadre = new PdfPTable(1);
+            tDocPadre.setWidthPercentage(100);
+            addImageCell(tDocPadre, dto.getDocumentoPadreImg(), "Documento de identidad del padre");
+            doc.add(tDocPadre);
+            doc.add(espacio(12f));
+
             // ===== Sección: Credenciales =====
             doc.add(new Paragraph("Credenciales de Acceso", fSeccion));
             doc.add(espacio(6f));

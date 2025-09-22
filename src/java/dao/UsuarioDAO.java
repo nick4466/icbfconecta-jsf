@@ -230,17 +230,46 @@ public Integer obtenerRolId(String nombreRol) {
 }
 
 /** SHA-256 en Java (hex). */
-private String sha256(String input) {
-    try {
-        java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
-        byte[] hash = md.digest(input.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-        StringBuilder sb = new StringBuilder();
-        for (byte b : hash) sb.append(String.format("%02x", b));
-        return sb.toString();
-    } catch (NoSuchAlgorithmException e) {
-        throw new RuntimeException("No se pudo calcular SHA-256", e);
+    private String sha256(String input) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(input.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) sb.append(String.format("%02x", b));
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("No se pudo calcular SHA-256", e);
+        }
     }
-}
+
+    public void actualizarDatosPadre(Usuario usuario, String passwordHash) throws SQLException {
+        if (usuario.getIdUsuario() == 0) {
+            throw new SQLException("El usuario debe tener un id válido para actualizarse");
+        }
+
+        Integer rolPadreId = obtenerRolId("padre");
+        if (rolPadreId == null) {
+            throw new SQLException("No existe el rol padre en la base de datos");
+        }
+
+        String sql = "UPDATE usuarios SET nombres = ?, apellidos = ?, correo = ?, direccion = ?, telefono = ?, " +
+                     "password_hash = ?, rol_id = ? WHERE id_usuario = ?";
+
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, usuario.getNombres());
+            ps.setString(2, usuario.getApellidos());
+            ps.setString(3, usuario.getCorreo());
+            ps.setString(4, usuario.getDireccion());
+            ps.setString(5, usuario.getTelefono());
+            ps.setString(6, passwordHash);
+            ps.setInt(7, rolPadreId);
+            ps.setInt(8, usuario.getIdUsuario());
+
+            ps.executeUpdate();
+        }
+    }
 
  public int insertPadre(Usuario u) throws SQLException {
     int rolPadreId = obtenerRolId("padre");
@@ -297,6 +326,32 @@ private String sha256(String input) {
     }
     return null;
 }
+
+    public Usuario findById(int idUsuario) {
+        String sql = "SELECT * FROM usuarios WHERE id_usuario = ?";
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setIdUsuario(rs.getInt("id_usuario"));
+                    u.setDocumento(rs.getString("documento"));
+                    u.setNombres(rs.getString("nombres"));
+                    u.setApellidos(rs.getString("apellidos"));
+                    u.setCorreo(rs.getString("correo"));
+                    u.setDireccion(rs.getString("direccion"));
+                    u.setTelefono(rs.getString("telefono"));
+                    u.setPasswordHash(rs.getString("password_hash"));
+                    u.setRolId(rs.getInt("rol_id"));
+                    return u;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 public List<String> obtenerCorreosPadresPorHogar(int hogarId) {
     List<String> correos = new ArrayList<>();

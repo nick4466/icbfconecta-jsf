@@ -81,4 +81,65 @@ public class PadreDAO {
         }
         return null;
     }
+
+    public Padre findById(int idPadre) {
+        String sql = "SELECT * FROM padres WHERE id_padre = ?";
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idPadre);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Padre p = new Padre();
+                    p.setIdPadre(rs.getInt("id_padre"));
+                    p.setUsuarioId(rs.getInt("usuario_id"));
+                    p.setOcupacion(rs.getString("ocupacion"));
+                    Object estratoObj = rs.getObject("estrato");
+                    if (estratoObj instanceof Number) {
+                        p.setEstrato(((Number) estratoObj).intValue());
+                    } else {
+                        p.setEstrato(null);
+                    }
+                    p.setTelefonoContactoEmergencia(rs.getString("telefono_contacto_emergencia"));
+                    p.setNombreContactoEmergencia(rs.getString("nombre_contacto_emergencia"));
+                    p.setSituacionEconomicaHogar(rs.getString("situacion_economica_hogar"));
+                    p.setDocumentoIdentidadImg(rs.getString("documento_identidad_img"));
+                    return p;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void actualizarPadre(Padre padre) throws SQLException {
+        String sql = "UPDATE padres SET ocupacion = ?, estrato = ?, telefono_contacto_emergencia = ?, " +
+                     "nombre_contacto_emergencia = ?, situacion_economica_hogar = ?, documento_identidad_img = ?, " +
+                     "usuario_id = ? WHERE id_padre = ?";
+
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, padre.getOcupacion());
+
+            if (padre.getEstrato() != null) {
+                ps.setInt(2, padre.getEstrato());
+            } else {
+                ps.setNull(2, Types.INTEGER);
+            }
+
+            ps.setString(3, padre.getTelefonoContactoEmergencia());
+            ps.setString(4, padre.getNombreContactoEmergencia());
+            ps.setString(5, padre.getSituacionEconomicaHogar());
+            ps.setString(6, padre.getDocumentoIdentidadImg());
+            if (padre.getUsuarioId() != null) {
+                ps.setInt(7, padre.getUsuarioId());
+            } else {
+                ps.setNull(7, Types.INTEGER);
+            }
+            ps.setInt(8, padre.getIdPadre());
+
+            ps.executeUpdate();
+        }
+    }
 }
