@@ -127,7 +127,8 @@
         <p:dialog header="Registrar/Editar Desarrollo" widgetVar="dialogEdicion" modal="true" closable="true"
                   resizable="false" draggable="false" width="600" appendTo="@(body)">
             <h:form id="formEdicion">
-                <p:panelGrid columns="2" style="width:100%">
+        <h:inputHidden value="#{desarrolloBean.desarrollo.idDesarrollo}" />
+        <p:panelGrid columns="2" style="width:100%">
                     <p:outputLabel value="Fecha Evaluación" />
                     <p:calendar value="#{desarrolloBean.desarrollo.fechaFinMes}" pattern="yyyy-MM-dd" showButtonPanel="true" required="true"/>
 
@@ -144,7 +145,8 @@
                     <p:inputTextarea value="#{desarrolloBean.desarrollo.dimensionCorporal}" rows="4" cols="50"/>
 
                     <p:commandButton value="Guardar"
-                                     action="#{desarrolloBean.guardar()}"
+                                     actionListener="#{desarrolloBean.guardar}"
+                                     ajax="false"
                                      update="formDesarrollo"
                                      process="@this" />
                     <p:commandButton value="Cancelar" onclick="PF('dialogEdicion').hide();" type="button" />

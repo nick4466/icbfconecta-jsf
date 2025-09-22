@@ -23,7 +23,7 @@ public class Nino implements Serializable {
     private String nacionalidad;         // puede ser null
     private Date fechaIngreso;           // DEFAULT CURRENT_DATE
     private int hogarId;                 // NOT NULL FK -> hogares_comunitarios.id_hogar
-    private int padreId;                 // NOT NULL FK -> usuarios.id_usuario
+    private int padreId;                 // NOT NULL FK -> padres.id_padre
 
     // Campos para archivos (rutas en servidor)
     private String foto;                 // ruta foto del niño
