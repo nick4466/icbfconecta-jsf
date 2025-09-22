@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      lang="es">
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Registrar Desarrollo de Niños</title>
+    <h:outputStylesheet library="css" name="estilos.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-image: url("#{resource['img/fondito.png']}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="desarrollo-dashboard">
+        <header>
+        <h:graphicImage library="img" name="logoSinFondo.png" alt="Logo del Software"/>
+        <nav>
+            <ul>
+                <li><h:link outcome="madreDashboard" value="Inicio"><i class="fas fa-home"></i></h:link></li>
+                <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                <li><h:link outcome="planeaciones" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                <li><h:link outcome="correos" value=" Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                <li>
+                    <h:form>
+                        <h:commandLink action="#{loginBean.logout}">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                        </h:commandLink>
+                    </h:form>
+                </li>
+            </ul>
+        </nav>
+    </header>
+        <div class="main-title">Registro de Desarrollo de Niños</div>
+        <div class="contenedor">
+            <div class="card">
+                <h2><i class="fas fa-file-alt"></i> Datos del Niño</h2>
+                <h:form id="formRegistroDesarrollo">
+                    <p:messages id="mensajes" showDetail="true" showSummary="true"/>
+                    <p:panelGrid columns="2" style="width:100%">
+                        <p:outputLabel value="Niño"/>
+                        <p:selectOneMenu value="#{desarrolloBean.desarrollo.idNino}" required="true" converter="javax.faces.Integer">
+                            <f:selectItem itemLabel="-- Seleccione el niño --" itemValue=""/>
+                            <f:selectItems value="#{ninoBean.listaNinos}" var="n"
+                                           itemLabel="#{n.nombreCompleto}" itemValue="#{n.idNino}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Fecha Evaluación"/>
+                        <p:calendar value="#{desarrolloBean.desarrollo.fechaFinMes}" pattern="yyyy-MM-dd" required="true" navigator="true" showButtonPanel="true"/>
+                        <p:outputLabel value="Dimensión Cognitiva"/>
+                        <p:inputTextarea value="#{desarrolloBean.desarrollo.dimensionCognitiva}" rows="4" cols="50" required="true"/>
+                        <p:outputLabel value="Dimensión Comunicativa"/>
+                        <p:inputTextarea value="#{desarrolloBean.desarrollo.dimensionComunicativa}" rows="4" cols="50" required="true"/>
+                        <p:outputLabel value="Dimensión Socio-Afectiva"/>
+                        <p:inputTextarea value="#{desarrolloBean.desarrollo.dimensionSocioAfectiva}" rows="4" cols="50" required="true"/>
+                        <p:outputLabel value="Dimensión Corporal"/>
+                        <p:inputTextarea value="#{desarrolloBean.desarrollo.dimensionCorporal}" rows="4" cols="50" required="true"/>
+                        <p:outputLabel/>
+                        <p:commandButton value="Registrar"
+                                         actionListener="#{desarrolloBean.guardar}"
+                                         ajax="false"
+                                         styleClass="botones"/>
+                        <p:commandButton value="Cancelar"
+                                         immediate="true"
+                                         action="desarrollo?faces-redirect=true"
+                                         styleClass="ui-button-secondary"
+                                         ajax="false"/>
+                    </p:panelGrid>
+                </h:form>
+            </div>
+        </div>
+    </div>
+</h:body>
+</html>

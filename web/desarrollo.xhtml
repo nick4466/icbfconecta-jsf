@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>ICBF Conecta - Desarrollo Infantil</title>
+    <h:outputStylesheet library="css" name="estilos.css"/>
+    <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<style>
+    body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-image: url("#{resource['img/fondito.png']}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+</style>
+</h:head>
+
+<h:body>
+
+    <!-- ENCABEZADO -->
+    <header>
+        <img src="#{resource['img/logoSinFondo.png']}" alt="Logo del Software"/>
+        <h:form>
+            <nav>
+                <ul>
+                    <li><h:link outcome="madreDashboard" value="Inicio"><i class="fas fa-home"></i></h:link></li>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeaciones" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                    <li><h:link outcome="correos" value=" Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                    <li>
+                        <h:commandLink action="#{loginBean.logout}">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </nav>
+        </h:form>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="tabla-container">
+        <h1>Desarrollo Infantil</h1>
+
+        <!-- Formulario para la Tabla -->
+        <h:form id="formDesarrollo">
+            <p:messages id="mensajes" showDetail="true" showSummary="true" />
+
+            <p:dataTable id="tablaDesarrollo"
+                         value="#{desarrolloBean.listaDesarrollo}" var="d"
+                         paginator="true" rows="10"
+                         scrollable="true" scrollHeight="400"
+                         emptyMessage="No hay registros de desarrollo.">
+
+                <p:column headerText="ID">
+                    <h:outputText value="#{d.idDesarrollo}" />
+                </p:column>
+
+                <p:column headerText="Niño">
+                    <h:outputText value="#{d.nombreNino}" />
+                </p:column>
+
+                <p:column headerText="Fecha Evaluación">
+                    <h:outputText value="#{d.fechaFinMes}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Acciones" styleClass="acciones">
+                    <!-- Ver Detalles -->
+                    <p:commandButton icon="pi pi-eye"
+                                     styleClass="btn-verde"
+                                     oncomplete="PF('dialogDetalle').show()"
+                                     update=":dialogForm"
+                                     actionListener="#{desarrolloBean.verDetalle(d)}" />
+
+                    <!-- Editar -->
+                    <p:commandButton icon="pi pi-pencil"
+                                     styleClass="btn-azul"
+                                     actionListener="#{desarrolloBean.cargarParaEditar(d)}"
+                                     update=":formEdicion"
+                                     oncomplete="PF('dialogEdicion').show()" />
+
+                    <!-- Eliminar -->
+                    <p:commandButton icon="pi pi-trash"
+                                     styleClass="btn-rojo"
+                                     actionListener="#{desarrolloBean.eliminar(d.idDesarrollo)}"
+                                     update="formDesarrollo"
+                                     process="@this"
+                                     onclick="return confirm('¿Seguro que deseas eliminar este registro?');" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <!-- Modal Detalles -->
+        <p:dialog header="Detalles del Desarrollo" widgetVar="dialogDetalle" modal="true" closable="true"
+                  resizable="false" draggable="false" width="600" appendTo="@(body)">
+            <h:form id="dialogForm">
+                <p:panelGrid columns="1" style="width:100%">
+                    <p:outputLabel value="Niño: #{desarrolloBean.detalle.nombreNino}" />
+                    <p:outputLabel value="Fecha: #{desarrolloBean.detalle.fechaFinMes}" />
+
+                    <p:outputLabel value="Dimensión Cognitiva:" style="font-weight: bold;" />
+                    <p:outputLabel value="#{desarrolloBean.detalle.dimensionCognitiva}" />
+
+                    <p:outputLabel value="Dimensión Comunicativa:" style="font-weight: bold;" />
+                    <p:outputLabel value="#{desarrolloBean.detalle.dimensionComunicativa}" />
+
+                    <p:outputLabel value="Dimensión Socio-Afectiva:" style="font-weight: bold;" />
+                    <p:outputLabel value="#{desarrolloBean.detalle.dimensionSocioAfectiva}" />
+
+                    <p:outputLabel value="Dimensión Corporal:" style="font-weight: bold;" />
+                    <p:outputLabel value="#{desarrolloBean.detalle.dimensionCorporal}" />
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <!-- Modal de Edición/Creación -->
+        <p:dialog header="Registrar/Editar Desarrollo" widgetVar="dialogEdicion" modal="true" closable="true"
+                  resizable="false" draggable="false" width="600" appendTo="@(body)">
+            <h:form id="formEdicion">
+                <p:panelGrid columns="2" style="width:100%">
+                    <p:outputLabel value="Fecha Evaluación" />
+                    <p:calendar value="#{desarrolloBean.desarrollo.fechaFinMes}" pattern="yyyy-MM-dd" showButtonPanel="true" required="true"/>
+
+                    <p:outputLabel value="Dimensión Cognitiva" />
+                    <p:inputTextarea value="#{desarrolloBean.desarrollo.dimensionCognitiva}" rows="4" cols="50"/>
+
+                    <p:outputLabel value="Dimensión Comunicativa" />
+                    <p:inputTextarea value="#{desarrolloBean.desarrollo.dimensionComunicativa}" rows="4" cols="50"/>
+
+                    <p:outputLabel value="Dimensión Socio-Afectiva" />
+                    <p:inputTextarea value="#{desarrolloBean.desarrollo.dimensionSocioAfectiva}" rows="4" cols="50"/>
+
+                    <p:outputLabel value="Dimensión Corporal" />
+                    <p:inputTextarea value="#{desarrolloBean.desarrollo.dimensionCorporal}" rows="4" cols="50"/>
+
+                    <p:commandButton value="Guardar"
+                                     action="#{desarrolloBean.guardar()}"
+                                     update="formDesarrollo"
+                                     process="@this" />
+                    <p:commandButton value="Cancelar" onclick="PF('dialogEdicion').hide();" type="button" />
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        <!-- Formulario de Botones -->
+        <h:form>
+            <!-- Botones de acción -->
+            <div class="botones-superior">
+                <p:commandButton value="Registrar Desarrollo"
+                                 action="registrarDesarrollo?faces-redirect=true"
+                                 ajax="false"
+                                 styleClass="boton-agregar"
+                                 icon="fas fa-plus" />
+                <p:commandButton value="Volver al Dashboard"
+                                 action="madreDashboard?faces-redirect=true"
+                                 ajax="false"
+                                 styleClass="boton-agregar"
+                                 icon="fas fa-home" />
+            </div>
+        </h:form>
+    </div>
+</h:body>
+</html>
