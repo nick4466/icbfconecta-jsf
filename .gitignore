@@ -9,6 +9,9 @@
 /build/
 /dist/
 /nbproject/private/
+*.LCK*
+*~
+
 
 # Configuración del IDE
 *.iml
