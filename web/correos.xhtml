@@ -17,23 +17,17 @@
         <p:messages id="msgs" closable="true"/>
 
         <p:panel header="Lista de Padres">
-            <p:dataTable var="padre" value="#{correoBean.padres}" 
-                         selection="#{correoBean.correosDestino}" 
-                         selectionMode="multiple" rowKey="#{padre.correo}" 
-                         paginator="true" rows="10">
-
-                <!-- Checkbox para seleccionar individual y seleccionar todo -->
-                <p:column selectionMode="multiple" style="width:5%"/>
-                
-                <p:column headerText="Nombre">
-                    #{padre.nombres} #{padre.apellidos}
-                </p:column>
-
-                <p:column headerText="Correo">
-                    #{padre.correo}
-                </p:column>
-
-            </p:dataTable>
+            <h:outputLabel value="Padres:" for="padresSelect"/>
+            <p:selectCheckboxMenu id="padresSelect"
+                                  value="#{correoBean.correosDestino}"
+                                  label="Seleccionar padres"
+                                  style="width:100%;margin-bottom:15px;"
+                                  multiple="true"
+                                  filter="true">
+                <f:selectItems value="#{correoBean.padres}" var="padre"
+                               itemLabel="#{padre.nombres} #{padre.apellidos} (#{padre.correo})"
+                               itemValue="#{padre.correo}" />
+            </p:selectCheckboxMenu>
         </p:panel>
 
         <p:panel header="Redactar Correo" style="margin-top:20px;">
