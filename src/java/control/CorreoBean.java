@@ -24,7 +24,7 @@ public class CorreoBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private List<Usuario> padres;              // lista de padres del hogar
-    private List<String> correosDestino;       // correos seleccionados
+    private List<Usuario> padresSeleccionados; // padres seleccionados en la tabla
     private String asunto;                     // asunto del correo
     private String mensaje;                    // mensaje del correo
 
@@ -39,7 +39,8 @@ public class CorreoBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        correosDestino = new ArrayList<>();
+        padres = new ArrayList<>();
+        padresSeleccionados = new ArrayList<>();
         if (sessionBean != null && sessionBean.getUsuarioLogueado() != null) {
             Usuario madre = sessionBean.getUsuarioLogueado();
             Integer hogarId = correoDAO.obtenerHogarMadre(madre.getIdUsuario());
@@ -53,16 +54,26 @@ public class CorreoBean implements Serializable {
     // Enviar correo masivo
     // ========================
     public void enviarCorreo() {
-        if (correosDestino == null || correosDestino.isEmpty()) {
+        if (padresSeleccionados == null || padresSeleccionados.isEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_WARN,
                             "Seleccione al menos un padre", null));
             return;
         }
 
-        final String remitente = "icbfconecta04@gmail.com";      
-        final String clave = "kjru pfqz fwmp rrzt";             
-        
+        String asuntoLimpio = asunto != null ? asunto.trim() : "";
+        String mensajeLimpio = mensaje != null ? mensaje.trim() : "";
+
+        if (asuntoLimpio.isEmpty() || mensajeLimpio.isEmpty()) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN,
+                            "Debe ingresar un asunto y un mensaje", null));
+            return;
+        }
+
+        final String remitente = "icbfconecta04@gmail.com";
+        final String clave = "kjru pfqz fwmp rrzt";
+
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -81,11 +92,25 @@ public class CorreoBean implements Serializable {
             message.setFrom(new InternetAddress(remitente));
 
             // Todos los correos seleccionados como destinatarios
+            List<String> correosDestino = new ArrayList<>();
+            for (Usuario padre : padresSeleccionados) {
+                if (padre != null && padre.getCorreo() != null && !padre.getCorreo().trim().isEmpty()) {
+                    correosDestino.add(padre.getCorreo().trim());
+                }
+            }
+
+            if (correosDestino.isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                "Los padres seleccionados no tienen correos válidos", null));
+                return;
+            }
+
             String destinatarios = String.join(",", correosDestino);
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatarios));
 
-            message.setSubject(asunto);   // asunto redactado por la madre
-            message.setText(mensaje);     // mensaje redactado por la madre
+            message.setSubject(asuntoLimpio);   // asunto redactado por la madre
+            message.setText(mensajeLimpio, "UTF-8");     // mensaje redactado por la madre
 
             Transport.send(message);
 
@@ -94,7 +119,7 @@ public class CorreoBean implements Serializable {
                             "Correo(s) enviado(s) con éxito a: " + destinatarios, null));
 
             // Limpiar campos
-            correosDestino.clear();
+            padresSeleccionados.clear();
             asunto = "";
             mensaje = "";
 
@@ -111,12 +136,12 @@ public class CorreoBean implements Serializable {
         return padres;
     }
 
-    public List<String> getCorreosDestino() {
-        return correosDestino;
+    public List<Usuario> getPadresSeleccionados() {
+        return padresSeleccionados;
     }
 
-    public void setCorreosDestino(List<String> correosDestino) {
-        this.correosDestino = correosDestino;
+    public void setPadresSeleccionados(List<Usuario> padresSeleccionados) {
+        this.padresSeleccionados = padresSeleccionados;
     }
 
     public String getAsunto() {

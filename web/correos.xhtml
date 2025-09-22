@@ -17,9 +17,9 @@
         <p:messages id="msgs" closable="true"/>
 
         <p:panel header="Lista de Padres">
-            <p:dataTable var="padre" value="#{correoBean.padres}" 
-                         selection="#{correoBean.correosDestino}" 
-                         selectionMode="multiple" rowKey="#{padre.correo}" 
+            <p:dataTable var="padre" value="#{correoBean.padres}"
+                         selection="#{correoBean.padresSeleccionados}"
+                         selectionMode="multiple" rowKey="#{padre.correo}"
                          paginator="true" rows="10">
 
                 <!-- Checkbox para seleccionar individual y seleccionar todo -->
