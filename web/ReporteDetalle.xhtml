@@ -5,111 +5,157 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
-<h:head>
-    <title>Detalle del Reporte</title>
-</h:head>
+<f:view>
+    <f:metadata>
+        <f:viewAction action="#{sessionBean.verificarAcceso('madre_comunitaria')}" />
+    </f:metadata>
 
-<h:body>
-    <h:form id="formDetalle">
+    <h:head>
+        <title>ICBF Conecta - Detalle del Reporte</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet library="css" name="estilos.css"/>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    </h:head>
 
-        <h2>Ficha del Niño</h2>
+    <h:body styleClass="dashboard-body" style="background-image: url(#{resource['img/fondito.png']});">
 
-        <h:panelGrid columns="2" columnClasses="label,value" cellpadding="5">
+        <header>
+            <img src="#{resource['img/logoSinFondo.png']}" alt="Logo del Software"/>
+            <nav>
+                <ul>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeaciones" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                    <li><h:link outcome="correos" value=" Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                    <li>
+                        <h:form>
+                            <h:commandLink action="#{loginBean.logout}">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </h:commandLink>
+                        </h:form>
+                    </li>
+                </ul>
+            </nav>
+        </header>
 
-            <!-- Datos del niño -->
-            <h:outputLabel value="Nombres:" />
-            <h:outputText value="#{reporteBean.seleccionado.ninoNombres} #{reporteBean.seleccionado.ninoApellidos}" />
+        <div class="main-title">
+            ICBF - CONECTA | Detalle del Reporte <br/>
+            Bienvenida, <h:outputText value="#{sessionBean.usuarioLogueado.nombres}"/>
+        </div>
 
-            <h:outputLabel value="Documento:" />
-            <h:outputText value="#{reporteBean.seleccionado.ninoDocumento}" />
+        <div class="page-wrapper">
+            <div class="page-header-block">
+                <h1 class="page-title">Ficha completa del niño</h1>
+                <p class="page-description">Revisa los documentos y datos registrados durante la matrícula.</p>
+            </div>
 
-            <h:outputLabel value="Fecha Nacimiento:" />
-            <h:outputText value="#{reporteBean.seleccionado.fechaNacimiento}" />
+            <h:form id="formDetalle">
+                <div class="detail-card">
+                    <h2 class="section-title">Información personal y documentos</h2>
+                    <h:panelGrid columns="2" styleClass="detail-grid" columnClasses="form-label,form-field">
 
-            <h:outputLabel value="Género:" />
-            <h:outputText value="#{reporteBean.seleccionado.genero}" />
+                        <h:outputLabel value="Nombres:" />
+                        <h:outputText value="#{reporteBean.seleccionado.ninoNombres} #{reporteBean.seleccionado.ninoApellidos}" />
 
-            <h:outputLabel value="Nacionalidad:" />
-            <h:outputText value="#{reporteBean.seleccionado.nacionalidad}" />
+                        <h:outputLabel value="Documento:" />
+                        <h:outputText value="#{reporteBean.seleccionado.ninoDocumento}" />
 
-            <h:outputLabel value="Fecha Ingreso:" />
-            <h:outputText value="#{reporteBean.seleccionado.fechaIngreso}" />
+                        <h:outputLabel value="Fecha de nacimiento:" />
+                        <h:outputText value="#{reporteBean.seleccionado.fechaNacimiento}" />
 
-            <h:outputLabel value="Foto:" />
-            <h:graphicImage value="/icbf_uploads/#{reporteBean.seleccionado.foto}" width="120" height="120" />
+                        <h:outputLabel value="Género:" />
+                        <h:outputText value="#{reporteBean.seleccionado.genero}" />
 
-            <h:outputLabel value="Carnet Vacunación:" />
-            <h:graphicImage value="/icbf_uploads/#{reporteBean.seleccionado.carnetVacunacion}" width="120" height="120" />
+                        <h:outputLabel value="Nacionalidad:" />
+                        <h:outputText value="#{reporteBean.seleccionado.nacionalidad}" />
 
-            <h:outputLabel value="Certificado EPS:" />
-            <h:graphicImage value="/icbf_uploads/#{reporteBean.seleccionado.certificadoEps}" width="120" height="120" />
+                        <h:outputLabel value="Fecha de ingreso:" />
+                        <h:outputText value="#{reporteBean.seleccionado.fechaIngreso}" />
 
-            <!-- Datos del padre -->
-            <h:outputLabel value="Padre:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreNombres} #{reporteBean.seleccionado.padreApellidos}" />
+                        <h:outputLabel value="Foto:" />
+                        <h:graphicImage value="/icbf_uploads/#{reporteBean.seleccionado.foto}" width="140" height="140" />
 
-            <h:outputLabel value="Documento Padre:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreDocumento}" />
+                        <h:outputLabel value="Carnet de vacunación:" />
+                        <h:graphicImage value="/icbf_uploads/#{reporteBean.seleccionado.carnetVacunacion}" width="140" height="140" />
 
-            <h:outputLabel value="Correo:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreCorreo}" />
+                        <h:outputLabel value="Certificado EPS:" />
+                        <h:graphicImage value="/icbf_uploads/#{reporteBean.seleccionado.certificadoEps}" width="140" height="140" />
 
-            <h:outputLabel value="Teléfono:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreTelefono}" />
+                        <h:outputLabel value="Padre o acudiente:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreNombres} #{reporteBean.seleccionado.padreApellidos}" />
 
-            <h:outputLabel value="Dirección:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreDireccion}" />
+                        <h:outputLabel value="Documento del acudiente:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreDocumento}" />
 
-            <h:outputLabel value="Ocupación:" />
-            <h:outputText value="#{reporteBean.seleccionado.ocupacion}" />
+                        <h:outputLabel value="Correo:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreCorreo}" />
 
-            <h:outputLabel value="Estrato:" />
-            <h:outputText value="#{reporteBean.seleccionado.estrato}" />
+                        <h:outputLabel value="Teléfono:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreTelefono}" />
 
-            <h:outputLabel value="Teléfono Emergencia:" />
-            <h:outputText value="#{reporteBean.seleccionado.telEmerg}" />
+                        <h:outputLabel value="Dirección:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreDireccion}" />
 
-            <h:outputLabel value="Nombre Contacto Emergencia:" />
-            <h:outputText value="#{reporteBean.seleccionado.nomEmerg}" />
+                        <h:outputLabel value="Ocupación:" />
+                        <h:outputText value="#{reporteBean.seleccionado.ocupacion}" />
 
-            <h:outputLabel value="Situación Económica:" />
-            <h:outputText value="#{reporteBean.seleccionado.situacionEcon}" />
+                        <h:outputLabel value="Estrato:" />
+                        <h:outputText value="#{reporteBean.seleccionado.estrato}" />
 
-            <h:outputLabel value="ID interno usuario:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreUsuarioId eq 0 ? '-' : reporteBean.seleccionado.padreUsuarioId}" />
+                        <h:outputLabel value="Teléfono de emergencia:" />
+                        <h:outputText value="#{reporteBean.seleccionado.telEmerg}" />
 
-            <h:outputLabel value="Contraseña registrada:" />
-            <h:outputText value="#{empty reporteBean.seleccionado.padrePasswordHash ? '-' : reporteBean.seleccionado.padrePasswordHash}" />
+                        <h:outputLabel value="Contacto de emergencia:" />
+                        <h:outputText value="#{reporteBean.seleccionado.nomEmerg}" />
 
-            <!-- Datos del hogar -->
-            <h:outputLabel value="Hogar Comunitario:" />
-            <h:outputText value="#{reporteBean.seleccionado.nombreHogar}" />
+                        <h:outputLabel value="Situación económica:" />
+                        <h:outputText value="#{reporteBean.seleccionado.situacionEcon}" />
 
-            <h:outputLabel value="Dirección Hogar:" />
-            <h:outputText value="#{reporteBean.seleccionado.hogarDireccion}" />
+                        <h:outputLabel value="ID interno usuario:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreUsuarioId eq 0 ? '-' : reporteBean.seleccionado.padreUsuarioId}" />
 
-            <h:outputLabel value="Localidad:" />
-            <h:outputText value="#{reporteBean.seleccionado.localidad}" />
+                        <h:outputLabel value="Contraseña registrada:" />
+                        <h:outputText value="#{empty reporteBean.seleccionado.padrePasswordHash ? '-' : reporteBean.seleccionado.padrePasswordHash}" />
 
-        </h:panelGrid>
+                        <h:outputLabel value="Hogar comunitario:" />
+                        <h:outputText value="#{reporteBean.seleccionado.nombreHogar}" />
 
-        <h:panelGroup layout="block" style="margin-top:10px;font-style:italic;font-size:0.9em;">
-            <h:outputText value="Nota: la contraseña se almacena cifrada. Entregue manualmente al acudiente la clave en texto plano definida durante la matrícula." />
-        </h:panelGroup>
+                        <h:outputLabel value="Dirección del hogar:" />
+                        <h:outputText value="#{reporteBean.seleccionado.hogarDireccion}" />
 
-        <br/>
+                        <h:outputLabel value="Localidad:" />
+                        <h:outputText value="#{reporteBean.seleccionado.localidad}" />
+                    </h:panelGrid>
 
-        <!-- Botones -->
-        <p:commandButton value="Descargar PDF"
-                         type="button"
-                         onclick="window.open('#{facesContext.externalContext.requestContextPath}/ReporteNinoPdfServlet?id=#{reporteBean.seleccionado.idNino}', '_blank');"
-                         icon="pi pi-file-pdf"
-                         styleClass="ui-button-danger"/>
+                    <h:panelGroup layout="block" styleClass="detail-note">
+                        <h:outputText value="Nota: la contraseña se almacena cifrada. Entregue manualmente al acudiente la clave en texto plano definida durante la matrícula." />
+                    </h:panelGroup>
+                </div>
 
-        <p:commandButton value="Volver"
-                         action="ReporteListado?faces-redirect=true"
-                         ajax="false"
-                         icon="pi pi-arrow-left"/>
-    </h:form>
-</h:body>
+                <div class="action-bar">
+                    <p:commandButton value="Descargar PDF"
+                                     type="button"
+                                     onclick="window.open('#{facesContext.externalContext.requestContextPath}/ReporteNinoPdfServlet?id=#{reporteBean.seleccionado.idNino}', '_blank');"
+                                     icon="pi pi-file-pdf"
+                                     styleClass="btn-danger"/>
+
+                    <p:commandButton value="Volver al listado"
+                                     action="ReporteListado?faces-redirect=true"
+                                     ajax="false"
+                                     icon="pi pi-arrow-left"
+                                     styleClass="btn-outline"/>
+
+                    <p:commandButton value="Ir al dashboard"
+                                     action="madreDashboard?faces-redirect=true"
+                                     ajax="false"
+                                     icon="pi pi-home"
+                                     styleClass="btn-secondary"/>
+                </div>
+            </h:form>
+        </div>
+
+    </h:body>
+</f:view>
 </html>

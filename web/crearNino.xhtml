@@ -3,127 +3,171 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<h:head>
-    <title>Matrícula de Niño</title>
-</h:head>
-<h:body>
 
-<h:form enctype="multipart/form-data">
-    <h:messages globalOnly="true" style="color:red;" />
+<f:view>
+    <f:metadata>
+        <f:viewAction action="#{sessionBean.verificarAcceso('madre_comunitaria')}" />
+    </f:metadata>
 
-    <!-- ====================== -->
-    <!-- DATOS DEL NIÑO -->
-    <!-- ====================== -->
-    <h2>Datos del Niño</h2>
-    <h:panelGrid columns="2" columnClasses="label,value">
+    <h:head>
+        <title>ICBF Conecta - Registrar Matrícula</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet library="css" name="estilos.css"/>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    </h:head>
 
-        <h:outputLabel for="nombresN" value="Nombres:" />
-        <h:inputText id="nombresN" value="#{ninoBean.nino.nombres}" required="true" />
+    <h:body styleClass="dashboard-body" style="background-image: url(#{resource['img/fondito.png']});">
 
-        <h:outputLabel for="apellidosN" value="Apellidos:" />
-        <h:inputText id="apellidosN" value="#{ninoBean.nino.apellidos}" required="true" />
+        <header>
+            <img src="#{resource['img/logoSinFondo.png']}" alt="Logo del Software"/>
+            <nav>
+                <ul>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeaciones" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                    <li><h:link outcome="correos" value=" Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                    <li>
+                        <h:form>
+                            <h:commandLink action="#{loginBean.logout}">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </h:commandLink>
+                        </h:form>
+                    </li>
+                </ul>
+            </nav>
+        </header>
 
-        <h:outputLabel for="documentoN" value="Documento:" />
-        <h:inputText id="documentoN" value="#{ninoBean.nino.documento}" />
+        <div class="main-title">
+            ICBF - CONECTA | Registro de Matrículas <br/>
+            Bienvenida, <h:outputText value="#{sessionBean.usuarioLogueado.nombres}"/>
+        </div>
 
-        <h:outputLabel for="fechaNac" value="Fecha de nacimiento:" />
-        <p:calendar id="fechaNac"
-                    value="#{ninoBean.nino.fechaNacimiento}"
-                    pattern="yyyy-MM-dd"
-                    showOn="button"
-                    required="true" />
+        <div class="page-wrapper">
+            <div class="page-header-block">
+                <h1 class="page-title">Registrar información del niño y su acudiente</h1>
+                <p class="page-description">Completa cada sección para crear una nueva matrícula.</p>
+            </div>
 
-        <h:outputLabel for="genero" value="Género:" />
-        <h:selectOneMenu id="genero" value="#{ninoBean.nino.genero}">
-            <f:selectItem itemLabel="Seleccione..." itemValue="" />
-            <f:selectItem itemLabel="Masculino" itemValue="masculino" />
-            <f:selectItem itemLabel="Femenino" itemValue="femenino" />
-            <f:selectItem itemLabel="Otro" itemValue="otro" />
-            <f:selectItem itemLabel="No especificado" itemValue="no_especificado" />
-        </h:selectOneMenu>
+            <h:form id="formMatricula" enctype="multipart/form-data">
+                <p:messages id="mensajes" showDetail="true" showSummary="true" closable="true" styleClass="messages-panel"/>
 
-        <h:outputLabel for="nacionalidad" value="Nacionalidad:" />
-        <h:inputText id="nacionalidad" value="#{ninoBean.nino.nacionalidad}" />
+                <div class="content-card form-section">
+                    <h2>Datos del niño</h2>
+                    <h:panelGrid columns="2" styleClass="form-grid" columnClasses="form-label,form-field">
 
-        <h:outputLabel for="hogar" value="Hogar comunitario:" />
-        <h:selectOneMenu id="hogar" value="#{ninoBean.nino.hogarId}" required="true">
-            <f:selectItem itemLabel="Seleccione un hogar..." itemValue="" noSelectionOption="true"/>
-            <f:selectItems value="#{ninoBean.listaHogares}" var="h"
-                           itemValue="#{h.idHogar}"
-                           itemLabel="#{h.nombreHogar} - #{h.localidad}" />
-        </h:selectOneMenu>
+                        <h:outputLabel for="nombresN" value="Nombres:" />
+                        <h:inputText id="nombresN" value="#{ninoBean.nino.nombres}" required="true" />
 
-        <h:outputLabel for="fotoNino" value="Foto del niño:" />
-        <h:inputFile id="fotoNino" value="#{ninoBean.fotoNinoPart}" required="true" />
+                        <h:outputLabel for="apellidosN" value="Apellidos:" />
+                        <h:inputText id="apellidosN" value="#{ninoBean.nino.apellidos}" required="true" />
 
-    </h:panelGrid>
+                        <h:outputLabel for="documentoN" value="Documento:" />
+                        <h:inputText id="documentoN" value="#{ninoBean.nino.documento}" />
 
-    <p:separator/>
+                        <h:outputLabel for="fechaNac" value="Fecha de nacimiento:" />
+                        <p:calendar id="fechaNac"
+                                    value="#{ninoBean.nino.fechaNacimiento}"
+                                    pattern="yyyy-MM-dd"
+                                    showOn="button"
+                                    required="true" />
 
-    <!-- ====================== -->
-    <!-- DATOS DEL PADRE -->
-    <!-- ====================== -->
-    <h2>Datos del Padre</h2>
-    <h:panelGrid columns="2" columnClasses="label,value">
+                        <h:outputLabel for="genero" value="Género:" />
+                        <h:selectOneMenu id="genero" value="#{ninoBean.nino.genero}">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="" />
+                            <f:selectItem itemLabel="Masculino" itemValue="masculino" />
+                            <f:selectItem itemLabel="Femenino" itemValue="femenino" />
+                            <f:selectItem itemLabel="Otro" itemValue="otro" />
+                            <f:selectItem itemLabel="No especificado" itemValue="no_especificado" />
+                        </h:selectOneMenu>
 
-        <h:outputLabel for="nombresP" value="Nombres:" />
-        <h:inputText id="nombresP" value="#{ninoBean.usuarioPadre.nombres}" required="true" />
+                        <h:outputLabel for="nacionalidad" value="Nacionalidad:" />
+                        <h:inputText id="nacionalidad" value="#{ninoBean.nino.nacionalidad}" />
 
-        <h:outputLabel for="apellidosP" value="Apellidos:" />
-        <h:inputText id="apellidosP" value="#{ninoBean.usuarioPadre.apellidos}" required="true" />
+                        <h:outputLabel for="hogar" value="Hogar comunitario:" />
+                        <h:selectOneMenu id="hogar" value="#{ninoBean.nino.hogarId}" required="true">
+                            <f:selectItem itemLabel="Seleccione un hogar..." itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{ninoBean.listaHogares}" var="h"
+                                           itemValue="#{h.idHogar}"
+                                           itemLabel="#{h.nombreHogar} - #{h.localidad}" />
+                        </h:selectOneMenu>
 
-        <h:outputLabel for="documentoP" value="Documento:" />
-        <h:inputText id="documentoP" value="#{ninoBean.usuarioPadre.documento}" required="true" />
+                        <h:outputLabel for="fotoNino" value="Foto del niño:" />
+                        <h:inputFile id="fotoNino" value="#{ninoBean.fotoNinoPart}" required="true" />
 
-        <h:outputLabel for="ocupacion" value="Ocupación:" />
-        <h:inputText id="ocupacion" value="#{ninoBean.padre.ocupacion}" />
+                    </h:panelGrid>
+                </div>
 
-        <h:outputLabel for="estrato" value="Estrato:" />
-        <h:inputText id="estrato" value="#{ninoBean.padre.estrato}" />
+                <div class="content-card form-section">
+                    <h2>Datos del padre o acudiente</h2>
+                    <h:panelGrid columns="2" styleClass="form-grid" columnClasses="form-label,form-field">
 
-        <h:outputLabel for="telEmerg" value="Teléfono de emergencia:" />
-        <h:inputText id="telEmerg" value="#{ninoBean.padre.telefonoContactoEmergencia}" />
+                        <h:outputLabel for="nombresP" value="Nombres:" />
+                        <h:inputText id="nombresP" value="#{ninoBean.usuarioPadre.nombres}" required="true" />
 
-        <h:outputLabel for="nomEmerg" value="Nombre contacto de emergencia:" />
-        <h:inputText id="nomEmerg" value="#{ninoBean.padre.nombreContactoEmergencia}" />
+                        <h:outputLabel for="apellidosP" value="Apellidos:" />
+                        <h:inputText id="apellidosP" value="#{ninoBean.usuarioPadre.apellidos}" required="true" />
 
-        <h:outputLabel for="sitEcon" value="Situación económica hogar:" />
-        <h:inputTextarea id="sitEcon" value="#{ninoBean.padre.situacionEconomicaHogar}" rows="3" cols="30" />
+                        <h:outputLabel for="documentoP" value="Documento:" />
+                        <h:inputText id="documentoP" value="#{ninoBean.usuarioPadre.documento}" required="true" />
 
-        <h:outputLabel for="docPadre" value="Documento de identidad (archivo):" />
-        <h:inputFile id="docPadre" value="#{ninoBean.docPadrePart}" required="true" />
+                        <h:outputLabel for="ocupacion" value="Ocupación:" />
+                        <h:inputText id="ocupacion" value="#{ninoBean.padre.ocupacion}" />
 
-        <h:outputLabel for="correoP" value="Correo electrónico:" />
-        <h:inputText id="correoP" value="#{ninoBean.usuarioPadre.correo}" required="true" />
+                        <h:outputLabel for="estrato" value="Estrato:" />
+                        <h:inputText id="estrato" value="#{ninoBean.padre.estrato}" />
 
-        <h:outputLabel for="direccionP" value="Dirección:" />
-        <h:inputText id="direccionP" value="#{ninoBean.usuarioPadre.direccion}" />
+                        <h:outputLabel for="telEmerg" value="Teléfono de emergencia:" />
+                        <h:inputText id="telEmerg" value="#{ninoBean.padre.telefonoContactoEmergencia}" />
 
-        <h:outputLabel for="telefonoP" value="Teléfono:" />
-        <h:inputText id="telefonoP" value="#{ninoBean.usuarioPadre.telefono}" />
+                        <h:outputLabel for="nomEmerg" value="Nombre contacto de emergencia:" />
+                        <h:inputText id="nomEmerg" value="#{ninoBean.padre.nombreContactoEmergencia}" />
 
-        <h:outputLabel for="pass1" value="Contraseña:" />
-        <h:inputSecret id="pass1" value="#{ninoBean.password1}" required="true" redisplay="true"/>
+                        <h:outputLabel for="sitEcon" value="Situación económica hogar:" />
+                        <h:inputTextarea id="sitEcon" value="#{ninoBean.padre.situacionEconomicaHogar}" rows="3" cols="30" />
 
-        <h:outputLabel for="pass2" value="Confirmar contraseña:" />
-        <h:inputSecret id="pass2" value="#{ninoBean.password2}" required="true" redisplay="true"/>
+                        <h:outputLabel for="docPadre" value="Documento de identidad (archivo):" />
+                        <h:inputFile id="docPadre" value="#{ninoBean.docPadrePart}" required="true" />
 
-    </h:panelGrid>
+                        <h:outputLabel for="correoP" value="Correo electrónico:" />
+                        <h:inputText id="correoP" value="#{ninoBean.usuarioPadre.correo}" required="true" />
 
-    <p:separator/>
+                        <h:outputLabel for="direccionP" value="Dirección:" />
+                        <h:inputText id="direccionP" value="#{ninoBean.usuarioPadre.direccion}" />
 
-    <!-- BOTONES -->
-<p:commandButton value="Guardar Matrícula"
-                 action="#{ninoBean.guardarMatricula}"
-                 ajax="false"
-                 styleClass="ui-button-success"/>
+                        <h:outputLabel for="telefonoP" value="Teléfono:" />
+                        <h:inputText id="telefonoP" value="#{ninoBean.usuarioPadre.telefono}" />
 
+                        <h:outputLabel for="pass1" value="Contraseña:" />
+                        <h:inputSecret id="pass1" value="#{ninoBean.password1}" required="true" redisplay="true"/>
 
-    <p:commandButton value="Cancelar" immediate="true"
-                     action="#{ninoBean.cancelar}"
-                     styleClass="ui-button-secondary"/>
-   
-</h:form>
+                        <h:outputLabel for="pass2" value="Confirmar contraseña:" />
+                        <h:inputSecret id="pass2" value="#{ninoBean.password2}" required="true" redisplay="true"/>
 
-</h:body>
+                    </h:panelGrid>
+                </div>
+
+                <div class="action-bar">
+                    <p:commandButton value="Guardar matrícula"
+                                     action="#{ninoBean.guardarMatricula}"
+                                     ajax="false"
+                                     styleClass="btn-primary"/>
+
+                    <p:commandButton value="Cancelar"
+                                     immediate="true"
+                                     action="#{ninoBean.cancelar}"
+                                     styleClass="btn-secondary"/>
+
+                    <p:commandButton value="Volver a matrículas"
+                                     action="listarNinos?faces-redirect=true"
+                                     icon="pi pi-arrow-left"
+                                     ajax="false"
+                                     styleClass="btn-outline"/>
+                </div>
+            </h:form>
+        </div>
+
+    </h:body>
+</f:view>
 </html>
