@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Listado de Asistencias</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style type="text/css">
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          font-family: 'Roboto', sans-serif;
+          background-image: url('fondito.jpg');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+        }
+
+        header {
+          background-color: rgba(255, 255, 255, 0.85);
+          padding: 15px 30px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-bottom: 2px solid #e5d5f5;
+          backdrop-filter: blur(4px);
+        }
+
+        header img {
+          height: 60px;
+        }
+
+        nav ul {
+          list-style: none;
+          display: flex;
+          gap: 20px;
+          padding: 0;
+          margin: 0;
+        }
+
+        nav ul li a {
+          text-decoration: none;
+          color: #9B59B6;
+          font-weight: bold;
+          font-size: 16px;
+          padding: 8px 12px;
+          border-radius: 6px;
+          transition: background-color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+          background-color: #f3c1e5;
+        }
+
+        .main-title {
+          text-align: center;
+          margin-top: 20px;
+          padding: 20px;
+          font-size: 26px;
+          font-weight: bold;
+          color: #7a3eb1;
+          background-color: rgba(255, 255, 255, 0.7);
+          margin: 20px auto;
+          width: 80%;
+          border-radius: 10px;
+        }
+
+        .card {
+          background-color: rgba(255, 255, 255, 0.9);
+          border-radius: 12px;
+          padding: 20px;
+          backdrop-filter: blur(3px);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+          max-width: 1000px;
+          margin: 0 auto 40px;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+        }
+
+        th, td {
+          padding: 15px;
+          text-align: center;
+          border: 1px solid #d5b4f3;
+          font-size: 15px;
+        }
+
+        th {
+          background-color: #f3c1e5;
+          color: #5e3370;
+        }
+
+        tr:nth-child(even) {
+          background-color: #fdf6ff;
+        }
+
+        tr:hover {
+          background-color: #f3e9ff;
+        }
+
+        .acciones a, .acciones input {
+          margin: 0 5px;
+          color: #9B59B6;
+          font-weight: bold;
+          text-decoration: none;
+          border: none;
+          background: none;
+          cursor: pointer;
+        }
+
+        .acciones a:hover, .acciones input:hover {
+          color: #8e44ad;
+          text-decoration: underline;
+        }
+
+        .btn-registrar {
+          display: inline-block;
+          background-color: #9B59B6;
+          color: white;
+          padding: 12px 20px;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: bold;
+          text-align: center;
+          margin-top: 20px;
+          transition: background-color 0.3s ease;
+          text-decoration: none;
+        }
+
+        .btn-registrar:hover {
+          background-color: #8e44ad;
+        }
+    </style>
+</h:head>
+
+<h:body>
+
+    <!-- Header -->
+    <header>
+        <h:graphicImage library="img" name="logoSinFondo.png" alt="Logo del Software"/>
+        <nav>
+          <ul>
+            <li><a href="Home.xhtml"><i class="fas fa-arrow-left"></i> Volver</a></li>
+            <li><a href="registrarAsistencia.xhtml"><i class="fas fa-plus-circle"></i> Registrar Asistencia</a></li>
+            <li><a href="InterfazInicio.xhtml"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+          </ul>
+        </nav>
+    </header>
+
+    <div class="main-title">ICBF CONECTA || listado de Asistencias</div>
+
+    <div class="card">
+        <h:form>
+            <h:dataTable value="#{asistenciaBean.lista}" var="a" border="1">
+
+                <h:column>
+                    <f:facet name="header">ID</f:facet>
+                    #{a.idAsistencia}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Nombre</f:facet>
+                    #{a.nombres}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Apellido</f:facet>
+                    #{a.apellidos}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Fecha</f:facet>
+                    #{a.fecha}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Estado</f:facet>
+                    #{a.estado}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Acciones</f:facet>
+                    <div class="acciones">
+                        <h:commandLink value="Editar" action="#{asistenciaBean.editar(a)}" />
+                        |
+                        <h:commandLink value="Eliminar" action="#{asistenciaBean.eliminar(a.idAsistencia)}"
+                                       onclick="return confirm('¿Seguro de eliminar?');" />
+                    </div>
+                </h:column>
+
+            </h:dataTable>
+        </h:form>
+
+        <!-- Botón para registrar -->
+        <br />
+        <h:link value="Registrar nueva asistencia" outcome="registrarAsistencia" styleClass="btn-registrar" />
+    </div>
+
+</h:body>
+</html>

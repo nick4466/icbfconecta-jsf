@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
    public class ConDB {
-    private static final String URL = "jdbc:mysql://localhost:3306/conecta_icbf_v2";
+    private static final String URL = "jdbc:mysql://localhost:3306/conecta_icbf_v2?user=root&useSSL=false";
     private static final String USER = "root";
     private static final String PASS = "";
 

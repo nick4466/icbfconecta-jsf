@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Registrar Asistencia</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f4fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #e5d5f5;
+            backdrop-filter: blur(4px);
+        }
+
+        header img {
+            height: 60px;
+        }
+
+        .header-title {
+            color: #7a3eb1;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+
+        .form-container {
+            margin: 40px auto;
+            padding: 25px;
+            width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .form-container label {
+            font-weight: bold;
+            color: #7a3eb1;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .form-container select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #cda5f3;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .button-group input,
+        .button-group a {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+            transition: background-color 0.3s ease-in-out;
+            font-size: 15px;
+        }
+
+        .button-group input {
+            background-color: #9B59B6;
+            color: white;
+        }
+
+        .button-group input:hover {
+            background-color: #8e44ad;
+        }
+
+        .button-group a {
+            background-color: #f3c1e5;
+            color: #5e3370;
+        }
+
+        .button-group a:hover {
+            background-color: #e8a9d8;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <header>
+        <h:graphicImage library="img" name="logoSinFondo.png" alt="Logo del Software"/>
+        <div class="header-title">Registrar Nueva Asistencia</div>
+    </header>
+
+    <div class="form-container">
+        <h:form>
+            <!-- Selección del niño -->
+            <h:outputLabel for="nino" value="Niño:" />
+            <h:selectOneMenu id="nino" value="#{asistenciaBean.asistencia.idNino}">
+                <f:selectItems value="#{asistenciaBean.ninos}" 
+                               var="n"
+                               itemValue="#{n.idNino}" 
+                               itemLabel="#{n.nombres} #{n.apellidos}" />
+            </h:selectOneMenu>
+
+            <!-- Estado -->
+            <h:outputLabel for="estado" value="Estado:" />
+            <h:selectOneMenu id="estado" value="#{asistenciaBean.asistencia.estado}">
+                <f:selectItem itemValue="Presente" itemLabel="Presente" />
+                <f:selectItem itemValue="Ausente" itemLabel="Ausente" />
+            </h:selectOneMenu>
+
+            <div class="button-group">
+                <h:commandButton value="Guardar" action="#{asistenciaBean.guardar}" />
+                <h:link value="Volver a la lista" outcome="listarAsistencia"/>
+            </div>
+        </h:form>
+    </div>
+</h:body>
+</html>
