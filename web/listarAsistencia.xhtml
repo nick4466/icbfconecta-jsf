@@ -169,6 +169,8 @@
     <div class="main-title">ICBF CONECTA || listado de Asistencias</div>
 
     <div class="card">
+        <h:messages globalOnly="true" style="display:block;margin-bottom:15px;color:#7a3eb1;font-weight:bold;" />
+
         <h:form>
             <h:dataTable value="#{asistenciaBean.lista}" var="a" border="1">
 
@@ -178,18 +180,25 @@
                 </h:column>
 
                 <h:column>
-                    <f:facet name="header">Nombre</f:facet>
-                    #{a.nombres}
+                    <f:facet name="header">Niño</f:facet>
+                    <h:outputText value="#{a.ninoNombreCompleto != null ? a.ninoNombreCompleto : (a.nombres != null ? a.nombres.concat(' ').concat(a.apellidos) : '')}" />
                 </h:column>
 
                 <h:column>
-                    <f:facet name="header">Apellido</f:facet>
-                    #{a.apellidos}
+                    <f:facet name="header">Madre comunitaria</f:facet>
+                    <h:outputText value="#{a.madreNombreCompleto}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Hogar</f:facet>
+                    <h:outputText value="#{a.nombreHogar}" />
                 </h:column>
 
                 <h:column>
                     <f:facet name="header">Fecha</f:facet>
-                    #{a.fecha}
+                    <h:outputText value="#{a.fecha}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:outputText>
                 </h:column>
 
                 <h:column>

@@ -13,7 +13,7 @@ public class AsistenciaDAO {
 
     private static final Logger LOGGER = Logger.getLogger(AsistenciaDAO.class.getName());
 
-    // --------------------------Insertar registro de asistencia------------------------------------------
+// --------------------------Insertar registro de asistencia------------------------------------------
 public boolean insertar(Asistencia a) {
     String sql = "INSERT INTO asistencia (id_nino, fecha, estado) VALUES (?, ?, ?)";
 
@@ -36,28 +36,56 @@ public boolean insertar(Asistencia a) {
 
 //---------------- Lista todas las asistencias junto con el nombre y apellido del niño.----------
 public List<Asistencia> listarConNombres() {
+    return listarInterno(null);
+}
+
+public List<Asistencia> listarPorMadre(int idMadre) {
+    return listarInterno(idMadre);
+}
+
+private List<Asistencia> listarInterno(Integer idMadre) {
     List<Asistencia> lista = new ArrayList<>();
-    String sql = "SELECT a.id_asistencia, a.id_nino, n.nombres, n.apellidos, a.fecha, a.estado " +
-                 "FROM asistencia a " +
-                 "JOIN ninos n ON a.id_nino = n.id_nino";
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT a.id_asistencia, a.id_nino, a.fecha, a.estado, ")
+       .append("n.nombres AS nino_nombres, n.apellidos AS nino_apellidos, ")
+       .append("u.nombres AS madre_nombres, u.apellidos AS madre_apellidos, ")
+       .append("h.nombre_hogar ")
+       .append("FROM asistencia a ")
+       .append("JOIN ninos n ON a.id_nino = n.id_nino ")
+       .append("JOIN hogares_comunitarios h ON n.hogar_id = h.id_hogar ")
+       .append("LEFT JOIN usuarios u ON h.madre_id = u.id_usuario ");
+
+    if (idMadre != null) {
+        sql.append("WHERE h.madre_id = ? ");
+    }
+
+    sql.append("ORDER BY a.fecha DESC, n.nombres, n.apellidos");
 
     try (Connection con = ConDB.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
+         PreparedStatement ps = con.prepareStatement(sql.toString())) {
 
-        while (rs.next()) {
-            Asistencia a = new Asistencia();
-            a.setIdAsistencia(rs.getInt("id_asistencia"));
-            a.setIdNino(rs.getInt("id_nino"));
-            a.setNombres(rs.getString("nombres"));   // 👈 necesitas que Asistencia tenga estos campos
-            a.setApellidos(rs.getString("apellidos"));
-            a.setFecha(rs.getDate("fecha"));
-            a.setEstado(rs.getString("estado"));
-            lista.add(a);
+        if (idMadre != null) {
+            ps.setInt(1, idMadre);
+        }
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Asistencia a = new Asistencia();
+                a.setIdAsistencia(rs.getInt("id_asistencia"));
+                a.setIdNino(rs.getInt("id_nino"));
+                a.setNombres(rs.getString("nino_nombres"));
+                a.setApellidos(rs.getString("nino_apellidos"));
+                a.setFecha(rs.getDate("fecha"));
+                a.setEstado(rs.getString("estado"));
+                a.setMadreNombres(rs.getString("madre_nombres"));
+                a.setMadreApellidos(rs.getString("madre_apellidos"));
+                a.setNombreHogar(rs.getString("nombre_hogar"));
+                lista.add(a);
+            }
         }
 
     } catch (SQLException e) {
-        LOGGER.log(Level.SEVERE, "Error al listar asistencias con nombres", e);
+        LOGGER.log(Level.SEVERE, "Error al listar asistencias", e);
     }
     return lista;
 }
