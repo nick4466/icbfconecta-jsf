@@ -5,8 +5,10 @@ import modelo.Usuario;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 @ManagedBean(name = "madreBean")
 @SessionScoped
@@ -40,11 +42,18 @@ public class MadreComunitariaBean implements Serializable {
 
     // Crear nueva madre
     public String guardarMadre() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
         if (usuarioDAO.crearMadre(madre, passwordPlano)) {
             madre = new Usuario();
-            passwordPlano = "";
+            passwordPlano = null;
             return "listarMadres?faces-redirect=true";
         }
+
+        context.addMessage(null, new FacesMessage(
+                FacesMessage.SEVERITY_ERROR,
+                "No se pudo registrar la madre comunitaria",
+                "Verifica que el documento y el correo no estén registrados y que la contraseña sea válida."));
         return null;
     }
 
