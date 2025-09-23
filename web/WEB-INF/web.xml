@@ -35,7 +35,7 @@
          Página de inicio
     ========================== -->
     <welcome-file-list>
-        <welcome-file>index.xhtml</welcome-file>
+        <welcome-file>InterfazInicio.xhtml</welcome-file>
     </welcome-file-list>
 
     <!-- =========================

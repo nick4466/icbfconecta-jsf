@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Página Principal - Software Madres Comunitarias</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Lobster&amp;family=Playwrite+HR+Lijeva:wght@100..400&amp;family=Sour+Gummy:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+    <!-- CSS interno (puedes moverlo a un .css externo si quieres) -->
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f6fb;
+            background-image: url('resources/img/fondo.png');
+            background-size: cover;
+            background-position: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ffffff;
+            padding: 15px 30px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header img {
+            height: 70px;
+        }
+
+        header nav ul {
+            list-style: none;
+            display: flex;
+            padding: 0;
+            margin: 0;
+        }
+
+        header nav ul li {
+            margin-left: 20px;
+        }
+
+        header nav ul li a {
+            text-decoration: none;
+            color: #9B59B6;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            flex-grow: 1;
+        }
+
+        .welcome {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #9B59B6;
+        }
+
+        .welcome h1 {
+            font-size: 2.5rem;
+            color: #8e44ad;
+        }
+
+        .info {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .info img {
+            width: 250px;
+            border-radius: 8px;
+        }
+        .content, .sobre-nosotros {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px); /* efecto vidrio */
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 20px;
+        }
+        .sobre-nosotros {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            margin: 40px auto;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 900px;
+            display: flex;
+            gap: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sobre-nosotros .text {
+            flex: 1;
+        }
+
+        .sobre-nosotros h2 {
+            text-align: left;
+            color: #8e44ad;
+            font-size: 2rem;
+        }
+
+        .sobre-nosotros p {
+            font-size: 1rem;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .sobre-nosotros img {
+            max-width: 300px;
+            border-radius: 8px;
+        }
+
+        footer {
+            background-color: #9B59B6;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</h:head>
+
+<h:body>
+
+    <!-- Header -->
+    <header>
+        <h:graphicImage library="img" name="logoSinFondo.png" alt="Logo ICBF" />
+        <nav>
+            <ul>
+                <li><h:link outcome="index.xhtml"><i class="fas fa-sign-in-alt"></i> Inicio Sesión</h:link></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Bienvenida -->
+    <div class="content">
+        <div class="welcome">
+            <h1>¡Bienvenidos!</h1>
+            <p>Ingresa a ICBF-CONECTA y únete al sistema que facilita la conexión e información con el desarrollo de nuestros niños y niñas.</p>
+        </div>
+        <div class="info">
+            <h:graphicImage library="img" name="logoSinFondo.png" alt="Logo del Software" />
+        </div>
+    </div>
+
+    <!-- Sobre Nosotros -->
+    <div class="sobre-nosotros">
+        <div class="text">
+            <h2>Sobre Nosotros...</h2>
+            <p>Aquí te queremos contar sobre cuatro chicos que decidieron emprender el camino de la programación, pensando en la necesidad que presentan tanto los padres de familia, como las madres comunitarias del ICBF a la hora de la organización de documentos y la visibilidad del desarrollo de los niños y niñas en su primera etapa educativa.</p>
+            <p>Por lo que hemos decidido crear este software que permitirá mejorar la precisión de datos, la comunicación entre padres de familia y madres comunitarias. Por último, ofrecerá herramientas para planificar y evaluar actividades de manera más eficiente.</p>
+        </div>
+        <div>
+            <h:graphicImage library="img" name="nosotros.png" alt="Imagen sobre nosotros" />
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Contáctanos: 
+            <a href="mailto:contacto@icbf-conecta.com">contacto@icbf-conecta.com</a> | 
+        </p>
+        <p>Llamanos:
+            <a href="mailto:contacto@icbf-conecta.com">+57 333336565</a> 
+        </p>
+    </footer>
+
+</h:body>
+</html>
