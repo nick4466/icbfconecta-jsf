@@ -4,47 +4,256 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+<f:view>
+    <f:metadata>
+        <f:viewAction action="#{sessionBean.verificarAcceso('madre_comunitaria')}" />
+    </f:metadata>
 
-<h:head>
-    <title>Listado de Reportes</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-</h:head>
+    <h:head>
+        <title>Listado de Reportes</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <style>
+            * {
+                box-sizing: border-box;
+            }
 
-<h:body>
-    <h:form id="formReportes">
+            body {
+                margin: 0;
+                font-family: 'Roboto', sans-serif;
+                background-image: url("#{resource['img/fondito.png']}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                color: #4a2d73;
+            }
 
-        <h2>Reportes de Niños</h2>
+            header {
+                background-color: rgba(255, 255, 255, 0.85);
+                padding: 15px 30px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 2px solid #e5d5f5;
+                backdrop-filter: blur(4px);
+                flex-wrap: wrap;
+            }
 
-        <p:dataTable value="#{reporteBean.listaReportes}" var="r" paginator="true" rows="10" 
-                     emptyMessage="No hay reportes disponibles">
+            header img {
+                height: 60px;
+            }
 
-            <p:column headerText="Niño">
-                <h:outputText value="#{r.ninoNombres} #{r.ninoApellidos}" />
-            </p:column>
+            nav ul {
+                list-style: none;
+                display: flex;
+                gap: 20px;
+                padding: 0;
+                margin: 0;
+                flex-wrap: wrap;
+            }
 
-            <p:column headerText="Documento">
-                <h:outputText value="#{r.ninoDocumento}" />
-            </p:column>
+            nav ul li a {
+                text-decoration: none;
+                color: #9B59B6;
+                font-weight: bold;
+                font-size: 16px;
+                padding: 8px 12px;
+                border-radius: 6px;
+                transition: background-color 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
 
-            <p:column headerText="Padre">
-                <h:outputText value="#{r.padreNombres} #{r.padreApellidos}" />
-            </p:column>
+            nav ul li a:hover {
+                background-color: #f3c1e5;
+            }
 
-            <p:column headerText="Acciones">
-                <p:commandButton value="Ver Detalle"
-                                 action="#{reporteBean.verDetalle(r.idNino)}"
-                                 ajax="false"/>
-            </p:column>
+            .main-title {
+                text-align: center;
+                margin-top: 20px;
+                padding: 20px;
+                font-size: 26px;
+                font-weight: bold;
+                color: #7a3eb1;
+                background-color: rgba(255, 255, 255, 0.75);
+                margin: 20px auto;
+                width: 80%;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
 
-            <p:column headerText="Reporte PDF" styleClass="acciones-columna">
-                <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ReporteNinoPdfServlet?id=#{r.idNino}" target="_blank">
-                    <i class="pi pi-file-pdf" style="margin-right:4px"></i>
-                    <h:outputText value="Descargar" />
-                </h:outputLink>
-            </p:column>
+            .card {
+                background-color: rgba(255, 255, 255, 0.93);
+                border-radius: 15px;
+                padding: 30px;
+                max-width: 1150px;
+                margin: 0 auto 40px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                border-left: 6px solid #9B59B6;
+            }
 
-        </p:dataTable>
+            .card h3 {
+                margin: 0 0 15px;
+                font-size: 22px;
+                color: #5e3370;
+                text-align: center;
+            }
 
-    </h:form>
-</h:body>
+            .ui-datatable thead th {
+                background: #f3c1e5;
+                color: #5e3370;
+                text-align: center;
+            }
+
+            .ui-datatable tbody td {
+                text-align: center;
+                color: #4a2d73;
+            }
+
+            .action-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+                margin-top: 25px;
+            }
+
+            .action-buttons .ui-button {
+                min-width: 200px;
+                font-weight: bold;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #9B59B6, #8e44ad);
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #8e44ad, #732d91);
+            }
+
+            .btn-secondary {
+                background-color: #6c757d;
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+            .btn-info {
+                background-color: #5dade2;
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-info:hover {
+                background-color: #3498db;
+            }
+
+            .pdf-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                color: #d35400;
+                font-weight: bold;
+                text-decoration: none;
+            }
+
+            .pdf-link:hover {
+                text-decoration: underline;
+            }
+
+            .ui-messages {
+                margin-bottom: 20px;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <header>
+            <h:graphicImage library="img" name="logoSinFondo.png" alt="ICBF Conecta" />
+            <nav>
+                <ul>
+                    <li><h:link outcome="madreDashboard" value="Inicio"><i class="fas fa-home"></i></h:link></li>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeaciones" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                    <li><h:link outcome="correos" value=" Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                    <li>
+                        <h:form>
+                            <h:commandLink action="#{loginBean.logout}">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </h:commandLink>
+                        </h:form>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="main-title">
+            ICBF CONECTA || Reportes de niños matriculados
+        </div>
+
+        <div class="card">
+            <h3>Listado de reportes generados</h3>
+            <h:form id="formReportes">
+                <p:messages showDetail="true" showSummary="false" closable="true" />
+
+                <p:dataTable value="#{reporteBean.listaReportes}" var="r" paginator="true" rows="10"
+                             reflow="true"
+                             emptyMessage="No hay reportes disponibles">
+
+                    <p:column headerText="Niño">
+                        <h:outputText value="#{r.ninoNombres} #{r.ninoApellidos}" />
+                    </p:column>
+
+                    <p:column headerText="Documento">
+                        <h:outputText value="#{r.ninoDocumento}" />
+                    </p:column>
+
+                    <p:column headerText="Padre">
+                        <h:outputText value="#{r.padreNombres} #{r.padreApellidos}" />
+                    </p:column>
+
+                    <p:column headerText="Hogar">
+                        <h:outputText value="#{r.nombreHogar}" />
+                    </p:column>
+
+                    <p:column headerText="Acciones" style="text-align:center; width:160px;">
+                        <p:commandButton value="Ver detalle"
+                                         icon="pi pi-search"
+                                         action="#{reporteBean.verDetalle(r.idNino)}"
+                                         ajax="false"
+                                         styleClass="btn-primary" />
+                    </p:column>
+
+                    <p:column headerText="Reporte PDF" style="text-align:center;">
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ReporteNinoPdfServlet?id=#{r.idNino}" target="_blank" styleClass="pdf-link">
+                            <i class="pi pi-file-pdf"></i>
+                            <h:outputText value="Descargar" />
+                        </h:outputLink>
+                    </p:column>
+                </p:dataTable>
+
+                <div class="action-buttons">
+                    <p:commandButton value="Volver a matrículas" icon="pi pi-arrow-left"
+                                     action="listarNinos?faces-redirect=true"
+                                     ajax="false"
+                                     styleClass="btn-secondary" />
+
+                    <p:commandButton value="Volver al panel" icon="pi pi-home"
+                                     action="madreDashboard?faces-redirect=true"
+                                     ajax="false"
+                                     styleClass="btn-info" />
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</f:view>
 </html>
