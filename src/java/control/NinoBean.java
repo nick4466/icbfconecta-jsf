@@ -279,6 +279,26 @@ public class NinoBean implements Serializable {
         this.padreIdSeleccionado = padreIdSeleccionado;
     }
 
+    public String getPadreIdSeleccionadoHidden() {
+        return padreIdSeleccionado != null ? padreIdSeleccionado.toString() : "";
+    }
+
+    public void setPadreIdSeleccionadoHidden(String valor) {
+        if (valor == null || valor.trim().isEmpty()) {
+            padreIdSeleccionado = null;
+            padreSeleccionado = null;
+            usuarioPadreSeleccionado = null;
+            return;
+        }
+        try {
+            padreIdSeleccionado = Integer.valueOf(valor.trim());
+        } catch (NumberFormatException e) {
+            padreIdSeleccionado = null;
+            padreSeleccionado = null;
+            usuarioPadreSeleccionado = null;
+        }
+    }
+
     public Padre getPadreSeleccionado() {
         return padreSeleccionado;
     }
