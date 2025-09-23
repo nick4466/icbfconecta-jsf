@@ -65,17 +65,94 @@ public class NinoBean implements Serializable {
 
     private void cargarHogaresDisponibles() {
         listaHogares = new ArrayList<>();
+        HogarComunitarioDAO dao = getHogarDAO();
         if (sessionBean != null && sessionBean.getUsuarioLogueado() != null) {
             Usuario usuario = sessionBean.getUsuarioLogueado();
             if ("madre_comunitaria".equals(usuario.getRol())) {
-                HogarComunitario hogar = hogarDAO.buscarPorMadre(usuario.getIdUsuario());
+                HogarComunitario hogar = dao.buscarPorMadre(usuario.getIdUsuario());
                 if (hogar != null) {
                     listaHogares.add(hogar);
                 }
                 return;
             }
         }
-        listaHogares = hogarDAO.listarActivos();
+        listaHogares = dao.listarActivos();
+    }
+
+    private NinoDAO getNinoDAO() {
+        if (ninoDAO == null) {
+            ninoDAO = new NinoDAO();
+        }
+        return ninoDAO;
+    }
+
+    private PadreDAO getPadreDAO() {
+        if (padreDAO == null) {
+            padreDAO = new PadreDAO();
+        }
+        return padreDAO;
+    }
+
+    private UsuarioDAO getUsuarioDAO() {
+        if (usuarioDAO == null) {
+            usuarioDAO = new UsuarioDAO();
+        }
+        return usuarioDAO;
+    }
+
+    private HogarComunitarioDAO getHogarDAO() {
+        if (hogarDAO == null) {
+            hogarDAO = new HogarComunitarioDAO();
+        }
+        return hogarDAO;
+    }
+
+    private void limpiarPadreSeleccionado() {
+        padreIdSeleccionado = null;
+        padreSeleccionado = null;
+        usuarioPadreSeleccionado = null;
+        if (nino != null) {
+            nino.setPadreId(0);
+        }
+    }
+
+    private void sincronizarPadreSeleccionado(Integer idPadre) {
+        if (idPadre == null || idPadre <= 0) {
+            limpiarPadreSeleccionado();
+            return;
+        }
+
+        if (padreIdSeleccionado != null && padreSeleccionado != null
+                && padreSeleccionado.getIdPadre() != null
+                && padreSeleccionado.getIdPadre().equals(idPadre)) {
+            Integer usuarioId = padreSeleccionado.getUsuarioId();
+            boolean usuarioSincronizado = (usuarioId == null && usuarioPadreSeleccionado == null)
+                    || (usuarioId != null && usuarioPadreSeleccionado != null
+                        && usuarioPadreSeleccionado.getIdUsuario() == usuarioId);
+            if (usuarioSincronizado) {
+                if (nino != null) {
+                    nino.setPadreId(idPadre);
+                }
+                return;
+            }
+        }
+
+        padreIdSeleccionado = idPadre;
+        padreSeleccionado = getPadreDAO().findById(idPadre);
+        if (padreSeleccionado == null) {
+            limpiarPadreSeleccionado();
+            return;
+        }
+
+        if (padreSeleccionado.getUsuarioId() != null) {
+            usuarioPadreSeleccionado = getUsuarioDAO().findById(padreSeleccionado.getUsuarioId());
+        } else {
+            usuarioPadreSeleccionado = null;
+        }
+
+        if (nino != null) {
+            nino.setPadreId(idPadre);
+        }
     }
 
     private void cargarPadreDesdeParametros() {
@@ -96,15 +173,9 @@ public class NinoBean implements Serializable {
             return;
         }
         try {
-            padreIdSeleccionado = Integer.valueOf(padreParam.trim());
-            padreSeleccionado = padreDAO.findById(padreIdSeleccionado);
-            if (padreSeleccionado != null && padreSeleccionado.getUsuarioId() != null) {
-                usuarioPadreSeleccionado = usuarioDAO.findById(padreSeleccionado.getUsuarioId());
-            }
+            sincronizarPadreSeleccionado(Integer.valueOf(padreParam.trim()));
         } catch (NumberFormatException e) {
-            padreIdSeleccionado = null;
-            padreSeleccionado = null;
-            usuarioPadreSeleccionado = null;
+            limpiarPadreSeleccionado();
         }
     }
 
@@ -119,10 +190,10 @@ public class NinoBean implements Serializable {
             }
 
             nino.setPadreId(padreIdSeleccionado);
-            int idNino = ninoDAO.insert(nino);
+            int idNino = getNinoDAO().insert(nino);
 
             String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + idNino);
-            ninoDAO.updateFoto(idNino, rutaFoto);
+            getNinoDAO().updateFoto(idNino, rutaFoto);
 
             ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Matrícula guardada correctamente", null));
@@ -163,11 +234,11 @@ public class NinoBean implements Serializable {
             if (sessionBean != null && sessionBean.getUsuarioLogueado() != null) {
                 Usuario usuario = sessionBean.getUsuarioLogueado();
                 if ("madre_comunitaria".equals(usuario.getRol())) {
-                    listaNinos = ninoDAO.listarPorMadre(usuario.getIdUsuario());
+                    listaNinos = getNinoDAO().listarPorMadre(usuario.getIdUsuario());
                     return;
                 }
             }
-            listaNinos = ninoDAO.listar();
+            listaNinos = getNinoDAO().listar();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -177,7 +248,7 @@ public class NinoBean implements Serializable {
 
     public void eliminar(int idNino) {
         try {
-            boolean eliminado = ninoDAO.eliminarNino(idNino);
+            boolean eliminado = getNinoDAO().eliminarNino(idNino);
             if (eliminado) {
                 FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -197,6 +268,9 @@ public class NinoBean implements Serializable {
 
     private void limpiarFormulario() {
         nino = new Nino();
+        if (padreIdSeleccionado != null) {
+            nino.setPadreId(padreIdSeleccionado);
+        }
         fotoNinoPart = null;
     }
 
@@ -211,7 +285,7 @@ public class NinoBean implements Serializable {
             }
 
             if (nino != null && nino.getIdNino() > 0) {
-                Nino cargado = ninoDAO.buscarNinoPorId(nino.getIdNino());
+                Nino cargado = getNinoDAO().buscarNinoPorId(nino.getIdNino());
                 if (cargado != null) {
                     this.nino = cargado;
                 } else {
@@ -235,7 +309,7 @@ public class NinoBean implements Serializable {
                 nino.setFoto(rutaFoto);
             }
 
-            boolean actualizado = ninoDAO.actualizarNino(nino);
+            boolean actualizado = getNinoDAO().actualizarNino(nino);
             if (actualizado) {
                 FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -276,7 +350,19 @@ public class NinoBean implements Serializable {
     }
 
     public void setPadreIdSeleccionado(Integer padreIdSeleccionado) {
-        this.padreIdSeleccionado = padreIdSeleccionado;
+        sincronizarPadreSeleccionado(padreIdSeleccionado);
+    }
+
+    public Long getPadreIdSeleccionadoHidden() {
+        return padreIdSeleccionado != null ? padreIdSeleccionado.longValue() : null;
+    }
+
+    public void setPadreIdSeleccionadoHidden(Long valor) {
+        if (valor == null) {
+            limpiarPadreSeleccionado();
+        } else {
+            sincronizarPadreSeleccionado(valor.intValue());
+        }
     }
 
     public Padre getPadreSeleccionado() {

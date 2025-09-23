@@ -305,7 +305,9 @@
                     <h:link outcome="crearPadre" value="Registrar datos del padre" />
                 </h:panelGroup>
 
-                <h:inputHidden value="#{ninoBean.padreIdSeleccionado}" />
+                <h:inputHidden value="#{ninoBean.padreIdSeleccionadoHidden}">
+                    <f:converter converterId="javax.faces.Long" />
+                </h:inputHidden>
 
                 <div class="card">
                     <h3>Datos del niño</h3>
