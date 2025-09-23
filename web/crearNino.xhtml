@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 <f:view>
     <f:metadata>
         <f:viewAction action="#{sessionBean.verificarAcceso('madre_comunitaria')}" />
@@ -322,9 +323,11 @@
 
                         <h:outputLabel for="documentoN" value="Documento:" />
                         <h:inputText id="documentoN" value="#{ninoBean.nino.documento}" maxlength="15"
-                                     validatorMessage="El documento del niño solo debe contener números."
-                                     styleClass="input-field">
-                            <f:validateRegex pattern="\d*" />
+                                     styleClass="input-field"
+                                     pt:inputmode="numeric"
+                                     pt:pattern="[0-9]*"
+                                     pt:oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                     onkeypress="if(event.charCode != 0 && !(/[0-9]/.test(String.fromCharCode(event.charCode)))){event.preventDefault();}">
                         </h:inputText>
                         <h:message for="documentoN" styleClass="error-msg" />
 
