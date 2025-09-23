@@ -4,126 +4,351 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+<f:view>
+    <f:metadata>
+        <f:viewAction action="#{sessionBean.verificarAcceso('madre_comunitaria')}" />
+    </f:metadata>
 
-<h:head>
-    <title>Detalle del Reporte</title>
-</h:head>
+    <h:head>
+        <title>Detalle del Reporte</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <style>
+            * {
+                box-sizing: border-box;
+            }
 
-<h:body>
-    <h:form id="formDetalle">
+            body {
+                margin: 0;
+                font-family: 'Roboto', sans-serif;
+                background-image: url("#{resource['img/fondito.png']}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                color: #4a2d73;
+            }
 
-        <h2>Ficha del Niño</h2>
+            header {
+                background-color: rgba(255, 255, 255, 0.85);
+                padding: 15px 30px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 2px solid #e5d5f5;
+                backdrop-filter: blur(4px);
+                flex-wrap: wrap;
+            }
 
-        <h:panelGrid columns="2" columnClasses="label,value" cellpadding="5">
+            header img {
+                height: 60px;
+            }
 
-            <!-- Datos del niño -->
-            <h:outputLabel value="Nombres:" />
-            <h:outputText value="#{reporteBean.seleccionado.ninoNombres} #{reporteBean.seleccionado.ninoApellidos}" />
+            nav ul {
+                list-style: none;
+                display: flex;
+                gap: 20px;
+                padding: 0;
+                margin: 0;
+                flex-wrap: wrap;
+            }
 
-            <h:outputLabel value="Documento:" />
-            <h:outputText value="#{reporteBean.seleccionado.ninoDocumento}" />
+            nav ul li a {
+                text-decoration: none;
+                color: #9B59B6;
+                font-weight: bold;
+                font-size: 16px;
+                padding: 8px 12px;
+                border-radius: 6px;
+                transition: background-color 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
 
-            <h:outputLabel value="Fecha Nacimiento:" />
-            <h:outputText value="#{reporteBean.seleccionado.fechaNacimiento}">
-                <f:convertDateTime pattern="dd/MM/yyyy" />
-            </h:outputText>
+            nav ul li a:hover {
+                background-color: #f3c1e5;
+            }
 
-            <h:outputLabel value="Género:" />
-            <h:outputText value="#{reporteBean.seleccionado.genero}" />
+            .main-title {
+                text-align: center;
+                margin-top: 20px;
+                padding: 20px;
+                font-size: 26px;
+                font-weight: bold;
+                color: #7a3eb1;
+                background-color: rgba(255, 255, 255, 0.75);
+                margin: 20px auto;
+                width: 80%;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
 
-            <h:outputLabel value="Nacionalidad:" />
-            <h:outputText value="#{reporteBean.seleccionado.nacionalidad}" />
+            .card {
+                background-color: rgba(255, 255, 255, 0.93);
+                border-radius: 15px;
+                padding: 30px;
+                max-width: 1150px;
+                margin: 0 auto 40px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                border-left: 6px solid #9B59B6;
+            }
 
-            <h:outputLabel value="Fecha Ingreso:" />
-            <h:outputText value="#{reporteBean.seleccionado.fechaIngreso}">
-                <f:convertDateTime pattern="dd/MM/yyyy" />
-            </h:outputText>
+            .card h3 {
+                margin-top: 0;
+                color: #5e3370;
+                text-align: center;
+            }
 
-            <h:outputLabel value="Foto:" />
-            <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{reporteBean.seleccionado.foto}" width="120" height="120" rendered="#{not empty reporteBean.seleccionado.foto}" />
-            <h:outputText value="No disponible" rendered="#{empty reporteBean.seleccionado.foto}" />
+            .detail-grid {
+                width: 100%;
+                border-spacing: 16px 10px;
+            }
 
-            <h:outputLabel value="Carnet Vacunación:" />
-            <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{reporteBean.seleccionado.carnetVacunacion}" width="120" height="120" rendered="#{not empty reporteBean.seleccionado.carnetVacunacion}" />
-            <h:outputText value="No disponible" rendered="#{empty reporteBean.seleccionado.carnetVacunacion}" />
+            .detail-grid .label {
+                width: 35%;
+                font-weight: bold;
+                color: #5e3370;
+                text-align: right;
+                padding-right: 12px;
+            }
 
-            <h:outputLabel value="Certificado EPS:" />
-            <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{reporteBean.seleccionado.certificadoEps}" width="120" height="120" rendered="#{not empty reporteBean.seleccionado.certificadoEps}" />
-            <h:outputText value="No disponible" rendered="#{empty reporteBean.seleccionado.certificadoEps}" />
+            .detail-grid .value {
+                width: 65%;
+            }
 
-            <!-- Datos del padre -->
-            <h:outputLabel value="Padre:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreNombres} #{reporteBean.seleccionado.padreApellidos}" />
+            .info-note {
+                margin-top: 15px;
+                font-style: italic;
+                font-size: 0.9em;
+                color: #6c4f89;
+                background-color: rgba(243, 225, 255, 0.6);
+                padding: 12px 16px;
+                border-radius: 10px;
+            }
 
-            <h:outputLabel value="Documento Padre:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreDocumento}" />
+            .button-bar {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+                margin-top: 25px;
+            }
 
-            <h:outputLabel value="Correo:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreCorreo}" />
+            .button-bar .ui-button {
+                min-width: 190px;
+                font-weight: bold;
+            }
 
-            <h:outputLabel value="Teléfono:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreTelefono}" />
+            .ui-messages {
+                margin-bottom: 20px;
+            }
 
-            <h:outputLabel value="Dirección:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreDireccion}" />
+            .btn-primary {
+                background: linear-gradient(135deg, #9B59B6, #8e44ad);
+                color: #fff !important;
+                border: none;
+            }
 
-            <h:outputLabel value="Ocupación:" />
-            <h:outputText value="#{reporteBean.seleccionado.ocupacion}" />
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #8e44ad, #732d91);
+            }
 
-            <h:outputLabel value="Estrato:" />
-            <h:outputText value="#{reporteBean.seleccionado.estrato}" />
+            .btn-secondary {
+                background-color: #6c757d;
+                color: #fff !important;
+                border: none;
+            }
 
-            <h:outputLabel value="Teléfono Emergencia:" />
-            <h:outputText value="#{reporteBean.seleccionado.telEmerg}" />
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
 
-            <h:outputLabel value="Nombre Contacto Emergencia:" />
-            <h:outputText value="#{reporteBean.seleccionado.nomEmerg}" />
+            .btn-info {
+                background-color: #5dade2;
+                color: #fff !important;
+                border: none;
+            }
 
-            <h:outputLabel value="Situación Económica:" />
-            <h:outputText value="#{reporteBean.seleccionado.situacionEcon}" />
+            .btn-info:hover {
+                background-color: #3498db;
+            }
 
-            <h:outputLabel value="Documento identidad padre:" />
-            <h:panelGroup>
-                <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{reporteBean.seleccionado.documentoPadreImg}"
-                                width="120" height="120" rendered="#{not empty reporteBean.seleccionado.documentoPadreImg}" />
-                <h:outputText value="No disponible" rendered="#{empty reporteBean.seleccionado.documentoPadreImg}" />
-            </h:panelGroup>
+            .btn-danger {
+                background-color: #e74c3c;
+                color: #fff !important;
+                border: none;
+            }
 
-            <h:outputLabel value="ID interno usuario:" />
-            <h:outputText value="#{reporteBean.seleccionado.padreUsuarioId eq 0 ? '-' : reporteBean.seleccionado.padreUsuarioId}" />
+            .btn-danger:hover {
+                background-color: #c0392b;
+            }
+        </style>
+    </h:head>
 
-            <h:outputLabel value="Contraseña registrada:" />
-            <h:outputText value="#{empty reporteBean.seleccionado.padrePasswordHash ? '-' : reporteBean.seleccionado.padrePasswordHash}" />
+    <h:body>
+        <header>
+            <h:graphicImage library="img" name="logoSinFondo.png" alt="ICBF Conecta" />
+            <nav>
+                <ul>
+                    <li><h:link outcome="madreDashboard" value="Inicio"><i class="fas fa-home"></i></h:link></li>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeaciones" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                    <li><h:link outcome="correos" value=" Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                    <li>
+                        <h:form>
+                            <h:commandLink action="#{loginBean.logout}">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </h:commandLink>
+                        </h:form>
+                    </li>
+                </ul>
+            </nav>
+        </header>
 
-            <!-- Datos del hogar -->
-            <h:outputLabel value="Hogar Comunitario:" />
-            <h:outputText value="#{reporteBean.seleccionado.nombreHogar}" />
+        <div class="main-title">
+            ICBF CONECTA || Detalle del reporte
+        </div>
 
-            <h:outputLabel value="Dirección Hogar:" />
-            <h:outputText value="#{reporteBean.seleccionado.hogarDireccion}" />
+        <div class="card">
+            <h:form id="formDetalle">
+                <p:messages showDetail="true" showSummary="false" closable="true" />
 
-            <h:outputLabel value="Localidad:" />
-            <h:outputText value="#{reporteBean.seleccionado.localidad}" />
+                <h:panelGroup rendered="#{not empty reporteBean.seleccionado}">
+                    <h3>Ficha completa del niño</h3>
+                    <h:panelGrid columns="2" columnClasses="label,value" styleClass="detail-grid">
+                        <h:outputLabel value="Nombres:" />
+                        <h:outputText value="#{reporteBean.seleccionado.ninoNombres} #{reporteBean.seleccionado.ninoApellidos}" />
 
-        </h:panelGrid>
+                        <h:outputLabel value="Documento:" />
+                        <h:outputText value="#{reporteBean.seleccionado.ninoDocumento}" />
 
-        <h:panelGroup layout="block" style="margin-top:10px;font-style:italic;font-size:0.9em;">
-            <h:outputText value="Nota: la contraseña se almacena cifrada. Entregue manualmente al acudiente la clave en texto plano definida durante la matrícula." />
-        </h:panelGroup>
+                        <h:outputLabel value="Fecha Nacimiento:" />
+                        <h:outputText value="#{reporteBean.seleccionado.fechaNacimiento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
 
-        <br/>
+                        <h:outputLabel value="Género:" />
+                        <h:outputText value="#{reporteBean.seleccionado.genero}" />
 
-        <!-- Botones -->
-        <p:commandButton value="Descargar PDF"
-                         type="button"
-                         onclick="window.open('#{facesContext.externalContext.requestContextPath}/ReporteNinoPdfServlet?id=#{reporteBean.seleccionado.idNino}', '_blank');"
-                         icon="pi pi-file-pdf"
-                         styleClass="ui-button-danger"/>
+                        <h:outputLabel value="Nacionalidad:" />
+                        <h:outputText value="#{reporteBean.seleccionado.nacionalidad}" />
 
-        <p:commandButton value="Volver"
-                         action="ReporteListado?faces-redirect=true"
-                         ajax="false"
-                         icon="pi pi-arrow-left"/>
-    </h:form>
-</h:body>
+                        <h:outputLabel value="Fecha Ingreso:" />
+                        <h:outputText value="#{reporteBean.seleccionado.fechaIngreso}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+
+                        <h:outputLabel value="Foto:" />
+                        <h:panelGroup>
+                            <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{reporteBean.seleccionado.foto}"
+                                            width="120" height="120" rendered="#{not empty reporteBean.seleccionado.foto}" />
+                            <h:outputText value="No disponible" rendered="#{empty reporteBean.seleccionado.foto}" />
+                        </h:panelGroup>
+
+                        <h:outputLabel value="Carnet Vacunación:" />
+                        <h:panelGroup>
+                            <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{reporteBean.seleccionado.carnetVacunacion}"
+                                            width="120" height="120" rendered="#{not empty reporteBean.seleccionado.carnetVacunacion}" />
+                            <h:outputText value="No disponible" rendered="#{empty reporteBean.seleccionado.carnetVacunacion}" />
+                        </h:panelGroup>
+
+                        <h:outputLabel value="Certificado EPS:" />
+                        <h:panelGroup>
+                            <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{reporteBean.seleccionado.certificadoEps}"
+                                            width="120" height="120" rendered="#{not empty reporteBean.seleccionado.certificadoEps}" />
+                            <h:outputText value="No disponible" rendered="#{empty reporteBean.seleccionado.certificadoEps}" />
+                        </h:panelGroup>
+
+                        <h:outputLabel value="Padre:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreNombres} #{reporteBean.seleccionado.padreApellidos}" />
+
+                        <h:outputLabel value="Documento Padre:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreDocumento}" />
+
+                        <h:outputLabel value="Correo:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreCorreo}" />
+
+                        <h:outputLabel value="Teléfono:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreTelefono}" />
+
+                        <h:outputLabel value="Dirección:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreDireccion}" />
+
+                        <h:outputLabel value="Ocupación:" />
+                        <h:outputText value="#{reporteBean.seleccionado.ocupacion}" />
+
+                        <h:outputLabel value="Estrato:" />
+                        <h:outputText value="#{reporteBean.seleccionado.estrato}" />
+
+                        <h:outputLabel value="Teléfono Emergencia:" />
+                        <h:outputText value="#{reporteBean.seleccionado.telEmerg}" />
+
+                        <h:outputLabel value="Nombre Contacto Emergencia:" />
+                        <h:outputText value="#{reporteBean.seleccionado.nomEmerg}" />
+
+                        <h:outputLabel value="Situación Económica:" />
+                        <h:outputText value="#{reporteBean.seleccionado.situacionEcon}" />
+
+                        <h:outputLabel value="Documento identidad padre:" />
+                        <h:panelGroup>
+                            <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{reporteBean.seleccionado.documentoPadreImg}"
+                                            width="120" height="120" rendered="#{not empty reporteBean.seleccionado.documentoPadreImg}" />
+                            <h:outputText value="No disponible" rendered="#{empty reporteBean.seleccionado.documentoPadreImg}" />
+                        </h:panelGroup>
+
+                        <h:outputLabel value="ID interno usuario:" />
+                        <h:outputText value="#{reporteBean.seleccionado.padreUsuarioId eq 0 ? '-' : reporteBean.seleccionado.padreUsuarioId}" />
+
+                        <h:outputLabel value="Contraseña registrada:" />
+                        <h:outputText value="#{empty reporteBean.seleccionado.padrePasswordHash ? '-' : reporteBean.seleccionado.padrePasswordHash}" />
+
+                        <h:outputLabel value="Hogar Comunitario:" />
+                        <h:outputText value="#{reporteBean.seleccionado.nombreHogar}" />
+
+                        <h:outputLabel value="Dirección Hogar:" />
+                        <h:outputText value="#{reporteBean.seleccionado.hogarDireccion}" />
+
+                        <h:outputLabel value="Localidad:" />
+                        <h:outputText value="#{reporteBean.seleccionado.localidad}" />
+                    </h:panelGrid>
+
+                    <div class="info-note">
+                        Nota: la contraseña se almacena cifrada. Entregue manualmente al acudiente la clave en texto plano definida durante la matrícula.
+                    </div>
+
+                    <div class="button-bar">
+                        <p:commandButton value="Descargar PDF" icon="pi pi-file-pdf"
+                                         type="button"
+                                         onclick="window.open('#{facesContext.externalContext.requestContextPath}/ReporteNinoPdfServlet?id=#{reporteBean.seleccionado.idNino}', '_blank');"
+                                         styleClass="btn-danger" />
+
+                        <p:commandButton value="Volver al listado" icon="pi pi-arrow-left"
+                                         action="ReporteListado?faces-redirect=true"
+                                         ajax="false"
+                                         styleClass="btn-secondary" />
+
+                        <p:commandButton value="Ir a matrículas" icon="pi pi-users"
+                                         action="listarNinos?faces-redirect=true"
+                                         ajax="false"
+                                         styleClass="btn-info" />
+                    </div>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{empty reporteBean.seleccionado}" layout="block">
+                    <div class="info-note">
+                        No se encontró información para el reporte solicitado.
+                    </div>
+                    <div class="button-bar">
+                        <p:commandButton value="Volver al listado" icon="pi pi-arrow-left"
+                                         action="ReporteListado?faces-redirect=true"
+                                         ajax="false"
+                                         styleClass="btn-secondary" />
+                    </div>
+                </h:panelGroup>
+            </h:form>
+        </div>
+    </h:body>
+</f:view>
 </html>

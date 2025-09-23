@@ -1,103 +1,302 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<f:view>
+    <f:metadata>
+        <f:viewAction action="#{sessionBean.verificarAcceso('madre_comunitaria')}" />
+    </f:metadata>
 
-<h:head>
-    <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
-    <title>Listado de Niños</title>
-</h:head>
-<h:body>
+    <h:head>
+        <title>Niños Matriculados</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <style>
+            * {
+                box-sizing: border-box;
+            }
 
-    <h:form id="formNinos">
-        <h2>Niños Matriculados en Mi Hogar</h2>
+            body {
+                margin: 0;
+                font-family: 'Roboto', sans-serif;
+                background-image: url("#{resource['img/fondito.png']}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                color: #4a2d73;
+            }
 
-        <!-- Mensajes globales -->
-        <p:messages id="mensajes" showDetail="true" showSummary="true" closable="true" />
+            header {
+                background-color: rgba(255, 255, 255, 0.85);
+                padding: 15px 30px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 2px solid #e5d5f5;
+                backdrop-filter: blur(4px);
+                flex-wrap: wrap;
+            }
 
-        <!-- Tabla con PrimeFaces -->
-        <p:dataTable id="tablaNinos"
-                     value="#{ninoBean.listaNinos}" var="n"
-                     paginator="true" rows="10"
-                     emptyMessage="No hay niños matriculados en este hogar"
-                     scrollable="true" scrollHeight="400">
+            header img {
+                height: 60px;
+            }
 
-            <!-- Columnas -->
-            <p:column headerText="ID" style="width:60px;">
-                <h:outputText value="#{n.idNino}" />
-            </p:column>
+            nav ul {
+                list-style: none;
+                display: flex;
+                gap: 20px;
+                padding: 0;
+                margin: 0;
+                flex-wrap: wrap;
+            }
 
-            <p:column headerText="Nombres">
-                <h:outputText value="#{n.nombres}" />
-            </p:column>
+            nav ul li a {
+                text-decoration: none;
+                color: #9B59B6;
+                font-weight: bold;
+                font-size: 16px;
+                padding: 8px 12px;
+                border-radius: 6px;
+                transition: background-color 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
 
-            <p:column headerText="Apellidos">
-                <h:outputText value="#{n.apellidos}" />
-            </p:column>
+            nav ul li a:hover {
+                background-color: #f3c1e5;
+            }
 
-            <p:column headerText="Documento">
-                <h:outputText value="#{n.documento}" />
-            </p:column>
+            .main-title {
+                text-align: center;
+                margin-top: 20px;
+                padding: 20px;
+                font-size: 26px;
+                font-weight: bold;
+                color: #7a3eb1;
+                background-color: rgba(255, 255, 255, 0.75);
+                margin: 20px auto;
+                width: 80%;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
 
-            <p:column headerText="Fecha Nacimiento">
-                <h:outputText value="#{n.fechaNacimiento}">
-                    <f:convertDateTime pattern="dd/MM/yyyy" />
-                </h:outputText>
-            </p:column>
+            .card {
+                background-color: rgba(255, 255, 255, 0.93);
+                border-radius: 15px;
+                padding: 30px;
+                max-width: 1150px;
+                margin: 0 auto 40px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                border-left: 6px solid #9B59B6;
+            }
 
-            <p:column headerText="Género">
-                <h:outputText value="#{n.genero}" />
-            </p:column>
+            .card-title {
+                margin: 0 0 15px;
+                font-size: 22px;
+                color: #5e3370;
+                text-align: center;
+            }
 
-            <p:column headerText="Nacionalidad">
-                <h:outputText value="#{n.nacionalidad}" />
-            </p:column>
+            .actions-column .ui-button {
+                margin: 0 4px;
+            }
 
-            <!-- Mostrar foto directamente -->
-            <p:column headerText="Foto">
-                <h:graphicImage value="http://localhost:8080/icbfconecta-jsf/uploads/#{n.foto}"
-                                width="60" height="60" alt="Foto Niño"/>
-            </p:column>
+            .actions-column .ui-button .ui-button-text-only .ui-button-text {
+                padding: 0;
+            }
 
-            <!-- Acciones -->
-            <p:column headerText="Acciones" style="width:120px; text-align:center;">
-                <!-- Editar -->
-                <p:commandButton icon="pi pi-pencil" title="Editar"
-                                 action="editarNino.xhtml"
-                                 ajax="false">
-                    <f:param name="idNino" value="#{n.idNino}" />
-                </p:commandButton>
+            .foto-preview {
+                border-radius: 10px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+                object-fit: cover;
+            }
 
-                <!-- Eliminar -->
-                <p:commandButton icon="pi pi-trash" title="Eliminar"
-                                 styleClass="ui-button-danger"
-                                 actionListener="#{ninoBean.eliminar(n.idNino)}"
-                                 update="formNinos:mensajes formNinos:tablaNinos"
-                                 process="@this"
-                                 onclick="return confirm('¿Seguro que deseas eliminar este niño?');"/>
-            </p:column>
+            .action-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+                justify-content: center;
+                margin-top: 25px;
+            }
 
-        </p:dataTable>
+            .action-buttons .ui-button {
+                min-width: 200px;
+                font-weight: bold;
+            }
 
-        <br/>
+            .btn-primary {
+                background: linear-gradient(135deg, #9B59B6, #8e44ad);
+                color: #fff !important;
+                border: none;
+            }
 
-        <!-- Botones de navegación -->
-        <p:commandButton value="Registrar Nuevo Niño"
-                         action="crearPadre?faces-redirect=true"
-                         icon="pi pi-plus"
-                         ajax="false" />
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #8e44ad, #732d91);
+            }
 
-        <p:commandButton value="Volver al Dashboard"
-                         action="madreDashboard?faces-redirect=true"
-                         icon="pi pi-home"
-                         ajax="false" />
+            .btn-secondary {
+                background-color: #6c757d;
+                color: #fff !important;
+                border: none;
+            }
 
-        <p:commandButton value="Ver Reporte de Niños"
-                         action="ReporteListado?faces-redirect=true"
-                         icon="pi pi-list"
-                         ajax="false" />
-    </h:form>
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
 
-</h:body>
+            .btn-info {
+                background-color: #5dade2;
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-info:hover {
+                background-color: #3498db;
+            }
+
+            .btn-danger {
+                background-color: #e74c3c;
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-danger:hover {
+                background-color: #c0392b;
+            }
+
+            .ui-datatable thead th {
+                background: #f3c1e5;
+                color: #5e3370;
+                text-align: center;
+            }
+
+            .ui-datatable tbody td {
+                text-align: center;
+                color: #4a2d73;
+            }
+
+            .ui-messages {
+                margin-bottom: 20px;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <header>
+            <h:graphicImage library="img" name="logoSinFondo.png" alt="ICBF Conecta" />
+            <nav>
+                <ul>
+                    <li><h:link outcome="madreDashboard" value="Inicio"><i class="fas fa-home"></i></h:link></li>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeaciones" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                    <li><h:link outcome="correos" value=" Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                    <li>
+                        <h:form>
+                            <h:commandLink action="#{loginBean.logout}">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </h:commandLink>
+                        </h:form>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="main-title">
+            ICBF CONECTA || Matrículas de niños inscritos en tu hogar
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">Listado de niños matriculados</h3>
+            <h:form id="formNinos">
+                <p:messages id="mensajes" showDetail="true" showSummary="false" closable="true" />
+
+                <p:dataTable id="tablaNinos"
+                             value="#{ninoBean.listaNinos}" var="n"
+                             paginator="true" rows="10"
+                             reflow="true"
+                             emptyMessage="No hay niños matriculados en este hogar"
+                             styleClass="tabla-ninos">
+
+                    <p:column headerText="ID" style="width:70px;">
+                        <h:outputText value="#{n.idNino}" />
+                    </p:column>
+
+                    <p:column headerText="Nombres">
+                        <h:outputText value="#{n.nombres}" />
+                    </p:column>
+
+                    <p:column headerText="Apellidos">
+                        <h:outputText value="#{n.apellidos}" />
+                    </p:column>
+
+                    <p:column headerText="Documento">
+                        <h:outputText value="#{n.documento}" />
+                    </p:column>
+
+                    <p:column headerText="Fecha Nacimiento">
+                        <h:outputText value="#{n.fechaNacimiento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Género">
+                        <h:outputText value="#{n.genero}" />
+                    </p:column>
+
+                    <p:column headerText="Nacionalidad">
+                        <h:outputText value="#{n.nacionalidad}" />
+                    </p:column>
+
+                    <p:column headerText="Foto" style="width:120px;">
+                        <h:panelGroup rendered="#{not empty n.foto}">
+                            <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{n.foto}"
+                                            width="70" height="70" alt="Foto Niño" styleClass="foto-preview" />
+                        </h:panelGroup>
+                        <h:outputText value="Sin foto" rendered="#{empty n.foto}" />
+                    </p:column>
+
+                    <p:column headerText="Acciones" styleClass="actions-column" style="text-align:center; width:150px;">
+                        <p:commandButton icon="pi pi-pencil" title="Editar"
+                                         action="editarNino?faces-redirect=true"
+                                         ajax="false"
+                                         styleClass="btn-info">
+                            <f:param name="idNino" value="#{n.idNino}" />
+                        </p:commandButton>
+
+                        <p:commandButton icon="pi pi-trash" title="Eliminar"
+                                         styleClass="btn-danger"
+                                         actionListener="#{ninoBean.eliminar(n.idNino)}"
+                                         update="formNinos:mensajes formNinos:tablaNinos"
+                                         process="@this"
+                                         onclick="return confirm('¿Seguro que deseas eliminar este niño?');"/>
+                    </p:column>
+                </p:dataTable>
+
+                <div class="action-buttons">
+                    <p:commandButton value="Registrar nuevo niño"
+                                     icon="pi pi-user-plus"
+                                     action="crearPadre?faces-redirect=true"
+                                     ajax="false"
+                                     styleClass="btn-primary" />
+
+                    <p:commandButton value="Ver reportes"
+                                     icon="pi pi-list"
+                                     action="ReporteListado?faces-redirect=true"
+                                     ajax="false"
+                                     styleClass="btn-info" />
+
+                    <p:commandButton value="Volver al panel"
+                                     icon="pi pi-arrow-left"
+                                     action="madreDashboard?faces-redirect=true"
+                                     ajax="false"
+                                     styleClass="btn-secondary" />
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</f:view>
 </html>

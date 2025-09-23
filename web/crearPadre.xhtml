@@ -3,77 +3,336 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<h:head>
-    <title>Registrar Padre / Acudiente</title>
-</h:head>
-<h:body>
+<f:view>
+    <f:metadata>
+        <f:viewAction action="#{sessionBean.verificarAcceso('madre_comunitaria')}" />
+    </f:metadata>
 
-<h:form enctype="multipart/form-data">
-    <p:messages showDetail="true" showSummary="false" closable="true" />
+    <h:head>
+        <title>Registrar Padre / Acudiente</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <style>
+            * {
+                box-sizing: border-box;
+            }
 
-    <h2>Datos del Usuario Padre</h2>
-    <h:panelGrid columns="2" columnClasses="label,value">
-        <h:outputLabel for="nombresP" value="Nombres:" />
-        <h:inputText id="nombresP" value="#{padreMatriculaBean.usuarioPadre.nombres}" required="true" />
+            body {
+                margin: 0;
+                font-family: 'Roboto', sans-serif;
+                background-image: url("#{resource['img/fondito.png']}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                color: #4a2d73;
+            }
 
-        <h:outputLabel for="apellidosP" value="Apellidos:" />
-        <h:inputText id="apellidosP" value="#{padreMatriculaBean.usuarioPadre.apellidos}" required="true" />
+            header {
+                background-color: rgba(255, 255, 255, 0.85);
+                padding: 15px 30px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 2px solid #e5d5f5;
+                backdrop-filter: blur(4px);
+                flex-wrap: wrap;
+            }
 
-        <h:outputLabel for="documentoP" value="Documento:" />
-        <h:inputText id="documentoP" value="#{padreMatriculaBean.usuarioPadre.documento}" required="true" />
+            header img {
+                height: 60px;
+            }
 
-        <h:outputLabel for="correoP" value="Correo electrónico:" />
-        <h:inputText id="correoP" value="#{padreMatriculaBean.usuarioPadre.correo}" required="true" />
+            nav ul {
+                list-style: none;
+                display: flex;
+                gap: 20px;
+                padding: 0;
+                margin: 0;
+                flex-wrap: wrap;
+            }
 
-        <h:outputLabel for="direccionP" value="Dirección:" />
-        <h:inputText id="direccionP" value="#{padreMatriculaBean.usuarioPadre.direccion}" />
+            nav ul li a {
+                text-decoration: none;
+                color: #9B59B6;
+                font-weight: bold;
+                font-size: 16px;
+                padding: 8px 12px;
+                border-radius: 6px;
+                transition: background-color 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
 
-        <h:outputLabel for="telefonoP" value="Teléfono:" />
-        <h:inputText id="telefonoP" value="#{padreMatriculaBean.usuarioPadre.telefono}" />
+            nav ul li a:hover {
+                background-color: #f3c1e5;
+            }
 
-        <h:outputLabel for="pass1" value="Contraseña:" />
-        <h:inputSecret id="pass1" value="#{padreMatriculaBean.password1}" required="true" redisplay="true" />
+            .main-title {
+                text-align: center;
+                margin-top: 20px;
+                padding: 20px;
+                font-size: 26px;
+                font-weight: bold;
+                color: #7a3eb1;
+                background-color: rgba(255, 255, 255, 0.75);
+                margin: 20px auto;
+                width: 80%;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
 
-        <h:outputLabel for="pass2" value="Confirmar contraseña:" />
-        <h:inputSecret id="pass2" value="#{padreMatriculaBean.password2}" required="true" redisplay="true" />
-    </h:panelGrid>
+            .form-wrapper {
+                max-width: 1150px;
+                margin: 0 auto 40px;
+                display: flex;
+                flex-direction: column;
+                gap: 25px;
+            }
 
-    <p:separator/>
+            .form-card {
+                background-color: rgba(255, 255, 255, 0.93);
+                border-radius: 15px;
+                padding: 30px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                border-left: 6px solid #9B59B6;
+            }
 
-    <h2>Información Complementaria</h2>
-    <h:panelGrid columns="2" columnClasses="label,value">
-        <h:outputLabel for="ocupacion" value="Ocupación:" />
-        <h:inputText id="ocupacion" value="#{padreMatriculaBean.padre.ocupacion}" />
+            .form-card h3 {
+                margin-top: 0;
+                margin-bottom: 20px;
+                font-size: 22px;
+                text-align: center;
+                color: #5e3370;
+            }
 
-        <h:outputLabel for="estrato" value="Estrato:" />
-        <h:inputText id="estrato" value="#{padreMatriculaBean.padre.estrato}">
-            <f:convertNumber integerOnly="true" />
-        </h:inputText>
+            .input-grid {
+                width: 100%;
+                border-spacing: 16px 12px;
+            }
 
-        <h:outputLabel for="telEmerg" value="Teléfono emergencia:" />
-        <h:inputText id="telEmerg" value="#{padreMatriculaBean.padre.telefonoContactoEmergencia}" />
+            .input-grid .label {
+                width: 30%;
+                font-weight: bold;
+                color: #5e3370;
+                text-align: right;
+                padding-right: 10px;
+            }
 
-        <h:outputLabel for="nomEmerg" value="Nombre contacto emergencia:" />
-        <h:inputText id="nomEmerg" value="#{padreMatriculaBean.padre.nombreContactoEmergencia}" />
+            .input-grid .value {
+                width: 70%;
+            }
 
-        <h:outputLabel for="sitEcon" value="Situación económica hogar:" />
-        <h:inputTextarea id="sitEcon" value="#{padreMatriculaBean.padre.situacionEconomicaHogar}" rows="3" cols="30" />
+            .input-field {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid #c7b4df;
+                border-radius: 8px;
+                font-size: 15px;
+                background-color: #fff;
+                transition: border-color 0.3s ease;
+            }
 
-        <h:outputLabel for="docPadre" value="Documento de identidad (imagen):" />
-        <h:inputFile id="docPadre" value="#{padreMatriculaBean.documentoPart}" required="true" />
-    </h:panelGrid>
+            .input-field:focus {
+                outline: none;
+                border-color: #9B59B6;
+                box-shadow: 0 0 4px rgba(155, 89, 182, 0.4);
+            }
 
-    <p:separator/>
+            textarea.input-field {
+                resize: vertical;
+                min-height: 90px;
+            }
 
-    <p:commandButton value="Guardar y continuar"
-                     action="#{padreMatriculaBean.guardarPadre}"
-                     ajax="false"
-                     styleClass="ui-button-success" />
+            .error-msg {
+                color: #c0392b;
+                font-size: 12px;
+                margin-top: 4px;
+                display: block;
+            }
 
-    <p:commandButton value="Cancelar" immediate="true"
-                     action="listarNinos?faces-redirect=true"
-                     styleClass="ui-button-secondary" />
-</h:form>
+            .button-bar {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+                margin-top: 20px;
+            }
 
-</h:body>
+            .button-bar .ui-button {
+                min-width: 190px;
+                font-weight: bold;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #9B59B6, #8e44ad);
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #8e44ad, #732d91);
+            }
+
+            .btn-secondary {
+                background-color: #6c757d;
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+            .btn-info {
+                background-color: #5dade2;
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-info:hover {
+                background-color: #3498db;
+            }
+
+            .ui-messages {
+                margin-bottom: 20px;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <header>
+            <h:graphicImage library="img" name="logoSinFondo.png" alt="ICBF Conecta" />
+            <nav>
+                <ul>
+                    <li><h:link outcome="madreDashboard" value="Inicio"><i class="fas fa-home"></i></h:link></li>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeaciones" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                    <li><h:link outcome="correos" value=" Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                    <li>
+                        <h:form>
+                            <h:commandLink action="#{loginBean.logout}">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </h:commandLink>
+                        </h:form>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="main-title">
+            ICBF CONECTA || Registro de acudiente
+        </div>
+
+        <div class="form-wrapper">
+            <h:form enctype="multipart/form-data">
+                <p:messages showDetail="true" showSummary="false" closable="true" />
+
+                <div class="form-card">
+                    <h3>Datos del usuario padre</h3>
+                    <h:panelGrid columns="2" columnClasses="label,value" styleClass="input-grid">
+                        <h:outputLabel for="nombresP" value="Nombres:" />
+                        <h:inputText id="nombresP" value="#{padreMatriculaBean.usuarioPadre.nombres}" required="true"
+                                     requiredMessage="Los nombres son obligatorios." styleClass="input-field" />
+
+                        <h:outputLabel for="apellidosP" value="Apellidos:" />
+                        <h:inputText id="apellidosP" value="#{padreMatriculaBean.usuarioPadre.apellidos}" required="true"
+                                     requiredMessage="Los apellidos son obligatorios." styleClass="input-field" />
+
+                        <h:outputLabel for="documentoP" value="Documento:" />
+                        <h:inputText id="documentoP" value="#{padreMatriculaBean.usuarioPadre.documento}" required="true"
+                                     maxlength="15"
+                                     requiredMessage="El documento es obligatorio."
+                                     validatorMessage="El documento solo debe contener números."
+                                     styleClass="input-field">
+                            <f:validateRegex pattern="\d+" />
+                        </h:inputText>
+                        <h:message for="documentoP" styleClass="error-msg" />
+
+                        <h:outputLabel for="correoP" value="Correo electrónico:" />
+                        <h:inputText id="correoP" value="#{padreMatriculaBean.usuarioPadre.correo}" required="true"
+                                     requiredMessage="El correo es obligatorio." styleClass="input-field" />
+
+                        <h:outputLabel for="direccionP" value="Dirección:" />
+                        <h:inputText id="direccionP" value="#{padreMatriculaBean.usuarioPadre.direccion}" styleClass="input-field" />
+
+                        <h:outputLabel for="telefonoP" value="Teléfono:" />
+                        <h:inputText id="telefonoP" value="#{padreMatriculaBean.usuarioPadre.telefono}" maxlength="15"
+                                     validatorMessage="El teléfono solo debe contener números."
+                                     styleClass="input-field">
+                            <f:validateRegex pattern="\d*" />
+                        </h:inputText>
+                        <h:message for="telefonoP" styleClass="error-msg" />
+
+                        <h:outputLabel for="pass1" value="Contraseña:" />
+                        <h:inputSecret id="pass1" value="#{padreMatriculaBean.password1}" required="true"
+                                       redisplay="true"
+                                       requiredMessage="La contraseña es obligatoria."
+                                       styleClass="input-field" />
+
+                        <h:outputLabel for="pass2" value="Confirmar contraseña:" />
+                        <h:inputSecret id="pass2" value="#{padreMatriculaBean.password2}" required="true"
+                                       redisplay="true"
+                                       requiredMessage="Debes confirmar la contraseña."
+                                       styleClass="input-field" />
+                    </h:panelGrid>
+                </div>
+
+                <div class="form-card">
+                    <h3>Información complementaria</h3>
+                    <h:panelGrid columns="2" columnClasses="label,value" styleClass="input-grid">
+                        <h:outputLabel for="ocupacion" value="Ocupación:" />
+                        <h:inputText id="ocupacion" value="#{padreMatriculaBean.padre.ocupacion}" styleClass="input-field" />
+
+                        <h:outputLabel for="estrato" value="Estrato:" />
+                        <h:inputText id="estrato" value="#{padreMatriculaBean.padre.estrato}" maxlength="2"
+                                     validatorMessage="El estrato debe ser numérico."
+                                     styleClass="input-field">
+                            <f:validateRegex pattern="\d*" />
+                        </h:inputText>
+                        <h:message for="estrato" styleClass="error-msg" />
+
+                        <h:outputLabel for="telEmerg" value="Teléfono emergencia:" />
+                        <h:inputText id="telEmerg" value="#{padreMatriculaBean.padre.telefonoContactoEmergencia}" maxlength="15"
+                                     validatorMessage="El teléfono de emergencia solo debe contener números."
+                                     styleClass="input-field">
+                            <f:validateRegex pattern="\d*" />
+                        </h:inputText>
+                        <h:message for="telEmerg" styleClass="error-msg" />
+
+                        <h:outputLabel for="nomEmerg" value="Nombre contacto emergencia:" />
+                        <h:inputText id="nomEmerg" value="#{padreMatriculaBean.padre.nombreContactoEmergencia}" styleClass="input-field" />
+
+                        <h:outputLabel for="sitEcon" value="Situación económica hogar:" />
+                        <h:inputTextarea id="sitEcon" value="#{padreMatriculaBean.padre.situacionEconomicaHogar}" rows="4"
+                                         styleClass="input-field" />
+
+                        <h:outputLabel for="docPadre" value="Documento de identidad (imagen):" />
+                        <h:inputFile id="docPadre" value="#{padreMatriculaBean.documentoPart}" required="true"
+                                     requiredMessage="Debes adjuntar el documento de identidad." />
+                    </h:panelGrid>
+                </div>
+
+                <div class="button-bar">
+                    <p:commandButton value="Guardar y continuar" icon="pi pi-save"
+                                     action="#{padreMatriculaBean.guardarPadre}"
+                                     ajax="false"
+                                     styleClass="btn-primary" />
+
+                    <p:commandButton value="Cancelar" icon="pi pi-times"
+                                     type="reset"
+                                     styleClass="btn-secondary" />
+
+                    <p:commandButton value="Volver al listado" icon="pi pi-arrow-left"
+                                     action="listarNinos?faces-redirect=true"
+                                     ajax="false"
+                                     immediate="true"
+                                     styleClass="btn-info" />
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</f:view>
 </html>

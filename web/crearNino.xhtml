@@ -3,129 +3,394 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<h:head>
-    <title>Matrícula de Niño</title>
-</h:head>
-<h:body>
+<f:view>
+    <f:metadata>
+        <f:viewAction action="#{sessionBean.verificarAcceso('madre_comunitaria')}" />
+    </f:metadata>
 
-<h:form enctype="multipart/form-data">
-    <h:messages globalOnly="true" style="color:red;" />
+    <h:head>
+        <title>Matrícula de Niño</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <style>
+            * {
+                box-sizing: border-box;
+            }
 
-    <h2>Datos del Padre Registrado</h2>
-    <h:panelGroup rendered="#{ninoBean.padreDisponible}">
-        <h:panelGrid columns="2" columnClasses="label,value" styleClass="resumen-padre">
-            <h:outputLabel value="ID Padre:" />
-            <h:outputText value="#{ninoBean.padreIdSeleccionado}" />
+            body {
+                margin: 0;
+                font-family: 'Roboto', sans-serif;
+                background-image: url("#{resource['img/fondito.png']}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                color: #4a2d73;
+            }
 
-            <h:outputLabel value="Nombres:" />
-            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.nombres} #{ninoBean.usuarioPadreSeleccionado.apellidos}" />
+            header {
+                background-color: rgba(255, 255, 255, 0.85);
+                padding: 15px 30px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 2px solid #e5d5f5;
+                backdrop-filter: blur(4px);
+                flex-wrap: wrap;
+            }
 
-            <h:outputLabel value="Documento:" />
-            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.documento}" />
+            header img {
+                height: 60px;
+            }
 
-            <h:outputLabel value="Correo:" />
-            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.correo}" />
+            nav ul {
+                list-style: none;
+                display: flex;
+                gap: 20px;
+                padding: 0;
+                margin: 0;
+                flex-wrap: wrap;
+            }
 
-            <h:outputLabel value="Teléfono:" />
-            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.telefono}" />
+            nav ul li a {
+                text-decoration: none;
+                color: #9B59B6;
+                font-weight: bold;
+                font-size: 16px;
+                padding: 8px 12px;
+                border-radius: 6px;
+                transition: background-color 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
 
-            <h:outputLabel value="Dirección:" />
-            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.direccion}" />
+            nav ul li a:hover {
+                background-color: #f3c1e5;
+            }
 
-            <h:outputLabel value="Ocupación:" />
-            <h:outputText value="#{ninoBean.padreSeleccionado.ocupacion}" />
+            .main-title {
+                text-align: center;
+                margin-top: 20px;
+                padding: 20px;
+                font-size: 26px;
+                font-weight: bold;
+                color: #7a3eb1;
+                background-color: rgba(255, 255, 255, 0.75);
+                margin: 20px auto;
+                width: 80%;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
 
-            <h:outputLabel value="Estrato:" />
-            <h:outputText value="#{ninoBean.padreSeleccionado.estrato}" />
+            .page-wrapper {
+                max-width: 1150px;
+                margin: 0 auto 40px;
+                display: flex;
+                flex-direction: column;
+                gap: 25px;
+            }
 
-            <h:outputLabel value="Contacto emergencia:" />
-            <h:outputText value="#{ninoBean.padreSeleccionado.nombreContactoEmergencia} / #{ninoBean.padreSeleccionado.telefonoContactoEmergencia}" />
+            .card {
+                background-color: rgba(255, 255, 255, 0.93);
+                border-radius: 15px;
+                padding: 30px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                border-left: 6px solid #9B59B6;
+            }
 
-            <h:outputLabel value="Situación económica:" />
-            <h:outputText value="#{ninoBean.padreSeleccionado.situacionEconomicaHogar}" />
+            .card h3 {
+                margin: 0 0 15px;
+                font-size: 22px;
+                color: #5e3370;
+                text-align: center;
+            }
 
-            <h:outputLabel value="Documento identidad:" />
-            <h:panelGroup>
-                <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{ninoBean.padreSeleccionado.documentoIdentidadImg}"
-                                width="120" height="120" rendered="#{not empty ninoBean.padreSeleccionado.documentoIdentidadImg}" />
-                <h:outputText value="No disponible" rendered="#{empty ninoBean.padreSeleccionado.documentoIdentidadImg}" />
-            </h:panelGroup>
-        </h:panelGrid>
-    </h:panelGroup>
-    <h:panelGroup rendered="#{!ninoBean.padreDisponible}" style="color:#c0392b; font-weight:bold;">
-        <h:outputText value="Debes registrar primero los datos del padre antes de matricular al niño." />
-        <br/>
-        <h:link outcome="crearPadre" value="Registrar datos del padre" />
-    </h:panelGroup>
+            .summary-grid {
+                width: 100%;
+                border-spacing: 16px 10px;
+            }
 
-    <h:inputHidden value="#{ninoBean.padreIdSeleccionado}" />
+            .summary-grid .label {
+                font-weight: bold;
+                color: #5e3370;
+                text-align: right;
+                padding-right: 10px;
+                width: 30%;
+            }
 
-    <p:separator/>
+            .summary-grid .value {
+                width: 70%;
+            }
 
-    <h2>Datos del Niño</h2>
-    <h:panelGrid columns="2" columnClasses="label,value">
+            .input-grid {
+                width: 100%;
+                border-spacing: 16px 12px;
+            }
 
-        <h:outputLabel for="nombresN" value="Nombres:" />
-        <h:inputText id="nombresN" value="#{ninoBean.nino.nombres}" required="true" />
+            .input-grid .label {
+                width: 30%;
+                font-weight: bold;
+                color: #5e3370;
+                text-align: right;
+                padding-right: 10px;
+            }
 
-        <h:outputLabel for="apellidosN" value="Apellidos:" />
-        <h:inputText id="apellidosN" value="#{ninoBean.nino.apellidos}" required="true" />
+            .input-grid .value {
+                width: 70%;
+            }
 
-        <h:outputLabel for="documentoN" value="Documento:" />
-        <h:inputText id="documentoN" value="#{ninoBean.nino.documento}" />
+            .input-field {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid #c7b4df;
+                border-radius: 8px;
+                font-size: 15px;
+                background-color: #fff;
+                transition: border-color 0.3s ease;
+            }
 
-        <h:outputLabel for="fechaNac" value="Fecha de nacimiento:" />
-        <div class="form-field">
-            <h:outputLabel for="fechaNac" value="Fecha de nacimiento" styleClass="field-label"/>
-            <p:calendar id="fechaNac"
-                        value="#{ninoBean.nino.fechaNacimiento}"
-                        pattern="yyyy-MM-dd"
-                        navigator="true"
-                        yearRange="1950:2100"
-                        required="true"
-                        requiredMessage="Selecciona la fecha de nacimiento."
-                        inputStyleClass="input-field"/>
-            <h:message for="fechaNac" styleClass="error-msg"/>
+            .input-field:focus {
+                outline: none;
+                border-color: #9B59B6;
+                box-shadow: 0 0 4px rgba(155, 89, 182, 0.4);
+            }
+
+            textarea.input-field {
+                resize: vertical;
+            }
+
+            .error-msg {
+                color: #c0392b;
+                font-size: 12px;
+                margin-top: 4px;
+                display: block;
+            }
+
+            .info-alert {
+                background-color: rgba(255, 235, 238, 0.95);
+                color: #a94442;
+                padding: 15px 20px;
+                border-radius: 10px;
+                border-left: 6px solid #d9534f;
+                font-weight: bold;
+                text-align: center;
+            }
+
+            .button-bar {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .button-bar .ui-button {
+                min-width: 190px;
+                font-weight: bold;
+            }
+
+            .ui-messages {
+                margin-bottom: 20px;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #9B59B6, #8e44ad);
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #8e44ad, #732d91);
+            }
+
+            .btn-secondary {
+                background-color: #6c757d;
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+            .btn-info {
+                background-color: #5dade2;
+                color: #fff !important;
+                border: none;
+            }
+
+            .btn-info:hover {
+                background-color: #3498db;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <header>
+            <h:graphicImage library="img" name="logoSinFondo.png" alt="ICBF Conecta" />
+            <nav>
+                <ul>
+                    <li><h:link outcome="madreDashboard" value="Inicio"><i class="fas fa-home"></i></h:link></li>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeaciones" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                    <li><h:link outcome="correos" value=" Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                    <li>
+                        <h:form>
+                            <h:commandLink action="#{loginBean.logout}">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </h:commandLink>
+                        </h:form>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="main-title">
+            ICBF CONECTA || Matrícula de niño
         </div>
 
-        <h:outputLabel for="genero" value="Género:" />
-        <h:selectOneMenu id="genero" value="#{ninoBean.nino.genero}">
-            <f:selectItem itemLabel="Seleccione..." itemValue="" />
-            <f:selectItem itemLabel="Masculino" itemValue="masculino" />
-            <f:selectItem itemLabel="Femenino" itemValue="femenino" />
-            <f:selectItem itemLabel="Otro" itemValue="otro" />
-            <f:selectItem itemLabel="No especificado" itemValue="no_especificado" />
-        </h:selectOneMenu>
+        <div class="page-wrapper">
+            <h:form enctype="multipart/form-data">
+                <p:messages globalOnly="true" showDetail="true" closable="true" />
 
-        <h:outputLabel for="nacionalidad" value="Nacionalidad:" />
-        <h:inputText id="nacionalidad" value="#{ninoBean.nino.nacionalidad}" />
+                <h:panelGroup rendered="#{ninoBean.padreDisponible}">
+                    <div class="card">
+                        <h3>Datos del padre registrado</h3>
+                        <h:panelGrid columns="2" columnClasses="label,value" styleClass="summary-grid">
+                            <h:outputLabel value="ID Padre:" />
+                            <h:outputText value="#{ninoBean.padreIdSeleccionado}" />
 
-        <h:outputLabel for="hogar" value="Hogar comunitario:" />
-        <h:selectOneMenu id="hogar" value="#{ninoBean.nino.hogarId}" required="true">
-            <f:selectItem itemLabel="Seleccione un hogar..." itemValue="" noSelectionOption="true"/>
-            <f:selectItems value="#{ninoBean.listaHogares}" var="h"
-                           itemValue="#{h.idHogar}"
-                           itemLabel="#{h.nombreHogar} - #{h.localidad}" />
-        </h:selectOneMenu>
+                            <h:outputLabel value="Nombres:" />
+                            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.nombres} #{ninoBean.usuarioPadreSeleccionado.apellidos}" />
 
-        <h:outputLabel for="fotoNino" value="Foto del niño:" />
-        <h:inputFile id="fotoNino" value="#{ninoBean.fotoNinoPart}" required="true" />
+                            <h:outputLabel value="Documento:" />
+                            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.documento}" />
 
-    </h:panelGrid>
+                            <h:outputLabel value="Correo:" />
+                            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.correo}" />
 
-    <p:separator/>
+                            <h:outputLabel value="Teléfono:" />
+                            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.telefono}" />
 
-    <p:commandButton value="Guardar Matrícula"
-                     action="#{ninoBean.guardarMatricula}"
-                     ajax="false"
-                     styleClass="ui-button-success"
-                     disabled="#{!ninoBean.padreDisponible}"/>
+                            <h:outputLabel value="Dirección:" />
+                            <h:outputText value="#{ninoBean.usuarioPadreSeleccionado.direccion}" />
 
-    <p:commandButton value="Cancelar" immediate="true"
-                     action="#{ninoBean.cancelar}"
-                     styleClass="ui-button-secondary"/>
+                            <h:outputLabel value="Ocupación:" />
+                            <h:outputText value="#{ninoBean.padreSeleccionado.ocupacion}" />
 
-</h:form>
+                            <h:outputLabel value="Estrato:" />
+                            <h:outputText value="#{ninoBean.padreSeleccionado.estrato}" />
 
-</h:body>
+                            <h:outputLabel value="Contacto emergencia:" />
+                            <h:outputText value="#{ninoBean.padreSeleccionado.nombreContactoEmergencia} / #{ninoBean.padreSeleccionado.telefonoContactoEmergencia}" />
+
+                            <h:outputLabel value="Situación económica:" />
+                            <h:outputText value="#{ninoBean.padreSeleccionado.situacionEconomicaHogar}" />
+
+                            <h:outputLabel value="Documento identidad:" />
+                            <h:panelGroup>
+                                <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/uploads/#{ninoBean.padreSeleccionado.documentoIdentidadImg}"
+                                                width="120" height="120" rendered="#{not empty ninoBean.padreSeleccionado.documentoIdentidadImg}" />
+                                <h:outputText value="No disponible" rendered="#{empty ninoBean.padreSeleccionado.documentoIdentidadImg}" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </div>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{!ninoBean.padreDisponible}" layout="block" styleClass="info-alert">
+                    <h:outputText value="Debes registrar primero los datos del padre antes de matricular al niño." />
+                    <br />
+                    <h:link outcome="crearPadre" value="Registrar datos del padre" />
+                </h:panelGroup>
+
+                <h:inputHidden value="#{ninoBean.padreIdSeleccionado}" />
+
+                <div class="card">
+                    <h3>Datos del niño</h3>
+                    <h:panelGrid columns="2" columnClasses="label,value" styleClass="input-grid">
+                        <h:outputLabel for="nombresN" value="Nombres:" />
+                        <h:inputText id="nombresN" value="#{ninoBean.nino.nombres}" required="true"
+                                     requiredMessage="Los nombres del niño son obligatorios."
+                                     styleClass="input-field" />
+
+                        <h:outputLabel for="apellidosN" value="Apellidos:" />
+                        <h:inputText id="apellidosN" value="#{ninoBean.nino.apellidos}" required="true"
+                                     requiredMessage="Los apellidos del niño son obligatorios."
+                                     styleClass="input-field" />
+
+                        <h:outputLabel for="documentoN" value="Documento:" />
+                        <h:inputText id="documentoN" value="#{ninoBean.nino.documento}" maxlength="15"
+                                     validatorMessage="El documento del niño solo debe contener números."
+                                     styleClass="input-field">
+                            <f:validateRegex pattern="\d*" />
+                        </h:inputText>
+                        <h:message for="documentoN" styleClass="error-msg" />
+
+                        <h:outputLabel for="fechaNac" value="Fecha de nacimiento:" />
+                        <p:calendar id="fechaNac"
+                                    value="#{ninoBean.nino.fechaNacimiento}"
+                                    pattern="yyyy-MM-dd"
+                                    navigator="true"
+                                    yearRange="1950:2100"
+                                    required="true"
+                                    requiredMessage="Selecciona la fecha de nacimiento."
+                                    inputStyleClass="input-field" />
+
+                        <h:outputLabel for="genero" value="Género:" />
+                        <h:selectOneMenu id="genero" value="#{ninoBean.nino.genero}" styleClass="input-field">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="" />
+                            <f:selectItem itemLabel="Masculino" itemValue="masculino" />
+                            <f:selectItem itemLabel="Femenino" itemValue="femenino" />
+                            <f:selectItem itemLabel="Otro" itemValue="otro" />
+                            <f:selectItem itemLabel="No especificado" itemValue="no_especificado" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel for="nacionalidad" value="Nacionalidad:" />
+                        <h:inputText id="nacionalidad" value="#{ninoBean.nino.nacionalidad}" styleClass="input-field" />
+
+                        <h:outputLabel for="hogar" value="Hogar comunitario:" />
+                        <h:selectOneMenu id="hogar" value="#{ninoBean.nino.hogarId}" required="true"
+                                         requiredMessage="Selecciona el hogar comunitario."
+                                         styleClass="input-field">
+                            <f:selectItem itemLabel="Seleccione un hogar..." itemValue="" noSelectionOption="true" />
+                            <f:selectItems value="#{ninoBean.listaHogares}" var="h"
+                                           itemValue="#{h.idHogar}"
+                                           itemLabel="#{h.nombreHogar} - #{h.localidad}" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel for="fotoNino" value="Foto del niño:" />
+                        <h:inputFile id="fotoNino" value="#{ninoBean.fotoNinoPart}" required="true"
+                                     requiredMessage="Debes adjuntar la foto del niño." />
+                    </h:panelGrid>
+
+                    <h:panelGroup rendered="#{empty ninoBean.listaHogares}" layout="block" styleClass="info-alert" style="margin-top:15px;">
+                        <h:outputText value="No hay hogares activos disponibles para registrar la matrícula." />
+                    </h:panelGroup>
+
+                    <div class="button-bar">
+                        <p:commandButton value="Guardar matrícula" icon="pi pi-save"
+                                         action="#{ninoBean.guardarMatricula}"
+                                         ajax="false"
+                                         styleClass="btn-primary"
+                                         disabled="#{!ninoBean.padreDisponible or empty ninoBean.listaHogares}" />
+
+                        <p:commandButton value="Cancelar" icon="pi pi-times"
+                                         action="#{ninoBean.cancelar}"
+                                         ajax="false"
+                                         immediate="true"
+                                         styleClass="btn-secondary" />
+
+                        <p:commandButton value="Volver al listado" icon="pi pi-arrow-left"
+                                         action="listarNinos?faces-redirect=true"
+                                         ajax="false"
+                                         immediate="true"
+                                         styleClass="btn-info" />
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</f:view>
 </html>

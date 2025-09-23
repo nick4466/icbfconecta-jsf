@@ -12,6 +12,7 @@ import modelo.Usuario;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -21,6 +22,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,6 +49,9 @@ public class NinoBean implements Serializable {
     private List<Nino> listaNinos;
     private List<HogarComunitario> listaHogares;
 
+    @ManagedProperty(value = "#{sessionBean}")
+    private SessionBean sessionBean;
+
     @PostConstruct
     public void init() {
         nino = new Nino();
@@ -54,8 +59,23 @@ public class NinoBean implements Serializable {
         padreDAO = new PadreDAO();
         usuarioDAO = new UsuarioDAO();
         hogarDAO = new HogarComunitarioDAO();
-        listaHogares = hogarDAO.listarActivos();
+        cargarHogaresDisponibles();
         cargarPadreDesdeParametros();
+    }
+
+    private void cargarHogaresDisponibles() {
+        listaHogares = new ArrayList<>();
+        if (sessionBean != null && sessionBean.getUsuarioLogueado() != null) {
+            Usuario usuario = sessionBean.getUsuarioLogueado();
+            if ("madre_comunitaria".equals(usuario.getRol())) {
+                HogarComunitario hogar = hogarDAO.buscarPorMadre(usuario.getIdUsuario());
+                if (hogar != null) {
+                    listaHogares.add(hogar);
+                }
+                return;
+            }
+        }
+        listaHogares = hogarDAO.listarActivos();
     }
 
     private void cargarPadreDesdeParametros() {
@@ -140,8 +160,14 @@ public class NinoBean implements Serializable {
 
     public void cargarNinos() {
         try {
-            int idHogar = 1; // ⚠️ reemplazar luego por el hogar real de la madre logueada
-            listaNinos = ninoDAO.listarNinosPorHogar(idHogar);
+            if (sessionBean != null && sessionBean.getUsuarioLogueado() != null) {
+                Usuario usuario = sessionBean.getUsuarioLogueado();
+                if ("madre_comunitaria".equals(usuario.getRol())) {
+                    listaNinos = ninoDAO.listarPorMadre(usuario.getIdUsuario());
+                    return;
+                }
+            }
+            listaNinos = ninoDAO.listar();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -280,5 +306,16 @@ public class NinoBean implements Serializable {
 
     public List<HogarComunitario> getListaHogares() {
         return listaHogares;
+    }
+
+    public SessionBean getSessionBean() {
+        return sessionBean;
+    }
+
+    public void setSessionBean(SessionBean sessionBean) {
+        this.sessionBean = sessionBean;
+        if (hogarDAO != null) {
+            cargarHogaresDisponibles();
+        }
     }
 }
