@@ -287,7 +287,7 @@
                         <h:inputText id="ocupacion" value="#{padreMatriculaBean.padre.ocupacion}" styleClass="input-field" />
 
                         <h:outputLabel for="estrato" value="Estrato:" />
-                        <h:inputText id="estrato" value="#{padreMatriculaBean.padre.estrato}" maxlength="2"
+                        <h:inputText id="estrato" value="#{padreMatriculaBean.estratoInput}" maxlength="2"
                                      validatorMessage="El estrato debe ser numérico."
                                      styleClass="input-field">
                             <f:validateRegex pattern="\d*" />

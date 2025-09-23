@@ -32,13 +32,14 @@ public class PadreMatriculaBean implements Serializable {
     private String password1;
     private String password2;
     private Part documentoPart;
+    private String estratoInput;
 
     private transient PadreDAO padreDAO;
     private transient UsuarioDAO usuarioDAO;
 
     @PostConstruct
     public void init() {
-        padre = new Padre();
+        setPadre(new Padre());
         usuarioPadre = new Usuario();
         padreDAO = new PadreDAO();
         usuarioDAO = new UsuarioDAO();
@@ -48,6 +49,9 @@ public class PadreMatriculaBean implements Serializable {
         FacesContext ctx = FacesContext.getCurrentInstance();
         try {
             validarFormulario();
+
+            Integer estratoValor = obtenerEstratoComoEntero();
+            padre.setEstrato(estratoValor);
 
             long documento = Long.parseLong(usuarioPadre.getDocumento().trim());
             usuarioPadre.setDocumento(String.valueOf(documento));
@@ -141,6 +145,18 @@ public class PadreMatriculaBean implements Serializable {
         }
     }
 
+    private Integer obtenerEstratoComoEntero() {
+        if (estratoInput == null || estratoInput.trim().isEmpty()) {
+            return null;
+        }
+        String valor = estratoInput.trim();
+        try {
+            return Integer.valueOf(valor);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("El estrato debe ser numérico.");
+        }
+    }
+
     private String guardarArchivo(Part part, String carpetaRelativa) throws Exception {
         String nombreOriginal = Paths.get(part.getSubmittedFileName()).getFileName().toString();
         String extension = "";
@@ -172,11 +188,12 @@ public class PadreMatriculaBean implements Serializable {
     }
 
     private void limpiarFormulario() {
-        padre = new Padre();
+        setPadre(new Padre());
         usuarioPadre = new Usuario();
         password1 = null;
         password2 = null;
         documentoPart = null;
+        estratoInput = null;
     }
 
     public Padre getPadre() {
@@ -185,6 +202,11 @@ public class PadreMatriculaBean implements Serializable {
 
     public void setPadre(Padre padre) {
         this.padre = padre;
+        if (padre != null && padre.getEstrato() != null) {
+            this.estratoInput = String.valueOf(padre.getEstrato());
+        } else {
+            this.estratoInput = null;
+        }
     }
 
     public Usuario getUsuarioPadre() {
@@ -217,5 +239,13 @@ public class PadreMatriculaBean implements Serializable {
 
     public void setDocumentoPart(Part documentoPart) {
         this.documentoPart = documentoPart;
+    }
+
+    public String getEstratoInput() {
+        return estratoInput;
+    }
+
+    public void setEstratoInput(String estratoInput) {
+        this.estratoInput = estratoInput;
     }
 }
