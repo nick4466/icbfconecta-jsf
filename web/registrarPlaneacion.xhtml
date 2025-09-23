@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>ICBF Conecta - #{empty planeacionBean.planeacion.id ? 'Registrar' : 'Editar'} Planeación</title>
+
+    <h:outputStylesheet library="css" name="estilos.css" />
+    <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-image: url("#{resource['img/fondito.png']}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #333;
+        }
+        .titulo-principal {
+            text-align: center;
+            background-color: rgba(155, 89, 182, 0.9);
+            color: white;
+            padding: 12px 0;
+            font-size: 26px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(255,255,255,0.85);
+            padding: 15px 30px;
+            border-bottom: 2px solid #e5d5f5;
+            backdrop-filter: blur(4px);
+            flex-wrap: wrap;
+        }
+        header img { height: 60px; }
+
+        nav ul { list-style: none; display:flex; gap:20px; padding:0; margin:0; align-items:center; }
+        nav ul li a { text-decoration:none; color:#9B59B6; font-weight:bold; font-size:16px; padding:8px 12px; border-radius:6px; transition:background-color .3s; }
+        nav ul li a:hover { background:#f3c1e5; }
+
+        .register { max-width:1100px; margin:30px auto; background: rgba(255,255,255,0.95); border-radius:14px; padding:30px; box-shadow:0 6px 12px rgba(0,0,0,0.1); }
+        h1 { text-align:center; font-size:28px; color:#7a3eb1; margin-bottom:18px; }
+
+        .field { margin-bottom:18px; }
+        .field label { display:block; font-weight:700; margin-bottom:6px; color:#333; }
+
+        .ui-inputfield,
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            box-sizing: border-box;
+        }
+
+        .ui-inputfield {
+            width:100% !important;
+            padding:12px !important;
+            font-size:16px !important;
+            border:1px solid #ccc !important;
+            border-radius:8px !important;
+            background-color:#fff !important;
+            transition: border-color .2s ease;
+        }
+        .ui-inputfield:focus {
+            border-color:#9B59B6 !important;
+            outline:none !important;
+            background-color:#f0f8ff !important;
+        }
+
+        /* Quita cualquier icono de calendario */
+        .calendario-limpio .ui-datepicker-trigger {
+            display: none !important;
+        }
+
+        .table-container { margin-top: 12px; }
+        .plan-table { width:100%; border-collapse:collapse; }
+        .plan-table thead th {
+            background:#f3aee0; color:#4a148c; padding:14px; text-align:left;
+            font-weight:700;
+        }
+        .plan-table td { padding:18px 12px; vertical-align:top; }
+        .ui-inputtextarea {
+            width:100% !important; padding:10px !important; border-radius:8px !important;
+            border:1px solid #ddd !important; box-sizing:border-box;
+            resize:vertical; min-height:60px;
+        }
+
+        .btn-guardar.ui-button, .btn-guardar {
+            background: linear-gradient(180deg, #9B59B6, #7a2fa0) !important;
+            color: #fff !important;
+            border: none !important;
+            padding: 12px 28px !important;
+            font-size: 16px !important;
+            border-radius: 10px !important;
+            cursor: pointer !important;
+            display: block !important;
+            margin: 28px auto 12px auto !important;
+            box-shadow: 0 6px 14px rgba(123, 31, 162, 0.12) !important;
+        }
+        .btn-guardar.ui-state-disabled,
+        .btn-guardar[disabled],
+        .btn-guardar.ui-button[disabled] {
+            background: linear-gradient(180deg, #9B59B6, #7a2fa0) !important;
+            color: #fff !important;
+            opacity: 0.75 !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+        }
+
+        .boton-cancelar.ui-button, .boton-cancelar {
+            background: #fff !important;
+            border: 1px solid #ddd !important;
+            color: #444 !important;
+            padding: 10px 18px !important;
+            border-radius: 10px !important;
+            display: block !important;
+            margin: 0 auto 18px auto !important;
+            box-shadow: none !important;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <f:metadata>
+        <f:viewParam name="id" value="#{planeacionBean.planeacion.id}" />
+    </f:metadata>
+
+    <div class="titulo-principal">ICBF - CONECTA | PLANEACIÓN PEDAGÓGICA</div>
+
+    <header>
+        <img src="#{resource['img/logoSinFondo.png']}" alt="Logo del Software"/>
+        <h:form prependId="false">
+            <nav>
+                <ul>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeacion" value=" Planeacion"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                  <li> <h:link outcome="correos" value="Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+
+                    <li>
+                        <h:form>
+                            <h:commandLink action="#{loginBean.logout}">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </h:commandLink>
+                        </h:form>
+                    </li>
+                </ul>
+            </nav>
+        </h:form>
+    </header>
+
+    <div class="register">
+        <h1>#{empty planeacionBean.planeacion.id ? 'Registrar Nueva' : 'Editar'} Planeación</h1>
+
+        <h:form id="formRegistro">
+            <p:messages id="msgs" showDetail="true" closable="true"/>
+
+            <!-- Fecha arriba -->
+            <div class="field">
+                <label for="fecha">Fecha:</label>
+                <p:calendar id="fecha"
+                            value="#{planeacionBean.planeacion.fecha}"
+                            pattern="yyyy-MM-dd"
+                            navigator="true"
+                            showOn="focus"
+                            required="true"
+                            styleClass="calendario-limpio ui-inputfield"/>
+            </div>
+
+            <!-- Nombre Actividad abajo -->
+            <div class="field">
+                <label for="actividad">Nombre Actividad:</label>
+                <p:inputText id="actividad"
+                             value="#{planeacionBean.planeacion.nombreActividad}"
+                             required="true"
+                             placeholder="Nombre de su actividad"
+                             styleClass="ui-inputfield"/>
+            </div>
+
+            <!-- Intencionalidad -->
+            <div class="field">
+                <label for="intencionalidad">Intencionalidad Pedagógica:</label>
+                <p:inputText id="intencionalidad"
+                             value="#{planeacionBean.planeacion.intencionalidadPedagogica}"
+                             required="true"
+                             placeholder="Objetivo de la actividad"
+                             styleClass="ui-inputfield"/>
+            </div>
+
+            <!-- TABLA -->
+            <div class="table-container">
+                <table class="plan-table">
+                    <thead>
+                        <tr>
+                            <th>Materiales a Utilizar</th>
+                            <th>Ambientación</th>
+                            <th>Actividad de Inicio</th>
+                            <th>Desarrollo</th>
+                            <th>Cierre</th>
+                            <th>Documentación</th>
+                            <th>Observación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><p:inputTextarea id="materiales" value="#{planeacionBean.planeacion.materialesUtilizar}" rows="3" placeholder="Materiales a utilizar" styleClass="ui-inputtextarea"/></td>
+                            <td><p:inputTextarea id="ambientacion" value="#{planeacionBean.planeacion.ambientacion}" rows="3" placeholder="Cómo va a ambientar el aula" styleClass="ui-inputtextarea"/></td>
+                            <td><p:inputTextarea id="inicio" value="#{planeacionBean.planeacion.actividadInicio}" rows="4" placeholder="Describa la actividad de inicio" styleClass="ui-inputtextarea"/></td>
+                            <td><p:inputTextarea id="desarrollo" value="#{planeacionBean.planeacion.desarrollo}" rows="5" placeholder="Describa el desarrollo de la actividad" styleClass="ui-inputtextarea"/></td>
+                            <td><p:inputTextarea id="cierre" value="#{planeacionBean.planeacion.cierre}" rows="4" placeholder="Describa la actividad de cierre" styleClass="ui-inputtextarea"/></td>
+                            <td><p:inputTextarea id="documentacion" value="#{planeacionBean.planeacion.documentacion}" rows="3" placeholder="Cómo documentará la actividad" styleClass="ui-inputtextarea"/></td>
+                            <td><p:inputTextarea id="observacion" value="#{planeacionBean.planeacion.observacion}" rows="3" placeholder="Situaciones observadas para seguimiento" styleClass="ui-inputtextarea"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- BOTONES -->
+            <p:commandButton value="Guardar Planeación"
+                             action="#{planeacionBean.guardar}"
+                             ajax="false"
+                             icon="pi pi-save"
+                             styleClass="btn-guardar"/>
+            <p:commandButton value="Volver"
+                             action="planeacion?faces-redirect=true"
+                             immediate="true"
+                             icon="pi pi-arrow-left"
+                             styleClass="boton-cancelar"/>
+        </h:form>
+    </div>
+</h:body>
+</html>

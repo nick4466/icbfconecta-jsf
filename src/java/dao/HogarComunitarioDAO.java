@@ -123,4 +123,28 @@ public class HogarComunitarioDAO {
         h.setMadreId(rs.getInt("madre_id"));
         return h;
     }
+    public HogarComunitario obtenerPorMadre(int madreId) {
+    HogarComunitario hogar = null;
+    String sql = "SELECT * FROM hogares_comunitarios WHERE madre_id = ?";
+    try (Connection con = ConDB.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, madreId);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                hogar = new HogarComunitario();
+                hogar.setIdHogar(rs.getInt("id_hogar"));
+                hogar.setNombreHogar(rs.getString("nombre_hogar"));
+                hogar.setDireccion(rs.getString("direccion"));
+                hogar.setLocalidad(rs.getString("localidad"));
+                hogar.setCapacidadMaxima(rs.getInt("capacidad_maxima"));
+                hogar.setEstado(rs.getString("estado"));
+                hogar.setMadreId(rs.getInt("madre_id"));
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return hogar;
+}
+
 }

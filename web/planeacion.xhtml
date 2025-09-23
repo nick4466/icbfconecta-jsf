@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>ICBF Conecta - Planeaciones</title>
+    <h:outputStylesheet library="css" name="estilos.css"/>
+    <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-image: url("#{resource['img/fondito.png']}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
+</h:head>
+<h:body>
+
+    <!-- ENCABEZADO -->
+    <header>
+        <img src="#{resource['img/logoSinFondo.png']}" alt="Logo del Software"/>
+        <h:form>
+            <nav>
+                <ul>
+                    <li><h:link outcome="madreDashboard" value="Inicio"><i class="fas fa-home"></i></h:link></li>
+                    <li><h:link outcome="listarNinos" value=" Matrículas"><i class="fas fa-user-graduate"></i></h:link></li>
+                    <li><h:link outcome="planeacion" value=" Planeaciones"><i class="fas fa-book"></i></h:link></li>
+                    <li><h:link outcome="desarrollo" value=" Desarrollo"><i class="fas fa-child"></i></h:link></li>
+                    <li><h:link outcome="correos" value=" Enviar Correos"><i class="fas fa-envelope"></i></h:link></li>
+                    <li>
+                        <h:commandLink action="#{loginBean.logout}">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </nav>
+        </h:form>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="tabla-container">
+        <h1>Listado de Planeaciones</h1>
+
+        <h:form id="formPlaneacion">
+            <p:messages id="msgs" showDetail="true" closable="true"/>
+
+            <div class="botones-superior">
+                <h:link outcome="registrarPlaneacion" styleClass="boton-agregar">
+                    <i class="pi pi-plus"></i> Nueva Planeación
+                </h:link>
+
+                <p:commandButton value="Volver al Dashboard"
+                                 action="madreDashboard?faces-redirect=true"
+                                 icon="pi pi-home"
+                                 styleClass="boton-agregar"/>
+            </div>
+
+
+            <p:dataTable id="tablaPlaneaciones" value="#{planeacionBean.planeaciones}" var="pl"
+                         paginator="true" rows="10"
+                         emptyMessage="No hay planeaciones registradas."
+                         scrollable="true" scrollHeight="400">
+
+                <p:column headerText="Fecha" sortBy="#{pl.fecha}" filterBy="#{pl.fecha}" filterMatchMode="contains">
+                    <h:outputText value="#{pl.fecha}">
+                        <f:convertDateTime pattern="yyyy-MM-dd"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Actividad" sortBy="#{pl.nombreActividad}" filterBy="#{pl.nombreActividad}" filterMatchMode="contains">
+                    <h:outputText value="#{pl.nombreActividad}"/>
+                </p:column>
+
+                <p:column headerText="Desarrollo">
+                    <h:outputText value="#{pl.desarrollo}"/>
+                </p:column>
+
+                <p:column headerText="Acciones" styleClass="acciones">
+                    <p:commandButton icon="pi pi-eye" title="Ver Detalles"
+                                     styleClass="btn-verde"
+                                     oncomplete="PF('dialogDetalle').show()"
+                                     update=":dialogForm"
+                                     actionListener="#{planeacionBean.verDetalle(pl)}"/>
+
+                    <p:commandButton icon="pi pi-pencil" title="Editar"
+                                     styleClass="btn-azul"
+                                     actionListener="#{planeacionBean.abrirFormulario(pl)}"
+                                     oncomplete="PF('dialogFormulario').show()"
+                                     update=":formDialogo"
+                                     process="@this"
+                                     />
+
+                    <p:commandButton icon="pi pi-trash" title="Eliminar"
+                                     styleClass="btn-rojo"
+                                     actionListener="#{planeacionBean.eliminar(pl.id)}"
+                                     update="@form"
+                                     onclick="return confirm('¿Seguro que deseas eliminar esta planeación?');"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </div>
+
+    <!-- Modal de Detalles -->
+    <p:dialog header="Detalles de la Planeación" widgetVar="dialogDetalle" modal="true"
+              resizable="false" width="600" showEffect="fade" hideEffect="fade">
+        <h:form id="dialogForm">
+            <p:panelGrid columns="2" rendered="#{planeacionBean.planeacionSeleccionada != null}"
+                         style="width: 100%;" columnClasses="label-bold,">
+
+                <h:outputText value="Fecha:"/>
+                <h:outputText value="#{planeacionBean.planeacionSeleccionada.fecha}">
+                    <f:convertDateTime pattern="EEEE, dd 'de' MMMM 'de' yyyy"/>
+                </h:outputText>
+
+                <h:outputText value="Actividad:"/>
+                <h:outputText value="#{planeacionBean.planeacionSeleccionada.nombreActividad}"/>
+
+                <h:outputText value="Intencionalidad Pedagógica:"/>
+                <h:outputText value="#{planeacionBean.planeacionSeleccionada.intencionalidadPedagogica}"/>
+
+                <h:outputText value="Materiales:"/>
+                <h:outputText value="#{planeacionBean.planeacionSeleccionada.materialesUtilizar}"/>
+
+                <h:outputText value="Ambientación:"/>
+                <h:outputText value="#{planeacionBean.planeacionSeleccionada.ambientacion}"/>
+
+                <h:outputText value="Actividad de Inicio:"/>
+                <h:outputText value="#{planeacionBean.planeacionSeleccionada.actividadInicio}"/>
+
+                <h:outputText value="Desarrollo:"/>
+                <h:outputText value="#{planeacionBean.planeacionSeleccionada.desarrollo}"/>
+
+                <h:outputText value="Cierre:"/>
+                <h:outputText value="#{planeacionBean.planeacionSeleccionada.cierre}"/>
+
+                <h:outputText value="Observaciones:"/>
+                <h:outputText value="#{planeacionBean.planeacionSeleccionada.observacion}"/>
+            </p:panelGrid>
+        </h:form>
+    </p:dialog>
+
+    <!-- Modal de Edición / Creación -->
+<p:dialog header="#{empty planeacionBean.planeacion.id ? 'Registrar Nueva' : 'Editar'} Planeación"
+          widgetVar="dialogFormulario" modal="true" resizable="false"
+          width="700" showEffect="fade" hideEffect="fade">
+    <h:form id="formDialogo">
+        <p:messages id="msgsDialogo" showDetail="true" closable="true"/>
+
+        <p:scrollPanel mode="native" style="height:500px;">
+            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank"
+                         columnClasses="ui-g-12 ui-md-3 ui-lg-3, ui-g-12 ui-md-9 ui-lg-9">
+                <p:outputLabel for="fecha" value="Fecha:" styleClass="field-label"/>
+                <p:calendar id="fecha" value="#{planeacionBean.planeacion.fecha}" pattern="yyyy-MM-dd" required="true" navigator="true"/>
+
+                <p:outputLabel for="actividad" value="Nombre Actividad:" styleClass="field-label"/>
+                <p:inputText id="actividad" value="#{planeacionBean.planeacion.nombreActividad}" required="true" style="width: 100%;"/>
+
+                <p:outputLabel for="intencionalidad" value="Intencionalidad Pedagógica:" styleClass="field-label"/>
+                <p:inputTextarea id="intencionalidad" value="#{planeacionBean.planeacion.intencionalidadPedagogica}" rows="3" style="width: 100%;"/>
+
+                <p:outputLabel for="materiales" value="Materiales:" styleClass="field-label"/>
+                <p:inputTextarea id="materiales" value="#{planeacionBean.planeacion.materialesUtilizar}" rows="3" style="width: 100%;"/>
+
+                <p:outputLabel for="ambientacion" value="Ambientación:" styleClass="field-label"/>
+                <p:inputTextarea id="ambientacion" value="#{planeacionBean.planeacion.ambientacion}" rows="3" style="width: 100%;"/>
+
+                <p:outputLabel for="inicio" value="Actividad de Inicio:" styleClass="field-label"/>
+                <p:inputTextarea id="inicio" value="#{planeacionBean.planeacion.actividadInicio}" rows="4" style="width: 100%;"/>
+
+                <p:outputLabel for="desarrollo" value="Desarrollo:" styleClass="field-label"/>
+                <p:inputTextarea id="desarrollo" value="#{planeacionBean.planeacion.desarrollo}" rows="5" style="width: 100%;"/>
+
+                <p:outputLabel for="cierre" value="Cierre:" styleClass="field-label"/>
+                <p:inputTextarea id="cierre" value="#{planeacionBean.planeacion.cierre}" rows="4" style="width: 100%;"/>
+
+                <p:outputLabel for="documentacion" value="Documentación:" styleClass="field-label"/>
+                <p:inputTextarea id="documentacion" value="#{planeacionBean.planeacion.documentacion}" rows="3" style="width: 100%;"/>
+
+                <p:outputLabel for="observacion" value="Observación:" styleClass="field-label"/>
+                <p:inputTextarea id="observacion" value="#{planeacionBean.planeacion.observacion}" rows="3" style="width: 100%;"/>
+            </p:panelGrid>
+        </p:scrollPanel>
+
+        <!-- Botones fuera del scrollPanel -->
+        <div class="botones-formulario" style="margin-top: 20px;">
+            <p:commandButton value="Guardar"
+                             actionListener="#{planeacionBean.guardar}"
+                             update=":formPlaneacion:tablaPlaneaciones :formPlaneacion:msgs"
+                             oncomplete="if (!args.validationFailed) { PF('dialogFormulario').hide(); }"
+                             icon="pi pi-save"
+                             styleClass="boton-agregar"/>
+
+            <p:commandButton value="Cancelar" type="button"
+                             onclick="PF('dialogFormulario').hide()"
+                             icon="pi pi-times"
+                             styleClass="boton-cancelar"/>
+        </div>
+    </h:form>
+</p:dialog>
+
+
+</h:body>
+</html>
