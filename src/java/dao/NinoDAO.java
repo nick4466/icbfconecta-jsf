@@ -228,23 +228,19 @@ public class NinoDAO {
     }
     
     public List<Nino> listar() {
-    List<Nino> lista = new ArrayList<>();
-    String sql = "SELECT id_nino, nombres, apellidos FROM ninos";
+        List<Nino> lista = new ArrayList<>();
+        String sql = "SELECT * FROM ninos";
 
-    try (Connection con = ConDB.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-        while (rs.next()) {
-            Nino n = new Nino();
-            n.setIdNino(rs.getInt("id_nino"));
-            n.setNombres(rs.getString("nombres"));
-            n.setApellidos(rs.getString("apellidos"));
-            lista.add(n);
+            while (rs.next()) {
+                lista.add(mapearNino(rs));
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al listar niños", e);
         }
-    } catch (SQLException e) {
-        LOGGER.log(Level.SEVERE, "Error al listar niños", e);
+        return lista;
     }
-    return lista;
-}
 }
