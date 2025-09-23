@@ -312,17 +312,15 @@
                     <h3>Datos del niño</h3>
                     <h:panelGrid columns="2" columnClasses="label,value" styleClass="input-grid">
                         <h:outputLabel for="nombresN" value="Nombres:" />
-                        <h:inputText id="nombresN" value="#{ninoBean.nino.nombres}" required="true"
-                                     requiredMessage="Los nombres del niño son obligatorios."
+                        <h:inputText id="nombresN" value="#{ninoBean.nino.nombres}"
                                      styleClass="input-field" />
 
                         <h:outputLabel for="apellidosN" value="Apellidos:" />
-                        <h:inputText id="apellidosN" value="#{ninoBean.nino.apellidos}" required="true"
-                                     requiredMessage="Los apellidos del niño son obligatorios."
+                        <h:inputText id="apellidosN" value="#{ninoBean.nino.apellidos}"
                                      styleClass="input-field" />
 
                         <h:outputLabel for="documentoN" value="Documento:" />
-                        <h:inputText id="documentoN" value="#{ninoBean.nino.documento}" maxlength="15"
+                        <h:inputText id="documentoN" value="#{ninoBean.documentoInput}" maxlength="15"
                                      styleClass="input-field"
                                      pt:inputmode="numeric"
                                      pt:pattern="[0-9]*"
@@ -337,8 +335,6 @@
                                     pattern="yyyy-MM-dd"
                                     navigator="true"
                                     yearRange="1950:2100"
-                                    required="true"
-                                    requiredMessage="Selecciona la fecha de nacimiento."
                                     inputStyleClass="input-field" />
 
                         <h:outputLabel for="genero" value="Género:" />
@@ -354,18 +350,16 @@
                         <h:inputText id="nacionalidad" value="#{ninoBean.nino.nacionalidad}" styleClass="input-field" />
 
                         <h:outputLabel for="hogar" value="Hogar comunitario:" />
-                        <h:selectOneMenu id="hogar" value="#{ninoBean.nino.hogarId}" required="true"
-                                         requiredMessage="Selecciona el hogar comunitario."
+                        <h:selectOneMenu id="hogar" value="#{ninoBean.nino.hogarId}"
                                          styleClass="input-field">
-                            <f:selectItem itemLabel="Seleccione un hogar..." itemValue="" noSelectionOption="true" />
+                            <f:selectItem itemLabel="Seleccione un hogar..." itemValue="0" />
                             <f:selectItems value="#{ninoBean.listaHogares}" var="h"
                                            itemValue="#{h.idHogar}"
                                            itemLabel="#{h.nombreHogar} - #{h.localidad}" />
                         </h:selectOneMenu>
 
                         <h:outputLabel for="fotoNino" value="Foto del niño:" />
-                        <h:inputFile id="fotoNino" value="#{ninoBean.fotoNinoPart}" required="true"
-                                     requiredMessage="Debes adjuntar la foto del niño." />
+                        <h:inputFile id="fotoNino" value="#{ninoBean.fotoNinoPart}" />
                     </h:panelGrid>
 
                     <h:panelGroup rendered="#{empty ninoBean.listaHogares}" layout="block" styleClass="info-alert" style="margin-top:15px;">

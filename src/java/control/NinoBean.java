@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -36,6 +37,7 @@ public class NinoBean implements Serializable {
 
     private Nino nino;
     private Part fotoNinoPart;
+    private String documentoInput;
 
     private Integer padreIdSeleccionado;
     private Padre padreSeleccionado;
@@ -59,6 +61,7 @@ public class NinoBean implements Serializable {
         padreDAO = new PadreDAO();
         usuarioDAO = new UsuarioDAO();
         hogarDAO = new HogarComunitarioDAO();
+        documentoInput = null;
         cargarHogaresDisponibles();
         cargarPadreDesdeParametros();
     }
@@ -114,15 +117,16 @@ public class NinoBean implements Serializable {
             if (padreIdSeleccionado == null || padreIdSeleccionado <= 0) {
                 throw new RuntimeException("Debes registrar primero los datos del padre.");
             }
-            if (fotoNinoPart == null || fotoNinoPart.getSize() == 0) {
-                throw new RuntimeException("Debes adjuntar la foto del niño.");
-            }
 
             nino.setPadreId(padreIdSeleccionado);
+            nino.setDocumento(convertirDocumento(documentoInput));
+            prepararDatosNino();
             int idNino = ninoDAO.insert(nino);
 
-            String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + idNino);
-            ninoDAO.updateFoto(idNino, rutaFoto);
+            if (fotoNinoPart != null && fotoNinoPart.getSize() > 0) {
+                String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + idNino);
+                ninoDAO.updateFoto(idNino, rutaFoto);
+            }
 
             ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Matrícula guardada correctamente", null));
@@ -198,6 +202,7 @@ public class NinoBean implements Serializable {
     private void limpiarFormulario() {
         nino = new Nino();
         fotoNinoPart = null;
+        documentoInput = null;
     }
 
     public String cancelar() {
@@ -214,6 +219,11 @@ public class NinoBean implements Serializable {
                 Nino cargado = ninoDAO.buscarNinoPorId(nino.getIdNino());
                 if (cargado != null) {
                     this.nino = cargado;
+                    if (cargado.getDocumento() != null) {
+                        this.documentoInput = String.valueOf(cargado.getDocumento());
+                    } else {
+                        this.documentoInput = null;
+                    }
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -230,6 +240,8 @@ public class NinoBean implements Serializable {
 
     public String actualizarNino() {
         try {
+            nino.setDocumento(convertirDocumento(documentoInput));
+            prepararDatosNino();
             if (fotoNinoPart != null && fotoNinoPart.getSize() > 0) {
                 String rutaFoto = guardarArchivo(fotoNinoPart, "ninos/" + nino.getIdNino());
                 nino.setFoto(rutaFoto);
@@ -261,6 +273,11 @@ public class NinoBean implements Serializable {
 
     public void setNino(Nino nino) {
         this.nino = nino;
+        if (nino != null && nino.getDocumento() != null) {
+            this.documentoInput = String.valueOf(nino.getDocumento());
+        } else {
+            this.documentoInput = null;
+        }
     }
 
     public Part getFotoNinoPart() {
@@ -269,6 +286,19 @@ public class NinoBean implements Serializable {
 
     public void setFotoNinoPart(Part fotoNinoPart) {
         this.fotoNinoPart = fotoNinoPart;
+    }
+
+    public String getDocumentoInput() {
+        if (documentoInput == null && nino != null && nino.getDocumento() != null) {
+            documentoInput = String.valueOf(nino.getDocumento());
+        }
+        return documentoInput;
+    }
+
+    public void setDocumentoInput(String documentoInput) {
+        this.documentoInput = (documentoInput != null && documentoInput.trim().isEmpty())
+                ? null
+                : documentoInput;
     }
 
     public Integer getPadreIdSeleccionado() {
@@ -311,6 +341,67 @@ public class NinoBean implements Serializable {
         return padreIdSeleccionado != null
                 && padreSeleccionado != null
                 && usuarioPadreSeleccionado != null;
+    }
+
+    private Long convertirDocumento(String valor) {
+        if (valor == null) {
+            return null;
+        }
+        String limpio = valor.trim();
+        if (limpio.isEmpty()) {
+            return null;
+        }
+        try {
+            return Long.valueOf(limpio);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private void prepararDatosNino() {
+        if (nino.getNombres() == null || nino.getNombres().trim().isEmpty()) {
+            nino.setNombres("");
+        } else {
+            nino.setNombres(nino.getNombres().trim());
+        }
+
+        if (nino.getApellidos() == null || nino.getApellidos().trim().isEmpty()) {
+            nino.setApellidos("");
+        } else {
+            nino.setApellidos(nino.getApellidos().trim());
+        }
+
+        if (nino.getNacionalidad() == null) {
+            nino.setNacionalidad("");
+        } else {
+            nino.setNacionalidad(nino.getNacionalidad().trim());
+        }
+
+        if (nino.getGenero() == null || nino.getGenero().trim().isEmpty()) {
+            nino.setGenero("no_especificado");
+        }
+
+        if (nino.getFechaNacimiento() == null) {
+            nino.setFechaNacimiento(new Date());
+        }
+
+        if (nino.getFechaIngreso() == null) {
+            nino.setFechaIngreso(new Date());
+        }
+
+        if (nino.getHogarId() <= 0) {
+            Integer hogarPorDefecto = obtenerHogarPorDefecto();
+            if (hogarPorDefecto != null) {
+                nino.setHogarId(hogarPorDefecto);
+            }
+        }
+    }
+
+    private Integer obtenerHogarPorDefecto() {
+        if (listaHogares != null && !listaHogares.isEmpty()) {
+            return listaHogares.get(0).getIdHogar();
+        }
+        return null;
     }
 
     public List<Nino> getListaNinos() {
