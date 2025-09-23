@@ -90,6 +90,28 @@ public class NinoDAO {
         return lista;
     }
 
+    // Listar niños según la madre comunitaria
+    public List<Nino> listarPorMadre(int idMadre) {
+        List<Nino> lista = new ArrayList<>();
+        String sql = "SELECT n.* FROM ninos n " +
+                     "JOIN hogares_comunitarios h ON n.hogar_id = h.id_hogar " +
+                     "WHERE h.madre_id = ?";
+
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idMadre);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapearNino(rs));
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al listar niños por madre", e);
+        }
+        return lista;
+    }
+
     // Buscar niño por ID
     public Nino buscarNinoPorId(int idNino) {
         String sql = "SELECT * FROM ninos WHERE id_nino = ?";
@@ -105,6 +127,24 @@ public class NinoDAO {
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error al buscar niño por ID", e);
+        }
+        return null;
+    }
+
+    public Nino buscarPorDocumento(long documento) {
+        String sql = "SELECT * FROM ninos WHERE documento = ?";
+
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, documento);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapearNino(rs);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al buscar niño por documento", e);
         }
         return null;
     }

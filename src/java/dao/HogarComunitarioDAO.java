@@ -111,6 +111,24 @@ public class HogarComunitarioDAO {
         }
     }
 
+    public HogarComunitario buscarPorMadre(int madreId) {
+        String sql = "SELECT * FROM hogares_comunitarios WHERE madre_id = ?";
+
+        try (Connection con = ConDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, madreId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapearHogar(rs);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // Método privado para mapear resultset
     private HogarComunitario mapearHogar(ResultSet rs) throws Exception {
         HogarComunitario h = new HogarComunitario();

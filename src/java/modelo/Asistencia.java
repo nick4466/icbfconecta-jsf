@@ -7,11 +7,15 @@ public class Asistencia {
     private int idNino;
     private Date fecha;
     private String estado;
-    
+
     private String nombres;
     private String apellidos;
-    
-    private Nino nino; //aqui para intentar relacionar al niño 
+
+    private String madreNombres;
+    private String madreApellidos;
+    private String nombreHogar;
+
+    private Nino nino; //aqui para intentar relacionar al niño
 
     // Getters y Setters
     public int getIdAsistencia() {
@@ -49,4 +53,27 @@ public class Asistencia {
 
     public String getApellidos() { return apellidos; }
     public void setApellidos(String apellidos) { this.apellidos = apellidos; }
+
+    public String getMadreNombres() { return madreNombres; }
+    public void setMadreNombres(String madreNombres) { this.madreNombres = madreNombres; }
+
+    public String getMadreApellidos() { return madreApellidos; }
+    public void setMadreApellidos(String madreApellidos) { this.madreApellidos = madreApellidos; }
+
+    public String getNombreHogar() { return nombreHogar; }
+    public void setNombreHogar(String nombreHogar) { this.nombreHogar = nombreHogar; }
+
+    public String getMadreNombreCompleto() {
+        String nombresMadre = madreNombres == null ? "" : madreNombres.trim();
+        String apellidosMadre = madreApellidos == null ? "" : madreApellidos.trim();
+        String nombreCompleto = (nombresMadre + " " + apellidosMadre).trim();
+        return nombreCompleto.isEmpty() ? null : nombreCompleto;
+    }
+
+    public String getNinoNombreCompleto() {
+        String nombresNino = nombres == null ? "" : nombres.trim();
+        String apellidosNino = apellidos == null ? "" : apellidos.trim();
+        String nombreCompleto = (nombresNino + " " + apellidosNino).trim();
+        return nombreCompleto.isEmpty() ? null : nombreCompleto;
+    }
 }

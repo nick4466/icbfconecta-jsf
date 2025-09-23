@@ -70,6 +70,28 @@
             box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
         }
 
+        .excel-section {
+            margin-top: 35px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(243, 193, 229, 0.3);
+        }
+
+        .excel-section h3 {
+            color: #7a3eb1;
+            margin-top: 0;
+        }
+
+        .excel-section p {
+            color: #5e3370;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .excel-section input[type="file"] {
+            margin-bottom: 15px;
+        }
+
         .form-container label {
             font-weight: bold;
             color: #7a3eb1;
@@ -145,11 +167,13 @@
         <div class="header-title">Registrar Nueva Asistencia</div>
 
     <div class="form-container">
+        <h:messages globalOnly="true" style="display:block;margin-bottom:15px;color:#7a3eb1;font-weight:bold;" />
+
         <h:form>
             <!-- Selección del niño -->
             <h:outputLabel for="nino" value="Niño:" />
             <h:selectOneMenu id="nino" value="#{asistenciaBean.asistencia.idNino}">
-                <f:selectItems value="#{asistenciaBean.ninos}" 
+                <f:selectItems value="#{asistenciaBean.ninos}"
                                var="n"
                                itemValue="#{n.idNino}" 
                                itemLabel="#{n.nombres} #{n.apellidos}" />
@@ -160,6 +184,7 @@
             <h:selectOneMenu id="estado" value="#{asistenciaBean.asistencia.estado}">
                 <f:selectItem itemValue="Presente" itemLabel="Presente" />
                 <f:selectItem itemValue="Ausente" itemLabel="Ausente" />
+                <f:selectItem itemValue="Justificado" itemLabel="Justificado" />
             </h:selectOneMenu>
 
             <div class="button-group">
@@ -167,6 +192,22 @@
                 <h:link value="Volver a la lista" outcome="listarAsistencia"/>
             </div>
         </h:form>
+
+        <div class="excel-section">
+            <h3>Importar asistencias desde Excel</h3>
+            <p>
+                Orden de columnas en el archivo: <strong>Documento de la madre</strong>,
+                <strong>Documento del niño</strong>, <strong>Fecha</strong> (AAAA-MM-DD) y
+                <strong>Estado</strong> (Presente / Ausente / Justificado).
+            </p>
+            <h:form enctype="multipart/form-data">
+                <h:inputFile id="archivoExcel" value="#{asistenciaBean.archivoExcel}" required="true"
+                             requiredMessage="Selecciona un archivo de Excel" />
+                <div class="button-group">
+                    <h:commandButton value="Cargar archivo" action="#{asistenciaBean.cargarDesdeExcel}" />
+                </div>
+            </h:form>
+        </div>
     </div>
 </h:body>
 </html>
