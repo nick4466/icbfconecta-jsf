@@ -88,8 +88,27 @@ public class UsuarioDAO {
     // Crear madre comunitaria
     // ========================
     public boolean crearMadre(Usuario madre, String passwordPlano) {
+        if (madre == null) {
+            Logger.getLogger(UsuarioDAO.class.getName())
+                    .warning("No se recibió información de la madre a registrar");
+            return false;
+        }
+
+        if (passwordPlano == null || passwordPlano.trim().isEmpty()) {
+            Logger.getLogger(UsuarioDAO.class.getName())
+                    .warning("La contraseña enviada para la madre comunitaria es inválida");
+            return false;
+        }
+
+        Integer rolMadreId = obtenerRolId("madre_comunitaria");
+        if (rolMadreId == null) {
+            Logger.getLogger(UsuarioDAO.class.getName())
+                    .severe("No existe el rol 'madre_comunitaria' en la base de datos");
+            return false;
+        }
+
         String sql = "INSERT INTO usuarios (documento, nombres, apellidos, correo, direccion, telefono, password_hash, rol_id) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, SHA2(?,256), (SELECT id_rol FROM roles WHERE nombre_rol='madre_comunitaria'))";
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = ConDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -100,12 +119,14 @@ public class UsuarioDAO {
             ps.setString(4, madre.getCorreo());
             ps.setString(5, madre.getDireccion());
             ps.setString(6, madre.getTelefono());
-            ps.setString(7, passwordPlano);
+            ps.setString(7, sha256(passwordPlano));
+            ps.setInt(8, rolMadreId);
 
             return ps.executeUpdate() > 0;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            Logger.getLogger(UsuarioDAO.class.getName())
+                  .log(Level.SEVERE, "Error al crear madre comunitaria", e);
             return false;
         }
     }

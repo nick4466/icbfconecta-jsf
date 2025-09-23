@@ -116,6 +116,26 @@
             text-align: center;
         }
 
+        .form-messages {
+            max-width: 1100px;
+            margin: 0 auto 20px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 235, 238, 0.95);
+            border-left: 6px solid #d9534f;
+            color: #a94442;
+            font-weight: bold;
+        }
+
+        .form-messages ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .form-messages li {
+            list-style: none;
+        }
+
         label {
             display: block;
             font-weight: bold;
@@ -231,42 +251,43 @@
 
     <!-- FORMULARIO -->
     <h:form id="formMadre">
-    <div class="form-wrapper">
-        <!-- izquierda -->
-        <div class="form-card">
-            <h3>Información Personal</h3>
+        <h:messages id="messages" globalOnly="true" layout="unorderedList" styleClass="form-messages" />
+        <div class="form-wrapper">
+            <!-- izquierda -->
+            <div class="form-card">
+                <h3>Información Personal</h3>
 
-            <label for="doc">Documento:</label>
-            <h:inputText id="doc" value="#{madreBean.madre.documento}" required="true">
-                <f:validateLength minimum="5" />
+                <label for="doc">Documento:</label>
+                <h:inputText id="doc" value="#{madreBean.madre.documento}" required="true">
+                    <f:validateLength minimum="5" />
+                </h:inputText>
                 <h:message for="doc" style="color:red" />
-            </h:inputText>
 
-            <label for="nombres">Nombres:</label>
-            <h:inputText id="nombres" value="#{madreBean.madre.nombres}" required="true" />
-            <h:message for="nombres" style="color:red" />
+                <label for="nombres">Nombres:</label>
+                <h:inputText id="nombres" value="#{madreBean.madre.nombres}" required="true" />
+                <h:message for="nombres" style="color:red" />
 
-            <label for="apellidos">Apellidos:</label>
-            <h:inputText id="apellidos" value="#{madreBean.madre.apellidos}" required="true" />
-            <h:message for="apellidos" style="color:red" />
+                <label for="apellidos">Apellidos:</label>
+                <h:inputText id="apellidos" value="#{madreBean.madre.apellidos}" required="true" />
+                <h:message for="apellidos" style="color:red" />
 
-            <label for="correo">Correo:</label>
-            <h:inputText id="correo" value="#{madreBean.madre.correo}" required="true">
-                <!-- Validar formato correo -->
-                <f:validateRegex pattern="^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$" />
-            </h:inputText>
-            <h:message for="correo" style="color:red" />
-        </div>
+                <label for="correo">Correo:</label>
+                <h:inputText id="correo" value="#{madreBean.madre.correo}" required="true">
+                    <!-- Validar formato correo -->
+                    <f:validateRegex pattern="^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$" />
+                </h:inputText>
+                <h:message for="correo" style="color:red" />
+            </div>
 
-        <!-- derecha -->
-        <div class="form-card">
-            <h3>Contacto y Acceso</h3>
+            <!-- derecha -->
+            <div class="form-card">
+                <h3>Contacto y Acceso</h3>
 
-            <label for="direccion">Dirección:</label>
-            <h:inputText id="direccion" value="#{madreBean.madre.direccion}" />
+                <label for="direccion">Dirección:</label>
+                <h:inputText id="direccion" value="#{madreBean.madre.direccion}" />
 
-            <label for="tel">Teléfono:</label>
-            <h:inputText id="tel" value="#{madreBean.madre.telefono}" />
+                <label for="tel">Teléfono:</label>
+                <h:inputText id="tel" value="#{madreBean.madre.telefono}" />
 
                 <label for="pass">Contraseña:</label>
                 <h:inputSecret id="pass" value="#{madreBean.passwordPlano}" required="true"
@@ -274,16 +295,14 @@
                     <f:validateRegex pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$" />
                 </h:inputSecret>
                 <h:message for="pass" style="color:red" />
-
-
+            </div>
         </div>
-    </div>
 
-    <div class="button-group">
-        <h:commandButton value="Guardar" action="#{madreBean.guardarMadre}" styleClass="btn-guardar" />
-        <h:link outcome="listarMadres" styleClass="btn-volver">← Volver a la Lista</h:link>
-    </div>
-</h:form>
+        <div class="button-group">
+            <h:commandButton value="Guardar" action="#{madreBean.guardarMadre}" styleClass="btn-guardar" />
+            <h:link outcome="listarMadres" styleClass="btn-volver">← Volver a la Lista</h:link>
+        </div>
+    </h:form>
 
 </h:body>
 </html>
